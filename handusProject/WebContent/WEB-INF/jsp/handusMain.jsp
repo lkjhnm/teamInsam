@@ -5,42 +5,35 @@
 <head>
 <meta charset="UTF-8">
 <title>Handus</title>
-<style>
-	html,body{
-		padding:0;
-		margin:0;
-	}
-	.container{
-		width:100%;
-		height:1000px;
-		background-color:#F3F1ED;
-	}		
-	#logo{
+<style>		
+	#preload{
 		width:100%;
 		height:100%;
 		font-size : 50px;
-		z-index: 101;
+		z-index: 100;
 		position:fixed;
 		top:0;
 		left:0;
 		background-color:inherit;
 	}
 	
-	#logo i{
+	#preload i{
 		position:absolute;
-		top:40%;
-		left:40%;
+		top:50%;
+		left:50%;
+		transform : translate(-50%,-50%);
 	}
 	
 	#main{
 		width: 100%;
 		height: 100%;
-		z-index:100;
+		z-index:98;
 		text-align:center;
 	}
 	#title{
 		padding-top: 3%;
 		font-size: 45px;
+		opacity:0;
 	}
 	
 	#infoContainer{
@@ -53,8 +46,8 @@
 		justify-content:center;
 	}
 	.info{
-		width: 20%;
-		height: 100%;
+		width: 10%;
+		height: 50%;
 		float:left;
 		margin: 0 30px;
 		background-color: #fff;
@@ -64,40 +57,36 @@
 	.info:hover{
 		cursor:pointer;
 	}
-	#sideMenu{
-		width: 100%;
-		height: 100%;
-		position: fixed;
-		top:0;
-		left:-80%;
-		z-index:102;
-	}
-	#menuBtn{
-		position: absolute;
-		top:50px;
-		right:-40px;
-		z-index:102;
-	}
-
+	
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
-<script>
+<script>	
 	$(function(){
 		
-		$("#logo i").animate({
+		$("#preload i").animate({
 			"opacity" : "0"
-		},2300,function(){
-			$("#logo").css("display","none")
+		},300,function(){					//2300
+			$("#preload").css("display","none")
+			
+			$("#title").animate({
+				'opacity':'1'
+			},2500)
+			
+			$(".info").animate({
+				width: '20%',
+				height: '100%'
+			},1000)
 		})
-		
 	})
 	
 </script>
 </head>
 <body>
+	
 	<div class="container">
-		<div id="logo">
+		<jsp:include page="/WEB-INF/jsp/sideMenu.jsp" />
+		<div id="preload">
 			<i>Handus</i>
 		</div>
 		
@@ -115,15 +104,7 @@
 					<span>Class</span>
 				</div>
 			</div>
-			
-			<div id="sideMenu">
-				<div id="menuBtn">
-					<span style="font-size:40px;">
-						<i class="fas fa-user"></i>
-					</span>
-				</div>
-			</div>
-		</div>
+		</div>	
 	</div>
 </body>
 </html>
