@@ -16,6 +16,7 @@
 	<context:component-scan base-package="handus.**.*"/>
 	
 	<mvc:resources location="/WEB-INF/resources/img/" mapping="/img/**"/>
+	<mvc:resources location="/WEB-INF/resources/js/" mapping="/js/**"/>
 	
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/jsp/"/>
