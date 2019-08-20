@@ -21,7 +21,7 @@
 		height: 100%;
 		position: fixed;
 		top:0;
-		left:-25%;
+		left:-300px;
 		background-color: #D8C9BF;
 		z-index:99;
 	}
@@ -54,6 +54,7 @@
 		border-radius: 50%;
 		background: url('${pageContext.request.contextPath}/img/mansam.jpg');
 		background-size:cover;
+		margin-top: 60px;
 	}
 	
 	#userName{
@@ -73,17 +74,30 @@
 	}
 	
 	#myPage{
-		margin-top: 6%;
+		margin-top: 50px;
+		background-color: #AB926C;
+		height: 35px;
+	
+	}
+	#myCart{
+		margin-top: 20px;
+		background-color: #AB926C;
+		height: 35px;
 	}
 	#logout{
-		margin-top: 5%;
+		margin-top: 350px;
+		background-color: #AB926C;
+		height: 35px;
+	}
+	#copyrigths{
+		margin-top: 10px;
+		font-size: 0.7em;
 	}
 	#searchBar{
-		margin-top: 50%;
+		margin-top: 20px;
 		width: 90%;
-		height: 5%;
 		border-radius: 5px;
-		background-color: #fff;
+		background-color: rgba( 0, 0, 0, 0.5 );
 		
 		border: 1px solid;
 		border-color: #707070;
@@ -113,7 +127,7 @@
 		border-color: #707070;
 	}
 	.menu span{
-		font-size: 20px;
+		font-size: 1em;
 		vertical-align: middle;
 	}
 	.menu:hover{
@@ -144,7 +158,7 @@
 				
 			}else{
 				$("#sideMenu").animate({
-					left:"-100px"
+					left:"-300px"
 				},1000,function(){
 					$("#menuBtn").css({
 						top: '50px',
@@ -185,16 +199,25 @@
 			<div id="myPage" class="center menu">
 				<span>My Page</span>	
 			</div>
-			<div id="logout" class="center menu">
-				<span>Logout</span>
+			<div id="myCart" class="center menu">
+				<span>My Cart</span>	
 			</div>
-			
+			<!-- 검색창 -->
 			<form action="#" method="get" id="searchForm">
 				<div id="searchBar" class="center">
 					<input type="text" name="search" autocomplete="off"/>
-					<span id="submit"><i class="fas fa-search"></i></span> 
+					<input type="button" value="search">
+<!-- 					<span id="submit"><i class="fas fa-search"></i></span>  -->
 				</div>
 			</form>
+			<!--  -->
+			<div id="logout" class="center menu">
+				<span>Logout</span>
+			</div>
+			<div id="copyrigths">
+				<span>copyrights all reserved (c)2019TeamInsam</span>
+			</div>
+			
 		</div>
 	</div>
 </body>
