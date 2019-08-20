@@ -6,7 +6,7 @@
 	var isClicked = false;
 	
 	$(function(){
-		$("#profile").css({"background" : "url('${pageContext.request.contextPath}/img/mansam.jpg')",
+		$("#profile").css({"background" : "url('${pageContext.request.contextPath}/img/photo_1299663672.jpg')",
 							"background-size" : "cover"})
 		
 		$("#menuBtn").on("click",function(){
@@ -70,8 +70,9 @@
 			<!-- 검색창 -->
 			<form action="#" method="get" id="searchForm">
 				<div id="searchBar" class="center">
-					<input type="text" name="search" autocomplete="off"/>
-					<input type="button" value="search">
+					<input type="text" name="search" autocomplete="off" placeholder="search..."/>
+					<button id="search-btn">search</button>
+<!-- 					<input type="button" value="search" id="search-btn"> -->
 <!-- 					<span id="submit"><i class="fas fa-search"></i></span>  -->
 				</div>
 			</form>
@@ -79,8 +80,8 @@
 			<div id="logout" class="center menu">
 				<span>Logout</span>
 			</div>
-			<div id="copyrigths">
-				<span>copyrights all reserved (c)2019TeamInsam</span>
+			<div id="copyrights">
+				<span>copyrights all reserved (c) 2019 TeamInsam</span>
 			</div>
 			
 		</div>
