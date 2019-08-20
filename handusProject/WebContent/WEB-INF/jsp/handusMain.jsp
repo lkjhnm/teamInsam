@@ -21,7 +21,7 @@
 		position:absolute;
 		top:50%;
 		left:50%;
-		transform : translate(-50%,-50%);
+		transform : translate(-50%,-100%);
 	}
 	
 	#main{
@@ -140,7 +140,7 @@
 <body>
 	
 	<div class="container">
-		<jsp:include page="/WEB-INF/jsp/sideMenu.jsp" />
+		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
 		<div id="preload">
 			<i>Handus <br> Project</i>
 		</div>
