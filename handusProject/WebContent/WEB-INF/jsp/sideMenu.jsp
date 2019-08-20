@@ -12,6 +12,7 @@
 	}
 	.container{
 		width:100%;
+		height:1000px;
 		background-color:#F3F1ED;
 	}
 	#sideMenu{
