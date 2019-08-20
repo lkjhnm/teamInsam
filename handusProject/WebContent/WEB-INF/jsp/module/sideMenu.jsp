@@ -11,14 +11,9 @@
 		margin:0;
 	}
 	.container{
-<<<<<<< HEAD
-		width:100%;
-		height: 100%;
-=======
 		width:1920px;
 		min-height: 1080px;
 		position:relative;
->>>>>>> branch 'master' of https://github.com/lkjhnm/teamInsam.git
 		background-color:#F3F1ED;
 	}
 	#sideMenu{
