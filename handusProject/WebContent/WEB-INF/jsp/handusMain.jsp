@@ -7,10 +7,10 @@
 <title>Handus</title>
 <style>		
 	#preload{
-		width:100%;
-		height:100%;
+		width:1920px;
+		height:1080px;
 		font-size : 50px;
-		z-index: 100;
+		z-index: 101;
 		position:fixed;
 		top:0;
 		left:0;
@@ -26,7 +26,7 @@
 	
 	#main{
 		width: 100%;
-		height: 100%;
+		height:100%;
 		z-index:98;
 		text-align:center;
 	}
@@ -41,8 +41,8 @@
 	}
 	
 	#infoContainer{
-		width: 80%;
-		height: 80%;
+		width: 70%;
+ 		height: 70%;
 		position:absolute;
 		border: 1px solid;
 		border-color: #707070;
@@ -55,7 +55,7 @@
 	}
 	.info{
 		width: 10%;
-		height: 50%;
+		height: 30%;
 		float:left;
 		margin: 0 15px;
 		background-color: #fff;
@@ -71,7 +71,7 @@
 <script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
 <script>
 	var infoClicked = false;
-	
+
 	$(function(){
 		
 		$("#preload i").animate({
