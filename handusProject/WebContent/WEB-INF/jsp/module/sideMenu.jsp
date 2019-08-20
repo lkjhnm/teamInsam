@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 <head>
@@ -135,12 +136,17 @@
 	}
 	
 </style>
+=======
+>>>>>>> branch 'master' of https://github.com/lkjhnm/teamInsam.git
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
 <script>
 	var isClicked = false;
 	
-	$(function(){	
+	$(function(){
+		$("#profile").css({"background" : "url('${pageContext.request.contextPath}/img/mansam.jpg')",
+							"background-size" : "cover"})
+		
 		$("#menuBtn").on("click",function(){
 			if(!isClicked){
 				$("#sideMenu").animate({
@@ -176,10 +182,7 @@
 			$("#searchForm").submit();
 		})
 	})
-	
 </script>
-</head>
-<body>
 	<div id="sideMenu">
 		<div id="menuBtn">
 			<span style="font-size:30px;">
@@ -220,5 +223,3 @@
 			
 		</div>
 	</div>
-</body>
-</html>
