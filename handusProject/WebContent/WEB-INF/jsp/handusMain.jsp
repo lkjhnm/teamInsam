@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Handus</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/handus.css" />
 <style>		
 	#preload{
 		width:1920px;

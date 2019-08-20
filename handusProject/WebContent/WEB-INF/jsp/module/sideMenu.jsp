@@ -1,131 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Handus</title>
-<style>
-	html,body{
-		padding:0;
-		margin:0;
-	}
-	.container{
-		width:1920px;
-		min-height: 1080px;
-		position:relative;
-		background-color:#F3F1ED;
-	}
-	#sideMenu{
-		width: 25%;
-		height: 100%;
-		position: fixed;
-		top:0;
-		left:-25%;
-		background-color: #D8C9BF;
-		z-index:99;
-	}
-	
-	#menuBtn{
-		position: absolute;
-		width:40px;
-		border-radius: 5px;
-		background-color:transparent;
-		top:50px;
-		right: -40px;
-		z-index: 99;
-		text-align: center;
-	}
-	
-	#menuBtn:hover{
-		cursor:pointer;
-	}
-	
-	#sideContainer{
-		width: 75%;
-		height: 100%;
-		margin:0 auto;
-		padding-top: 6%;
-	}
-	
-	#profile{
-		width: 65%;
-		height: 25%;
-		border-radius: 50%;
-		background: url('${pageContext.request.contextPath}/img/mansam.jpg');
-		background-size:cover;
-	}
-	
-	#userName{
-		width: 70%;
-		height: 3%;
-		margin-top : 3%;
-	}
-	#userName span{
-		font-size: 20px;
-	}
-	#userGrade{
-		width: 70%;
-		height: 2%;
-	}
-	#userGrade span{
-		font-size: 10px;
-	}
-	
-	#myPage{
-		margin-top: 35%;
-	}
-	#logout{
-		margin-top: 8%;
-	}
-	#searchBar{
-		margin-top: 25%;
-		width: 90%;
-		height: 5%;
-		border-radius: 5px;
-		background-color: #fff;
-		
-		border: 1px solid;
-		border-color: #707070;
-	}
-	#searchBar input{
-		border-style: none;
-	}
-	#searchBar span{
-		font-size: 20px;
-		vertical-align: middle;
-	}
-	#searchBar span:hover{
-		cursor:pointer;
-	}
-	.center{
-		margin: 0 auto;
-		text-align: center;
-	}
-	
-	.menu{
-		width: 90%;
-		height: 5%;
-		border-radius: 5px;
-		background-color: #fff;
-		border: 1px solid;
-		border-color: #707070;
-	}
-	.menu span{
-		font-size: 20px;
-		vertical-align: middle;
-	}
-	.menu:hover{
-		cursor:pointer;
-	}
-	
-</style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
 <script>
 	var isClicked = false;
 	
-	$(function(){	
+	$(function(){
+		$("#profile").css({"background" : "url('${pageContext.request.contextPath}/img/mansam.jpg')",
+							"background-size" : "cover"})
+		
 		$("#menuBtn").on("click",function(){
 			if(!isClicked){
 				$("#sideMenu").animate({
@@ -161,10 +44,7 @@
 			$("#searchForm").submit();
 		})
 	})
-	
 </script>
-</head>
-<body>
 	<div id="sideMenu">
 		<div id="menuBtn">
 			<span style="font-size:30px;">
@@ -196,5 +76,3 @@
 			</form>
 		</div>
 	</div>
-</body>
-</html>
