@@ -48,8 +48,8 @@
 	}
 	
 	#profile{
-		width: 65%;
-		height: 25%;
+		width: 130px;
+		height: 130px;
 		border-radius: 50%;
 		background: url('${pageContext.request.contextPath}/img/mansam.jpg');
 		background-size:cover;
@@ -68,17 +68,17 @@
 		height: 2%;
 	}
 	#userGrade span{
-		font-size: 10px;
+		font-size: 18px;
 	}
 	
 	#myPage{
-		margin-top: 35%;
+		margin-top: 6%;
 	}
 	#logout{
-		margin-top: 8%;
+		margin-top: 5%;
 	}
 	#searchBar{
-		margin-top: 25%;
+		margin-top: 50%;
 		width: 90%;
 		height: 5%;
 		border-radius: 5px;
@@ -86,6 +86,7 @@
 		
 		border: 1px solid;
 		border-color: #707070;
+		bottom: 10%;
 	}
 	#searchBar input{
 		border-style: none;
