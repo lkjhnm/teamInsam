@@ -12,11 +12,11 @@
 	}
 	.container{
 		width:100%;
-		height:1000px;
+		height: 100%;
 		background-color:#F3F1ED;
 	}
 	#sideMenu{
-		width: 25%;
+		width: 300px;
 		height: 100%;
 		position: fixed;
 		top:0;
@@ -29,7 +29,7 @@
 		position: absolute;
 		width:40px;
 		border-radius: 5px;
-		background-color:transparent;
+		background-color:#F3F1ED;
 		top:50px;
 		right: -40px;
 		z-index: 99;
@@ -41,15 +41,15 @@
 	}
 	
 	#sideContainer{
-		width: 75%;
+		width: 200px;
 		height: 100%;
 		margin:0 auto;
 		padding-top: 6%;
 	}
 	
 	#profile{
-		width: 65%;
-		height: 25%;
+		width: 100px;
+		height: 100px;
 		border-radius: 50%;
 		background: url('${pageContext.request.contextPath}/img/mansam.jpg');
 		background-size:cover;
@@ -68,17 +68,17 @@
 		height: 2%;
 	}
 	#userGrade span{
-		font-size: 10px;
+		font-size: 18px;
 	}
 	
 	#myPage{
-		margin-top: 35%;
+		margin-top: 6%;
 	}
 	#logout{
-		margin-top: 8%;
+		margin-top: 5%;
 	}
 	#searchBar{
-		margin-top: 25%;
+		margin-top: 50%;
 		width: 90%;
 		height: 5%;
 		border-radius: 5px;
@@ -86,6 +86,7 @@
 		
 		border: 1px solid;
 		border-color: #707070;
+		bottom: 10%;
 	}
 	#searchBar input{
 		border-style: none;
@@ -142,7 +143,7 @@
 				
 			}else{
 				$("#sideMenu").animate({
-					left:"-25%"
+					left:"-100px"
 				},1000,function(){
 					$("#menuBtn").css({
 						top: '50px',
