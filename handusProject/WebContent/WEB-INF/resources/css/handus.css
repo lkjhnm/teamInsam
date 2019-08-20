@@ -13,6 +13,7 @@ html,body{
 	min-height: 1080px;
 	position:relative;
 	background-color:#F3F1ED;
+	padding-top: 108px;
 }
 
 /* 	사이드 css 설정 */
