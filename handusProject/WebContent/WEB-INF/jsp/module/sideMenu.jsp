@@ -29,7 +29,7 @@
 		position: absolute;
 		width:40px;
 		border-radius: 5px;
-		background-color:#F3F1ED;
+		background-color:transparent;
 		top:50px;
 		right: -40px;
 		z-index: 99;
