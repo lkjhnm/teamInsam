@@ -26,7 +26,7 @@
 				
 			}else{
 				$("#sideMenu").animate({
-					left:"-25%"
+					left:"-300px"
 				},1000,function(){
 					$("#menuBtn").css({
 						top: '50px',
@@ -64,15 +64,24 @@
 			<div id="myPage" class="center menu">
 				<span>My Page</span>	
 			</div>
-			<div id="logout" class="center menu">
-				<span>Logout</span>
+			<div id="myCart" class="center menu">
+				<span>My Cart</span>	
 			</div>
-			
+			<!-- 검색창 -->
 			<form action="#" method="get" id="searchForm">
 				<div id="searchBar" class="center">
 					<input type="text" name="search" autocomplete="off"/>
-					<span id="submit"><i class="fas fa-search"></i></span> 
+					<input type="button" value="search">
+<!-- 					<span id="submit"><i class="fas fa-search"></i></span>  -->
 				</div>
 			</form>
+			<!--  -->
+			<div id="logout" class="center menu">
+				<span>Logout</span>
+			</div>
+			<div id="copyrigths">
+				<span>copyrights all reserved (c)2019TeamInsam</span>
+			</div>
+			
 		</div>
 	</div>
