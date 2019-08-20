@@ -76,7 +76,7 @@
 		
 		$("#preload i").animate({
 			"opacity" : "0"
-		},300,function(){					//2300
+		},2300,function(){					//2300
 			$("#preload").css("display","none")
 			
 			$("#title").animate({
