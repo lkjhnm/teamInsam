@@ -13,6 +13,9 @@
 		margin: 0 auto;
 		background-color: red;
 	}
+	.auctionBox{
+			
+	}
 </style>
 </head>
 <body>
@@ -21,7 +24,9 @@
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
 		
 		<div id="main">
-			
+			<div class="auctionBox">
+				
+			</div>
 		</div>
 	</div>
 </body>
