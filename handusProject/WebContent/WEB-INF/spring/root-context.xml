@@ -15,8 +15,8 @@
 	</bean>
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"></property>
-		<property name="mapperLocations" value="classpath:handus/faq/dao/mapper/**/*.xml"></property>
-		<property name="typeAliasesPackage" value="handus.faq.model"></property>
+		<property name="mapperLocations" value="classpath:handus/*/dao/mapper/**/*.xml"></property>
+		<property name="typeAliasesPackage" value="handus.*.model"></property>
 	</bean>
 	<bean id="faqBoard" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
