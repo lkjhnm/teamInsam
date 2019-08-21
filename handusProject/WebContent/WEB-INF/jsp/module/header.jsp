@@ -2,12 +2,41 @@
     pageEncoding="UTF-8"%>
 <script type="text/javascript">
 	$(function(){
-		$(".menuLink").on("mouseover",function(){
-			$(this).siblings().animate({
-				opacity : '0.2'
-			})
-		})
+		
+		var url = window.location.pathname;
+		var indexS = url.indexOf('/',1)
+		var indexL = url.indexOf('/',indexS+1)
+		var page = url.substring(indexS+1,indexL)
+		var headInter;
+		
+		switch(page){
+			case 'auction':
+				$("#menuAuction").css("color", "#ff1d43")
+				$("#menuAuction").css("border-top","1px solid #707070")
+				break;
+			case 'item':
+				$("#menuItem").css("color", "#ff1d43")
+				$("#menuItem").css("border-top","1px solid #707070")
+				break;
+			case 'studio':
+				$("#menuStudio").css("color", "#ff1d43")
+				$("#menuStudio").css("border-top","1px solid #707070")
+				break;
+		}
+		
+// 		$(".menuLink").on("mouseover",function(){
+// 			var i = 0;
+// 			headInter = setInterval(() => {
+// 				i++
+// 				if(i == 2){
+// 					$(this).siblings().animate({
+// 						opacity : '0.2'
+// 					})
+// 				}
+// 			}, 100);
+// 		})
 		$(".menuLink").on("mouseleave",function(){
+			clearInterval(headInter)
 			$(this).siblings().animate({
 				opacity : '1'
 			})
@@ -16,9 +45,9 @@
 </script>
 <div id="header">
 	<div id="menuContainer">
-		<span class='menuLink'>I T E M</span>
-		<span class='menuLink'>A U C T I O N</span>
-		<span class='menuLink'>S T U D I O</span>
+		<span class='menuLink' id="menuItem">I T E M</span>
+		<span class='menuLink' id="menuAuction">A U C T I O N</span>
+		<span class='menuLink' id="menuStudio">S T U D I O</span>
 	</div>
 	<span id="headerTitle">
 		<i>Handus</i>

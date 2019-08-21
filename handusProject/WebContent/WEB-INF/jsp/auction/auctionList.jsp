@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +12,7 @@
 	#main{
 		width:80%;
 		height: 100%;
-		margin: 0 auto;
+		padding: 0;
 	}
 	
 /* 	페이지 상단  */
@@ -29,9 +31,9 @@
 	#pageTitle{
 		font-size: 40px;
 		position: absolute;
-		transform: rotate(-30deg);
+		transform: rotate(-20deg);
 		top: 0;
-		left: 0;
+		left: -40px;
 	}
 	/* select */
 	select {
@@ -56,19 +58,26 @@
 	}
 	
 /* 	리스트 목록  */
-
+	
 	.auctionList{
 		display: flex;
 		flex-wrap: wrap;
-		justify-content: space-between;
+		justify-content: initial;
+	}
+	.auctionBox{
+		width: 400px;
+		height:400px;
+		margin: 50px;
+		position: relative;
+		top:0;
+		left:0;
 	}
 	
 	.auctionImg{
 		width: 400px;
 		height:400px;
-		margin: 50px;
 		background-color : #fff;
-		position: relative;
+		position:absolute;
 		top:0;
 		left:0;
 	}
@@ -76,7 +85,7 @@
 		cursor: pointer;
 	}
 
-/* 	아이콘  */
+/* 	아이콘 및 제목 */
 	.imgChange{
 		position:absolute;
 		bottom:-35px;
@@ -88,17 +97,23 @@
 	.imgChange span:hover{
 		cursor:pointer;
 	}
-	#auctionTitle{
+	.auctionTitle{
 		position: absolute;
 		bottom: -35px;
 		left: 10px;
 		font-size : 25px;
 	}
-	
+	.auctionTitle a{
+		color: black;
+		text-decoration: none;
+	}
+	.auctionTitle a:hover{
+		color: #ab926c;
+	}
 /* 	상세 정보  */
 	.auctionInfo{
 		position: absolute;
-		bottom: 20px;
+		bottom: 30px;
 		right: 0;
 		display:none;
 	}
@@ -109,7 +124,7 @@
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
 	var isSub = false;
-	var inter;
+	var auctionInter;
 	
 	$(function(){
 		$(".fa-heart").on('click',function(){
@@ -132,16 +147,16 @@
 		
 		$(".auctionImg").on("mouseenter",function(e){
 			var i = 0;
-			inter = setInterval(() => {
+			auctionInter = setInterval(() => {
 				i++;
 				if(i == 4){
-					$(this).find(".auctionInfo").fadeIn('slow')	
+					$(this).next().fadeIn('slow')	
 				}
 			}, 100);
 		})
 		$(".auctionImg").on("mouseleave",function(){
-			clearInterval(inter)
-			$(this).find(".auctionInfo").fadeOut('slow')
+			clearInterval(auctionInter)
+			$(this).next().fadeOut('slow')
 		})
 	})
 </script>
@@ -151,7 +166,6 @@
 		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
 
-		
 		<div id="main">
 			<div class='categoryBox'>
 				<p id="pageTitle">Handus <br> Auction </p>
@@ -167,50 +181,24 @@
 					</select>
 				</div>
 			</div>
-		
 			<div class="auctionList">
-				<div class="auctionImg">
-					<div class='imgChange'>
-						<span><i class="fas fa-camera"></i></span>
-						<span><i class="far fa-user"></i></span>
-						<span><i class="far fa-heart"></i></span>
+				<c:forEach items="${auctionList }" var="item">
+					<div class="auctionBox">
+						<div class='imgChange'>
+							<span><i class="fas fa-camera"></i></span>
+							<span><i class="far fa-user"></i></span>
+							<span><i class="far fa-heart"></i></span>
+						</div>
+						<img class='auctionImg'>
+						<div class='auctionInfo'>
+							<p class='info'><i>작가 ${item.m_pk_writer }</i></p>
+							<p class='info'><i>현재 가격 <fmt:formatNumber value="${item.a_startPrice }" pattern="#,###원"/></i></p>
+						</div>
+						<div class="auctionTitle">
+							<span><a href='detail?a_pk=${item.a_pk}'>${item.a_title }</a></span>
+						</div>
 					</div>
-					<div class='auctionInfo'>
-						<p class='info'><i>작가 이름</i></p>
-						<p class='info'><i>현재 입찰가격</i></p>
-					</div>
-					<div id="auctionTitle">
-						<span>작품 제목</span>
-					</div>
-				</div>
-				<div class="auctionImg">
-					<div class='imgChange'>
-						<span><i class="fas fa-camera"></i></span>
-						<span><i class="far fa-user"></i></span>
-						<span><i class="far fa-heart"></i></span>
-					</div>
-					<div class='auctionInfo'>
-						<span><i>작가 이름</i></span>
-						<span><i>현재 입찰가격</i></span>
-					</div>
-					<div id="auctionTitle">
-						<span>작품 제목</span>
-					</div>
-				</div>
-				<div class="auctionImg">
-					<div class='imgChange'>
-						<span><i class="fas fa-camera"></i></span>
-						<span><i class="far fa-user"></i></span>
-						<span><i class="far fa-heart"></i></span>
-					</div>
-				</div>
-				<div class="auctionImg">
-					<div class='imgChange'>
-						<span><i class="fas fa-camera"></i></span>
-						<span><i class="far fa-user"></i></span>
-						<span><i class="far fa-heart"></i></span>
-					</div>
-				</div>
+				</c:forEach>
 			</div>
 		</div>
 	</div>
