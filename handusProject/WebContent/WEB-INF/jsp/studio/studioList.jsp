@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>공방 리스트</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/handus.css" />
 <script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
 <script
   src="https://code.jquery.com/jquery-3.4.1.js"
@@ -23,15 +24,6 @@
 			var titleBox; 
 			$("#items").append();
 		}
-		<div class='item margin-right'>
-			<div class='image-box' id='image'>
-				<img src='' alt=''>
-			</div>
-			<div class='title-box' id='title'>
-				<span id='name'>상품이름4</span>
-				<span id='subscribe'><i class='far fa-heart'></i></span>
-			</div>
-		</div>
 	};
 </script>
 <style type="text/css">
@@ -77,20 +69,25 @@
 </style>
 </head>
 <body>
-<div class="wrapper">
-	<div class="items">
-		<div class="item margin-right">
-			<div class="image-box " id="image">
-				<img alt="" src="">
-			</div>
-			<div class="title-box" id="title">
-				<span id="name">상품이름1</span>
-				<span id="subscribe"><i class='far fa-heart'></i></span>
-			</div>
-		</div>
+<div class='container'> <!-- 필수!! side,header는 필요에따라 추가 하면됩니다. -->
+		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
+		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
+	<!--  -->
+	<div class="wrapper">
 		
+		<div class="items">
+			<div class="item margin-right">
+				<div class="image-box " id="image">
+					<img alt="" src="">
+				</div>
+				<div class="title-box" id="title">
+					<span id="name">상품이름1</span>
+					<span id="subscribe"><i class='far fa-heart'></i></span>
+				</div>
+			</div>
+			
+		</div>
 	</div>
-	
 </div>
 </body>
 </html>
