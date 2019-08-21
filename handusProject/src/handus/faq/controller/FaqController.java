@@ -17,7 +17,7 @@ public class FaqController {
 	@RequestMapping(value = "/faqShow", method = RequestMethod.GET)
 	public String FAQShowForm() {
 		System.out.println("123");
-		return "faq/FaqMain";
+		return "FaqMain";
 	}
 	
 	

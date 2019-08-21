@@ -105,18 +105,10 @@
 	margin-top: 0px;
 }
 
-.btnSet {
-	display: none;
-}
-
 .dfcont {
 	display: block;
 	clear: both;
 	overflow: auto;
-}
-
-.dfcont.btnSet {
-	text-align: right
 }
 
 img {
@@ -157,13 +149,6 @@ p {
 	margin-inline-end: 0px;
 }
 
-.dfcont, btnSet {
-	text-align: right;
-}
-
-.btnSet {
-	display: none;
-}
 
 .dfcont dd {
 	display: none;

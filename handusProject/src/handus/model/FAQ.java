@@ -1,4 +1,4 @@
-package handus.faq.model;
+package handus.model;
 
 import java.util.Date;
 

@@ -1,8 +1,8 @@
-package handus.faq.dao;
+package handus.dao;
 
 import java.util.List;
 
-import handus.faq.model.FAQ;
+import handus.model.FAQ;
 
 public interface FaqDao {
 
