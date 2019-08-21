@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="handus.auction.dao.AuctionDao">
+	
+	<select id="selectAuctionList" resultType="auction">
+		select * from AUCTION
+	</select>
+	
+<!-- 	<resultMap type="auction" id="auctionMap"> -->
+<!-- 		<result column="a_pk" property=""/> -->
+<!-- 		<result column="m_pk_writer" property=""/> -->
+<!-- 		<result column="a_title" property=""/> -->
+<!-- 		<result column="a_startPrice" property=""/> -->
+<!-- 		<result column="a_endPrice" property=""/> -->
+<!-- 		<result column="a_category" property=""/> -->
+<!-- 		<result column="a_regDate" property=""/> -->
+<!-- 		<result column="a_startDate" property=""/> -->
+<!-- 		<result column="a_endDate" property=""/> -->
+<!-- 	</resultMap> -->
+</mapper>

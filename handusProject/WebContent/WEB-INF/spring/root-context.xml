@@ -9,4 +9,15 @@
 		<property name="username" value="insam"/>
 		<property name="password" value="insam123"/>	
 	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath:handus/dao/mapper/*"/>
+		<property name="typeAliasesPackage" value="handus.model"/>
+	</bean>
+	
+	<bean id="auctionDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="handus.dao.AuctionDao"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
 </beans>

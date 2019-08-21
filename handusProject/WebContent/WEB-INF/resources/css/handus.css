@@ -13,8 +13,9 @@ html,body{
 	min-height: 1080px;
 	position:relative;
 	background-color:#F3F1ED;
-	padding-top: 108px;
-	overflow: auto;
+	overflow: visible;
+	margin-top:108px;
+/* 	border-top: 1px solid transient; */
 }
 
 /* 	사이드 css 설정 */
@@ -145,7 +146,7 @@ html,body{
 #menuContainer{
 	width: 30%;
 	position: absolute;
-	left:40%;
+	right: 22%;
 	bottom:7%;
 	display:flex;
 	justify-content: space-around;
