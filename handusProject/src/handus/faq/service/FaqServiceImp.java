@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import handus.faq.dao.FaqDao;
-import handus.faq.model.FAQ;
+import handus.dao.FaqDao;
+import handus.model.FAQ;
 
 @Service
 public class FaqServiceImp implements FaqService{
