@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="handus.studio.dao.">
+	<insert id="insertStudio" parameterType="studio">
+		insert into STUDIO 
+		(S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_MAXIMUM, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT)
+		values (STUDIO_SEQ.NEXTVAL, #{S_TITLE}, #{M_PK_WRITER}, #{S_PRICE}, #{S_LOCATION}, #{S_CATEGORY}, 
+		#{S_MAXIMUM}, #{S_CLASSSTART}, #{S_CLASSEND}, #{S_READ_COUNT}, #{S_CONTENT} )
+	</insert>
+	<update id="updateStudio" parameterType="studio">
+		update STUDIO 
+		set (S_TITLE = #{S_TITLE}, S_PRICE = #{S_PRICE}, S_UPDATEDATE = #{S_UPDATEDATE}, S_MAXIMUM = #{S_MAXIMUM}, 
+			S_CONTENT = #{S_CONTENT} )
+		where S_PK = #{S_PK} 
+	</update>
+	<delete id="deleteStudio" parameterType="int">
+		delete from STUDIO where S_PK = #{S_PK} 
+	</delete>
+	<select id="selectStudioByNum" parameterType="int" resultType="studio">
+		select * from STUDIO where S_PK = #{S_PK}  
+	</select>
+	<select id="selectStudioList" resultType="studio">
+		select *  
+		from(select rownum as rnum, S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_REGDATE, S_UPDATEDATE, S_MAXIMUM, S_CURRENT, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT
+			from (select S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_REGDATE, S_UPDATEDATE, S_MAXIMUM, S_CURRENT, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT 
+				from STUDIO
+				order by  desc))
+		where rnum between #{param1} and #{param2}
+	</select>
+	<select id="selectAllStudio" resultType="studio">
+		select * from STUDIO
+	</select>
+	<update id="updateReadCount" parameterType="int">
+		update STUDIO 
+		set (S_READ_COUNT = S_READ_COUNT + 1)
+		where where S_PK = #{S_PK} 
+	</update>
+</mapper>

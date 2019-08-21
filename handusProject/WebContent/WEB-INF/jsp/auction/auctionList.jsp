@@ -35,6 +35,27 @@
 		top: 0;
 		left: -40px;
 	}
+	/* select */
+	select {
+    -webkit-appearance: none;  /* 네이티브 외형 감추기 */
+    -moz-appearance: none;
+    appearance: none;
+/*     background: url(이미지 경로) no-repeat 95% 50%;  /* 화살표 모양의 이미지 */ 
+	
+	width: 170px; /* 원하는 너비설정 */
+    padding: .8em .5em; /* 여백으로 높이 설정 */
+    font-family: inherit;  /* 폰트 상속 */
+    background: url('kisspng-arrow-computer-icons-clip-art-5af0ef837bb035.6318196815257393955066.jpg') no-repeat 95% 50%; /* 네이티브 화살표를 커스텀 화살표로 대체 */
+    border: 1px solid #999;
+    -webkit-appearance: none; /* 네이티브 외형 감추기 */
+    -moz-appearance: none;
+    appearance: none;
+	
+	}
+	/* IE 10, 11의 네이티브 화살표 숨기기 */
+	select::-ms-expand {
+	    display: none;
+	}
 	
 /* 	리스트 목록  */
 	
@@ -150,12 +171,13 @@
 				<p id="pageTitle">Handus <br> Auction </p>
 				<div id="category">
 					<select>
+						<option>Category&hellip;</option>
 						<option>도자 공예</option>
 						<option>금속 공예</option>
 						<option>유리 공예</option>
 						<option>자수 공예</option>
 						<option>가죽 공예</option>
-						<option>목 공예</option>
+						<option>나무 공예</option>
 					</select>
 				</div>
 			</div>
