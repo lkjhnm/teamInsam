@@ -31,7 +31,7 @@
 					$("#menuBtn").css({
 						top: '50px',
 						right: '-40px',
-						'background-color': '#F3F1ED',
+						'background-color': 'transparent',
 						'color':'black'
 					})
 					$("#menuBtn span").html("<i class='fas fa-bars'></i>");
