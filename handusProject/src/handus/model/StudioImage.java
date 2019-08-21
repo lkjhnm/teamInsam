@@ -1,4 +1,4 @@
-package handus.studio.model;
+package handus.model;
 
 public class StudioImage {
 	private int SI_PK;

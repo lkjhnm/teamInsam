@@ -2,7 +2,8 @@ package handus.studio.service;
 
 import java.util.List;
 
-import handus.studio.model.Studio;
+import handus.model.Studio;
+
 
 public class StudioService implements IStudioService {
 	public static int NUM_OF_STUDIO_PER_PAGE = 10;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="handus.studio.dao.">
+<mapper namespace="handus.dao.StudioDao">
 	<insert id="insertStudio" parameterType="studio">
 		insert into STUDIO 
 		(S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_MAXIMUM, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT)
