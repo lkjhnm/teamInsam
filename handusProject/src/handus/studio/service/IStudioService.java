@@ -2,7 +2,8 @@ package handus.studio.service;
 
 import java.util.List;
 
-import handus.studio.model.Studio;
+import handus.model.Studio;
+
 
 public interface IStudioService {
 	public boolean writeStudio(Studio studio);

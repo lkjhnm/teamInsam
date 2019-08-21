@@ -1,4 +1,4 @@
-package handus.studio.model;
+package handus.model;
 
 import java.util.Date;
 

@@ -1,8 +1,9 @@
-package handus.studio.dao;
+package handus.dao;
 
 import java.util.List;
 
-import handus.studio.model.Studio;
+import handus.model.Studio;
+
 
 public interface StudioDao {
 	public int insertStudio(Studio studio);
