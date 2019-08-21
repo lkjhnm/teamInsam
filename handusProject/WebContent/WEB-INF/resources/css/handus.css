@@ -14,6 +14,7 @@ html,body{
 	position:relative;
 	background-color:#F3F1ED;
 	padding-top: 108px;
+	overflow: auto;
 }
 
 /* 	사이드 css 설정 */
@@ -78,9 +79,9 @@ html,body{
 	height: 35px;
 }
 #myCart{
-		margin-top: 20px;
-		background-color: #AB926C;
-		height: 35px;
+	margin-top: 20px;
+	background-color: #AB926C;
+	height: 35px;
 }
 #logout{
 	margin-top: 350px;
@@ -139,6 +140,7 @@ html,body{
 	top:0;
 	left:0;
 	background-color: #FBF9F6;
+	z-index:98;
 }
 #menuContainer{
 	width: 30%;
