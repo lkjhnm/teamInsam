@@ -26,9 +26,8 @@
 	</bean>
 	<bean id="faqBoard" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-
 		<property name="mapperInterface" value="handus.dao.FaqDao"></property>
->>>>>>> refs/heads/master
+
 	</bean>
 	<bean id="studioDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
