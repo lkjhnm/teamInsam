@@ -3,116 +3,118 @@ package handus.model;
 import java.util.Date;
 
 public class Studio {
-	private int S_PK;
-	private String S_TITLE;
-	private int M_PK_WRITER;
-	private int S_PRICE;
-	private int S_LOCATION;
-	private int S_CATEGORY;
-	private Date S_REGDATE;
-	private Date S_UPDATEDATE;
-	private int S_MAXIMUM;
-	private int S_CURRENT;
-	private Date S_CLASSSTART;
-	private Date S_CLASSEND; 
-	private int S_READ_COUNT;
-	private String S_CONTENT;
+	private int s_pk;
+	private String s_title;
+	private int m_pk_writer;
+	private int s_price;
+	private String s_location;
+	private String s_category;
+	private Date s_regdate;
+	private Date s_updatedate;
+	private int s_maximum;
+	private int s_current;
+	private Date s_classstart;
+	private Date s_classend; 
+	private int s_read_count;
+	private String s_content;
 	
-	public String getS_CONTENT() {
-		return S_CONTENT;
+	public int getS_pk() {
+		return s_pk;
 	}
-	public void setS_CONTENT(String s_CONTENT) {
-		S_CONTENT = s_CONTENT;
+	public void setS_pk(int s_pk) {
+		this.s_pk = s_pk;
 	}
-	public int getS_PK() {
-		return S_PK;
+	public String getS_title() {
+		return s_title;
 	}
-	public void setS_PK(int s_PK) {
-		S_PK = s_PK;
+	public void setS_title(String s_title) {
+		this.s_title = s_title;
 	}
-	public String getS_TITLE() {
-		return S_TITLE;
+	public int getM_pk_writer() {
+		return m_pk_writer;
 	}
-	public void setS_TITLE(String s_TITLE) {
-		S_TITLE = s_TITLE;
+	public void setM_pk_writer(int m_pk_writer) {
+		this.m_pk_writer = m_pk_writer;
 	}
-	public int getM_PK_WRITER() {
-		return M_PK_WRITER;
+	public int getS_price() {
+		return s_price;
 	}
-	public void setM_PK_WRITER(int m_PK_WRITER) {
-		M_PK_WRITER = m_PK_WRITER;
+	public void setS_price(int s_price) {
+		this.s_price = s_price;
 	}
-	public int getS_PRICE() {
-		return S_PRICE;
+	public String getS_location() {
+		return s_location;
 	}
-	public void setS_PRICE(int s_PRICE) {
-		S_PRICE = s_PRICE;
+	public void setS_location(String s_location) {
+		this.s_location = s_location;
 	}
-	public int getS_LOCATION() {
-		return S_LOCATION;
+	public String getS_category() {
+		return s_category;
 	}
-	public void setS_LOCATION(int s_LOCATION) {
-		S_LOCATION = s_LOCATION;
+	public void setS_category(String s_category) {
+		this.s_category = s_category;
 	}
-	public int getS_CATEGORY() {
-		return S_CATEGORY;
+	public Date getS_regdate() {
+		return s_regdate;
 	}
-	public void setS_CATEGORY(int s_CATEGORY) {
-		S_CATEGORY = s_CATEGORY;
+	public void setS_regdate(Date s_regdate) {
+		this.s_regdate = s_regdate;
 	}
-	public Date getS_REGDATE() {
-		return S_REGDATE;
+	public Date getS_updatedate() {
+		return s_updatedate;
 	}
-	public void setS_REGDATE(Date s_REGDATE) {
-		S_REGDATE = s_REGDATE;
+	public void setS_updatedate(Date s_updatedate) {
+		this.s_updatedate = s_updatedate;
 	}
-	public Date getS_UPDATEDATE() {
-		return S_UPDATEDATE;
+	public int getS_maximum() {
+		return s_maximum;
 	}
-	public void setS_UPDATEDATE(Date s_UPDATEDATE) {
-		S_UPDATEDATE = s_UPDATEDATE;
+	public void setS_maximum(int s_maximum) {
+		this.s_maximum = s_maximum;
 	}
-	public int getS_MAXIMUM() {
-		return S_MAXIMUM;
+	public int getS_current() {
+		return s_current;
 	}
-	public void setS_MAXIMUM(int s_MAXIMUM) {
-		S_MAXIMUM = s_MAXIMUM;
+	public void setS_current(int s_current) {
+		this.s_current = s_current;
 	}
-	public int getS_CURRENT() {
-		return S_CURRENT;
+	public Date getS_classstart() {
+		return s_classstart;
 	}
-	public void setS_CURRENT(int s_CURRENT) {
-		S_CURRENT = s_CURRENT;
+	public void setS_classstart(Date s_classstart) {
+		this.s_classstart = s_classstart;
 	}
-	public Date getS_CLASSSTART() {
-		return S_CLASSSTART;
+	public Date getS_classend() {
+		return s_classend;
 	}
-	public void setS_CLASSSTART(Date s_CLASSSTART) {
-		S_CLASSSTART = s_CLASSSTART;
+	public void setS_classend(Date s_classend) {
+		this.s_classend = s_classend;
 	}
-	public Date getS_CLASSEND() {
-		return S_CLASSEND;
+	public int getS_read_count() {
+		return s_read_count;
 	}
-	public void setS_CLASSEND(Date s_CLASSEND) {
-		S_CLASSEND = s_CLASSEND;
+	public void setS_read_count(int s_read_count) {
+		this.s_read_count = s_read_count;
 	}
-	public int getS_READ_COUNT() {
-		return S_READ_COUNT;
+	public String getS_content() {
+		return s_content;
 	}
-	public void setS_READ_COUNT(int s_READ_COUNT) {
-		S_READ_COUNT = s_READ_COUNT;
+	public void setS_content(String s_content) {
+		this.s_content = s_content;
 	}
 	@Override
 	public String toString() {
-		return "Studio [S_PK=" + S_PK + ", S_TITLE=" + S_TITLE + ", M_PK_WRITER=" + M_PK_WRITER + ", S_PRICE=" + S_PRICE
-				+ ", S_LOCATION=" + S_LOCATION + ", S_CATEGORY=" + S_CATEGORY + ", S_REGDATE=" + S_REGDATE
-				+ ", S_UPDATEDATE=" + S_UPDATEDATE + ", S_MAXIMUM=" + S_MAXIMUM + ", S_CURRENT=" + S_CURRENT
-				+ ", S_CLASSSTART=" + S_CLASSSTART + ", S_CLASSEND=" + S_CLASSEND + ", S_READ_COUNT=" + S_READ_COUNT
-				+ ", getS_PK()=" + getS_PK() + ", getS_TITLE()=" + getS_TITLE() + ", getM_PK_WRITER()="
-				+ getM_PK_WRITER() + ", getS_PRICE()=" + getS_PRICE() + ", getS_LOCATION()=" + getS_LOCATION()
-				+ ", getS_CATEGORY()=" + getS_CATEGORY() + ", getS_REGDATE()=" + getS_REGDATE() + ", getS_UPDATEDATE()="
-				+ getS_UPDATEDATE() + ", getS_MAXIMUM()=" + getS_MAXIMUM() + ", getS_CURRENT()=" + getS_CURRENT()
-				+ ", getS_CLASSSTART()=" + getS_CLASSSTART() + ", getS_CLASSEND()=" + getS_CLASSEND()
-				+ ", getS_READ_COUNT()=" + getS_READ_COUNT() + "]";
+		return "Studio [s_pk=" + s_pk + ", s_title=" + s_title + ", m_pk_writer=" + m_pk_writer + ", s_price=" + s_price
+				+ ", s_location=" + s_location + ", s_category=" + s_category + ", s_regdate=" + s_regdate
+				+ ", s_updatedate=" + s_updatedate + ", s_maximum=" + s_maximum + ", s_current=" + s_current
+				+ ", s_classstart=" + s_classstart + ", s_classend=" + s_classend + ", s_read_count=" + s_read_count
+				+ ", s_content=" + s_content + ", getS_pk()=" + getS_pk() + ", getS_title()=" + getS_title()
+				+ ", getM_pk_writer()=" + getM_pk_writer() + ", getS_price()=" + getS_price() + ", getS_location()="
+				+ getS_location() + ", getS_category()=" + getS_category() + ", getS_regdate()=" + getS_regdate()
+				+ ", getS_updatedate()=" + getS_updatedate() + ", getS_maximum()=" + getS_maximum()
+				+ ", getS_current()=" + getS_current() + ", getS_classstart()=" + getS_classstart()
+				+ ", getS_classend()=" + getS_classend() + ", getS_read_count()=" + getS_read_count()
+				+ ", getS_content()=" + getS_content() + "]";
 	}
+	
 }
