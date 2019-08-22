@@ -64,7 +64,6 @@
 	}
 	
 /* 	리스트 목록  */
-	
 	.studioList{
 		display: flex;
 		flex-wrap: wrap;
@@ -162,7 +161,17 @@
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
+$(function () {
+	// 하트를 누르면 
+	$(".heart").on("click", function () {
+		$(this).toggleClass("far");
+		$(this).toggleClass("fas");
+	});
+});
+function subOn() {
 	
+};
+
 </script>
 </head>
 <body>
@@ -203,9 +212,9 @@
 						<div class='imgChange'>
 <!-- 							<span><i class="fas fa-camera"></i></span> -->
 <!-- 							<span><i class="far fa-user"></i></span> -->
-							<span><i class="far fa-heart fa-lg"></i></span>
+							<span><i class="far fa-heart fa-lg heart"></i></span>
 						</div>
-						<img class='studioImg'>
+						<span><a href="detail?num=${studio.s_pk}"><img class='studioImg'></a></span>
 <!-- 						<div class='studioInfo'> -->
 <%-- 							<p class='info'><i>작가 ${item.m_pk_writer }</i></p> --%>
 <%-- 							<p class='info'><i>현재 가격 <fmt:formatNumber value="${item.a_startPrice }" pattern="#,###원"/></i></p> --%>

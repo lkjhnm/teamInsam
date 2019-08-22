@@ -78,4 +78,12 @@ public class StudioService implements IStudioService {
 	private int getTotalPage() {
 		return (int)Math.ceil(studioDao.selectCount()/(double)NUM_OF_STUDIO_PER_PAGE);
 	}
+	
+	@Override
+	public boolean updateReadCount(int studNum) {
+		if(studioDao.updateReadCount(studNum)>0) {
+			return true;
+		}
+		return false;
+	}
 }

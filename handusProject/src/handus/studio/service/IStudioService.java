@@ -14,4 +14,5 @@ public interface IStudioService {
 	public List<Studio> getStudioList(int pageNum);
 	public List<Studio> getAllStudio();
 	public Map<String, Object> getPages(int pageNum);
+	public boolean updateReadCount(int studNum);
 }
