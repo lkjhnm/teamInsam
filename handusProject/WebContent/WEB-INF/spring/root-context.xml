@@ -25,10 +25,6 @@
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
 	</bean>
 	<bean id="faqBoard" class="org.mybatis.spring.mapper.MapperFactoryBean">
-<<<<<<< HEAD
-		<property name="mapperInterface" value="handus.faq.dao.FaqDao"></property>
-		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-=======
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 		<property name="mapperInterface" value="handus.dao.FaqDao"></property>
 >>>>>>> refs/heads/master
