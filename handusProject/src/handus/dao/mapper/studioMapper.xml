@@ -3,14 +3,14 @@
 <mapper namespace="handus.dao.StudioDao">
 	<insert id="insertStudio" parameterType="studio">
 		insert into STUDIO 
-		(S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_MAXIMUM, S_CLASSSTART, S_CLASSEND, S_CONTENT)
+		(S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_MAXIMUM, S_CLASSSTART, S_CLASSEND, S_CONTENT, S_COMMENT)
 		values (STUDIO_SEQ.NEXTVAL, #{s_title}, #{m_pk_writer}, #{s_price}, #{s_location}, #{s_category}, 
-		#{s_maximum}, #{s_classstart}, #{s_classend}, #{s_content} )
+		#{s_maximum}, #{s_classstart}, #{s_classend}, #{s_content}, #{s_comment} )
 	</insert>
 	<update id="updateStudio" parameterType="studio">
 		update STUDIO 
-		set (S_TITLE = #{s_title}, S_PRICE = #{s_price}, S_UPDATEDATE = #{s_updatedate}, S_MAXIMUM = #{s_maximum}, 
-			S_CONTENT = #{s_content} )
+		set S_TITLE = #{s_title}, S_PRICE = #{s_price}, S_UPDATEDATE = #{s_updatedate}, S_MAXIMUM = #{s_maximum}, 
+			S_CONTENT = #{s_content}, S_COMMENT = #{s_comment} 
 		where S_PK = #{s_pk} 
 	</update>
 	<delete id="deleteStudio" parameterType="int">
