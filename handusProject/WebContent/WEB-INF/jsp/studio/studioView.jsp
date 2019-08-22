@@ -71,6 +71,21 @@
 		text-align:center;
 		border: 1px solid #707070;
 	}
+	.personnel{
+		display: inline-block;
+		width: 200px;
+		height: 20px;
+		padding:5px;
+		text-align:center;
+		border: 1px solid #707070;
+	}
+	#icon{
+		width:30px;
+		height:15px;
+	}
+	.iconContainer div{
+		margin-top: 15px;
+	}
 	#price{
 		font-size: 24px;
 	}
@@ -100,27 +115,46 @@
 		display:inline-block;
 	}
 	#buttonContainer{
-		display:inline-block;
+/* 		display:inline-block; */
 	}
 	
 /* 	아이템 디테일 및 스펙  */
-	
 	#detailContainer{
 		height: 400px;
+		display:flex;
+		justify-content: initial;
 	}
 	#detailBox{
 		margin-left: 200px;
-		display: inline-block;
-		background-color: #fff;
 		width: 400px;
 		height: 280px;
 	}
+	#detailBox ul {
+		margin-top: 20px;
+		list-style: none;
+		padding :0;
+	}
+	#detailBox ul li{
+		margin-top:10px;
+	}
 	#specBox{
-		margin-left: 200px;
-		display: inline-block;
-		background-color: #fff;
+		margin-left: 100px;
 		width: 500px;
 		height: 280px;
+	}
+	.specPosition{
+		width:100%;
+		margin-top:15px;
+		border-bottom: 1px solid #707070;
+	}
+	.specType{
+		display:inline-block;
+		width: 150px;
+	}
+	#auctionTime{
+		margin-left: 15px;
+		font-weight:600;
+		font-size: 19px;
 	}
 </style>
 </head>
@@ -138,20 +172,26 @@
 					<div class='infoPosition'>
 						<div class='infoButton'><span> $작가 페이지 </span></div> <div class='infoButton'><span>메시지 문의</span></div>
 					</div>
-					<div id="button-boundary"></div>
-					
+<!-- 					<div id="button-boundary"></div> -->
 					
 					<div class='infoPosition'>
-						<div class='infoButton'><span> $ </span></div>
+						<div class='personnel'><span> $현재인원 / $최대인원 </span></div>
 					</div>
 					
 					<div id="button-boundary"></div>
-					<div class='infoPosition'><span>${studio.s_category }</span></div>
+					<div class='infoPosition'><span>${studio.s_category }카테고리</span></div>
 					<div class='infoPosition'><span>${studio.s_comment } </span></div>
-					
+					<div class='infoPosition iconContainer'>
+						<div><img id='icon' src='${pageContext.request.contextPath }/img/hand-right.svg'>
+						<span> 조회수 ${studio.s_read_count } 명 </span></div>
+						<div><img id='icon' src='${pageContext.request.contextPath }/img/brush.svg'>
+						<span> 리뷰수 77 개 </span></div>
+						<div><img id='icon' src='${pageContext.request.contextPath }/img/like.svg'>
+						<span> 구독자 650 명 </span></div>
+					</div>
 					<div id="button-boundary"></div>
 					<div class='infoPosition infoBold'>
-						<span class='smallText'> &lt; 2019/08/21 08:15 입찰 &gt;</span>
+<!-- 						<span class='smallText'> &lt; 2019/08/21 08:15 입찰 &gt;</span> -->
 						<span id='price'> &nbsp;&nbsp;5 0, 0 0 0 원</span>
 					</div>
 					
@@ -160,10 +200,10 @@
 					<div class='infoPosition' id="buy_sub_container">
 						<div id='buttonContainer'>
 							<div id='cartButton'>
-								<span> My Cart </span>
+								<span><a> My Cart </a></span>
 							</div>
 							<div id='buyButton'>
-								<span> Buy </span>
+								<span><a> Reservation </a></span>
 							</div>
 							<div id='subButton'>
 								<span style='font-size:13px'><i class="far fa-heart"></i></span><span> subscribe </span>
@@ -172,13 +212,26 @@
 					</div>
 				</div>
 			</div>
+			<!-- 설명, 규격 -->
 			<div id="detailContainer">
 				<div id="detailBox">
-					<div><span>${studio.s_content }</span></div>
+					<div class='infoBold'><span>ITEM DETAIL</span></div>
+						<p>${studio.s_content }</p>
+<!-- 					<ul> -->
+<!-- 						<li>코디의 주역이 될 한발.</li> -->
+<!-- 						<li>· 치마도 바지도 일치하는 레이디 아름다움 펌프스.</li> -->
+<!-- 						<li>· 다리를 단단히 잡아주는 인상적인 3 개의 스트랩</li> -->
+<!-- 						<li>· 6.5cm 힐 -->
+<!-- 					</ul> -->
 				</div>
 				<div id="specBox">
+					<div class='infoBold'><span>STUDIO LOCATION</span></div>
+					<div class='specPosition'><div class='specType'><span> s t u d i o </span></div><span> HAND STUDIO </span></div>
+					<div class='specPosition'><div class='specType'><span> a d d r e s s </span></div><span> ${studio.s_location } </span></div>
+					<div class='specPosition'><div class='specType'><span> l o c a t i o n </span></div><span> $지도 API </span></div>
 				</div>
 			</div>
+			<!-- 리뷰 -->
 		</div>
 	</div>
 </body>

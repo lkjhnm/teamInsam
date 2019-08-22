@@ -27,7 +27,11 @@ public class StudioController {
 	
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
 	public String studioView(int num, Model model) {
-		model.addAttribute("studio", studioService.getStudioByNum(num));
+		// 조회수 증가 
+		if(studioService.updateReadCount(num)) {
+			model.addAttribute("studio", studioService.getStudioByNum(num));
+		}
+		// 게시글 정보 가져오기 
 		// 작가 정보 가져오기 
 		int writerNum = studioService.getStudioByNum(num).getM_pk_writer();
 		model.addAttribute("member", memberService.getMemberByNum(writerNum));

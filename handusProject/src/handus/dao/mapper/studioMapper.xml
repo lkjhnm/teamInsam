@@ -32,8 +32,8 @@
 	</select>
 	<update id="updateReadCount" parameterType="int">
 		update STUDIO 
-		set (S_READ_COUNT = S_READ_COUNT + 1)
-		where where S_PK = #{s_pk} 
+		set S_READ_COUNT = S_READ_COUNT + 1
+		where S_PK = #{s_pk} 
 	</update>
 	<select id="selectCount" resultType="int">
 		select count(*) from STUDIO
