@@ -3,23 +3,23 @@
 <mapper namespace="handus.dao.StudioDao">
 	<insert id="insertStudio" parameterType="studio">
 		insert into STUDIO 
-		(S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_MAXIMUM, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT)
-		values (STUDIO_SEQ.NEXTVAL, #{S_TITLE}, #{M_PK_WRITER}, #{S_PRICE}, #{S_LOCATION}, #{S_CATEGORY}, 
-		#{S_MAXIMUM}, #{S_CLASSSTART}, #{S_CLASSEND}, #{S_READ_COUNT}, #{S_CONTENT} )
+		(S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_MAXIMUM, S_CLASSSTART, S_CLASSEND, S_CONTENT)
+		values (STUDIO_SEQ.NEXTVAL, #{s_title}, #{m_pk_writer}, #{s_price}, #{s_location}, #{s_category}, 
+		#{s_maximum}, #{s_classstart}, #{s_classend}, #{s_content} )
 	</insert>
 	<update id="updateStudio" parameterType="studio">
 		update STUDIO 
-		set (S_TITLE = #{S_TITLE}, S_PRICE = #{S_PRICE}, S_UPDATEDATE = #{S_UPDATEDATE}, S_MAXIMUM = #{S_MAXIMUM}, 
-			S_CONTENT = #{S_CONTENT} )
-		where S_PK = #{S_PK} 
+		set (S_TITLE = #{s_title}, S_PRICE = #{s_price}, S_UPDATEDATE = #{s_updatedate}, S_MAXIMUM = #{s_maximum}, 
+			S_CONTENT = #{s_content} )
+		where S_PK = #{s_pk} 
 	</update>
 	<delete id="deleteStudio" parameterType="int">
-		delete from STUDIO where S_PK = #{S_PK} 
+		delete from STUDIO where S_PK = #{s_pk} 
 	</delete>
-	<select id="selectStudioByNum" parameterType="int" resultType="studio">
-		select * from STUDIO where S_PK = #{S_PK}  
+	<select id="selectStudioByNum" parameterType="int" resultMap="studioMap">
+		select * from STUDIO where S_PK = #{s_pk}  
 	</select>
-	<select id="selectStudioList" resultType="studio">
+	<select id="selectStudioList" resultMap="studioMap">
 		select *  
 		from(select rownum as rnum, S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_REGDATE, S_UPDATEDATE, S_MAXIMUM, S_CURRENT, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT
 			from (select S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_REGDATE, S_UPDATEDATE, S_MAXIMUM, S_CURRENT, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT 
@@ -27,12 +27,31 @@
 				order by  desc))
 		where rnum between #{param1} and #{param2}
 	</select>
-	<select id="selectAllStudio" resultType="studio">
+	<select id="selectAllStudio" resultMap="studioMap">
 		select * from STUDIO
 	</select>
 	<update id="updateReadCount" parameterType="int">
 		update STUDIO 
 		set (S_READ_COUNT = S_READ_COUNT + 1)
-		where where S_PK = #{S_PK} 
+		where where S_PK = #{s_pk} 
 	</update>
+	<select id="selectCount" resultType="int">
+		select count(*) from STUDIO
+	</select>
+	<resultMap type="studio" id="studioMap">
+		<result column="S_PK" property="s_pk"/>
+		<result column="S_TITLE" property="s_title"/>
+		<result column="M_PK_WRITER" property="m_pk_writer"/>
+		<result column="S_PRICE" property="s_price"/>
+		<result column="S_LOCATION" property="s_location"/>
+		<result column="S_CATEGORY" property="s_category"/>
+		<result column="S_REGDATE" property="s_regdate"/>
+		<result column="S_UPDATEDATE" property="s_updatedate"/>
+		<result column="S_MAXIMUM" property="s_maximum"/>
+		<result column="S_CURRENT" property="s_current"/>
+		<result column="S_CLASSSTART" property="s_classstart"/>
+		<result column="S_CLASSEND" property="s_classend"/>
+		<result column="S_READ_COUNT" property="s_read_count"/>
+		<result column="S_CONTENT" property="s_content"/>
+	</resultMap>
 </mapper>
