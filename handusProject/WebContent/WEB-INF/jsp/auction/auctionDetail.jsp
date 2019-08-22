@@ -71,10 +71,12 @@
 		text-align:center;
 		border: 1px solid #707070;
 	}
-/* 	왼쪽에 빈공간을 만들고 버튼들을 오른쪽에 배치시키는 방법을 알아보다가 집에 갔음 */
+	#price{
+		font-size: 24px;
+	}
 	#buyButton{
 		width: 300px;
-		height: 50px;
+		height: 45px;
 		border : 1px solid #707070;
 		text-align: center;
 		background-color : #191919;
@@ -83,11 +85,43 @@
 		vertical-align: middle;
 		margin-left: 100px;
 	}
+	#subButton{
+		width:300px;
+		height: 30px;
+		border: 1px solid #707070;
+		margin-top: 5px;
+		text-align: center;
+		line-height: 30px;
+	}
+
 	#blank{
 		width: 100px;
 		height: 100%;
+		display:inline-block;
 	}
-
+	#buttonContainer{
+		display:inline-block;
+	}
+	
+/* 	아이템 디테일 및 스펙  */
+	
+	#detailContainer{
+		height: 400px;
+	}
+	#detailBox{
+		margin-left: 200px;
+		display: inline-block;
+		background-color: #fff;
+		width: 400px;
+		height: 280px;
+	}
+	#specBox{
+		margin-left: 200px;
+		display: inline-block;
+		background-color: #fff;
+		width: 500px;
+		height: 280px;
+	}
 </style>
 </head>
 <body>
@@ -101,35 +135,45 @@
 				<div id="auctionInfo">
 					<div class='infoPosition infoBold'><span> 작품 제목 </span></div>
 					<div class='infoPosition'><span> 작가 이름 </span></div>				
-					<div class='infoPosition'><span>유리공예 카카오 라이언</span></div>
 					<div class='infoPosition'>
 						<div class='infoButton'><span> 작가 페이지 </span></div> <div class='infoButton'><span>메시지 문의</span></div>
 					</div>
 					<div id="button-boundary"></div>
-					<div class='infoPosition infoBold'>
-						<span class='smallText'> &lt; 2019/08/21 08:15 입찰 &gt;</span>
-						<span> &nbsp;&nbsp;5 0, 0 0 0 원</span>
-					</div>
 					
 					
 					<div class='infoPosition'>
 						<div class='infoButton'><span> 실시간 차트 </span></div>
 					</div>
+					
+					<div id="button-boundary"></div>
+					<div class='infoPosition'><span> 유리공예 </span></div>
+					<div class='infoPosition'><span> 카카오 프렌즈와 콜라보하여 만든  라이언 유리공예 </span></div>
+					
+					<div id="button-boundary"></div>
+					<div class='infoPosition infoBold'>
+						<span class='smallText'> &lt; 2019/08/21 08:15 입찰 &gt;</span>
+						<span id='price'> &nbsp;&nbsp;5 0, 0 0 0 원</span>
+					</div>
+					
 					<div id="button-boundary"></div>
 					
 					<div class='infoPosition' id="buy_sub_container">
-						<div id='blank'>
-						</div>
-						<div>
+						<div id='buttonContainer'>
 							<div id='buyButton'>
 								<span>입 찰</span>
 							</div>
 							<div id='subButton'>
-								<span>구 독</span>
+								<span style='font-size:13px'><i class="far fa-heart"></i></span><span> 구 독 </span>
 							</div>
 						</div>
 					</div>
-					
+				</div>
+			</div>
+			<div id="detailContainer">
+				<div id="detailBox">
+					<div><span>상세정보</span></div>
+				</div>
+				<div id="specBox">
 				</div>
 			</div>
 		</div>
