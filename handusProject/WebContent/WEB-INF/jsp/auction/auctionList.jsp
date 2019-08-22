@@ -32,14 +32,13 @@
 	#sort{
 		position: absolute;
 		top: 100px;
-		right: 50px;
+		right: 185px;
 	}
 	#pageTitle{
 		font-size: 40px;
 		position: absolute;
-		transform: rotate(-20deg);
-		top: 0;
-		left: -40px;
+		top: 70px;
+		left: 55px;
 		font-family: 'Hepta Slab', serif;
 	}
 	/* select */
@@ -74,7 +73,7 @@
 	.auctionBox{
 		width: 400px;
 		height:400px;
-		margin: 50px;
+		margin: 50px 0 50px 50px;
 		position: relative;
 		top:0;
 		left:0;
@@ -236,7 +235,7 @@
 		</div>
 		<div id="auctionListContainer">
 			<div class='sortBox'>
-				<p id="pageTitle">Handus <br> Auction </p>
+				<p id="pageTitle"> Auction </p>
 				<div id="sort">
 					<select>
 						<option>Sort&hellip;</option>
