@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
 <script type="text/javascript">
 	$(function(){
 		
@@ -24,17 +25,17 @@
 				break;
 		}
 		
-// 		$(".menuLink").on("mouseover",function(){
-// 			var i = 0;
-// 			headInter = setInterval(() => {
-// 				i++
-// 				if(i == 2){
-// 					$(this).siblings().animate({
-// 						opacity : '0.2'
-// 					})
-// 				}
-// 			}, 100);
-// 		})
+		$(".menuLink").on("mouseover",function(){
+			var i = 0;
+			headInter = setInterval(() => {
+				i++
+				if(i == 2){
+					$(this).siblings().animate({
+						opacity : '0.2'
+					})
+				}
+			}, 100);
+		})
 		$(".menuLink").on("mouseleave",function(){
 			clearInterval(headInter)
 			$(this).siblings().animate({
