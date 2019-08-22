@@ -8,22 +8,28 @@
 <meta charset="UTF-8">
 <title>Handus Auction</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/handus.css" />
+<link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
 <style>
-	#main{
-		width:80%;
-		height: 100%;
-		padding: 0;
+	body{
+		font-family: 'Hepta Slab', serif;
 	}
-	
+	#auctionListContainer{
+		width:80%;
+		font-family: 'Nanum Myeongjo', serif;
+	}
+	.container{
+		display:flex;
+		justify-content: flex-start;
+	}
 /* 	페이지 상단  */
-	.categoryBox{
+	.sortBox{
 		position:relative;
 		top: 0;
 		left: 0;
 		height: 200px;
 	}
 	
-	#category{
+	#sort{
 		position: absolute;
 		top: 100px;
 		right: 50px;
@@ -34,6 +40,7 @@
 		transform: rotate(-20deg);
 		top: 0;
 		left: -40px;
+		font-family: 'Hepta Slab', serif;
 	}
 	/* select */
 	select {
@@ -45,7 +52,7 @@
 	width: 170px; /* 원하는 너비설정 */
     padding: .8em .5em; /* 여백으로 높이 설정 */
     font-family: inherit;  /* 폰트 상속 */
-    background: url('kisspng-arrow-computer-icons-clip-art-5af0ef837bb035.6318196815257393955066.jpg') no-repeat 95% 50%; /* 네이티브 화살표를 커스텀 화살표로 대체 */
+   								/* 네이티브 화살표를 커스텀 화살표로 대체 */
     border: 1px solid #999;
     -webkit-appearance: none; /* 네이티브 외형 감추기 */
     -moz-appearance: none;
@@ -116,9 +123,40 @@
 		bottom: 30px;
 		right: 0;
 		display:none;
+		opacity:0;
 	}
 	.info{
 		font-size: 25px;
+	}
+	
+/* 	사이드 카테고리 */
+	#sideCategoryContainer{
+		width: 20%;
+		height:1080px;
+		margin-top:250px;
+		color:#544a4a;
+	}
+	#sideGrid{
+		width: 250px;
+		height: 100%;
+		margin: 0 auto;
+	}
+	.categoryTitle{
+		font-size: 16px;
+		font-weight: 600;
+		margin: 102px 0 45px 0;
+	}
+	#category ul{
+		list-style: none;
+		padding-left: 20px;
+	}
+	#category ul li{
+		margin-bottom: 15px;
+		font-size:15px;
+	}
+	#category ul li a{
+		color: inherit;
+		text-decoration: none;
 	}
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -150,13 +188,28 @@
 			auctionInter = setInterval(() => {
 				i++;
 				if(i == 4){
-					$(this).next().fadeIn('slow')	
+					$(this).next().css('display','block')
+					$(this).next().animate({
+						opacity : '1.0'
+					},600)	
 				}
 			}, 100);
 		})
+		
 		$(".auctionImg").on("mouseleave",function(){
 			clearInterval(auctionInter)
-			$(this).next().fadeOut('slow')
+			$(this).next().animate({
+				opacity : '0'
+			},600,function(){
+				$(this).css('display','none')				
+			})
+		})
+		
+		$("#category ul li a").on("mouseover",function(){
+			$(this).css('color','#ff1d43')
+		})
+		$("#category ul li a").on("mouseleave",function(){
+			$(this).css('color','#544a4a')
 		})
 	})
 </script>
@@ -165,19 +218,31 @@
 	<div class="container">
 		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
-
-		<div id="main">
-			<div class='categoryBox'>
-				<p id="pageTitle">Handus <br> Auction </p>
+		<div id="sideCategoryContainer">
+			<div id="sideGrid">
 				<div id="category">
+					<div class="categoryTitle"><span> C A T E G O R Y ----- </span></div>
+					<ul>
+						<li><a href="#"> A L L</a> </li>
+						<li><a href="#"> C E R A M I C S </a></li>
+						<li><a href="#"> M E T A L </a></li>
+						<li><a href="#"> G L A S S </a></li>
+						<li><a href="#"> E M B R O I D E R Y </a></li>
+						<li><a href="#"> L E A T H E R </a></li>
+						<li><a href="#"> W O O D </a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="auctionListContainer">
+			<div class='sortBox'>
+				<p id="pageTitle">Handus <br> Auction </p>
+				<div id="sort">
 					<select>
-						<option>Category&hellip;</option>
-						<option>도자 공예</option>
-						<option>금속 공예</option>
-						<option>유리 공예</option>
-						<option>자수 공예</option>
-						<option>가죽 공예</option>
-						<option>나무 공예</option>
+						<option>Sort&hellip;</option>
+						<option>최신순</option>
+						<option>인기순</option>
+						<option>별점순</option>
 					</select>
 				</div>
 			</div>

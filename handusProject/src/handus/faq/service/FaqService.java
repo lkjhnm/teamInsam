@@ -2,7 +2,7 @@ package handus.faq.service;
 
 import java.util.List;
 
-import handus.faq.model.FAQ;
+import handus.model.FAQ;
 
 public interface FaqService {
 	public boolean writeFaq(FAQ faq);

@@ -11,7 +11,8 @@
 	<div class='container'> <!-- 필수!! side,header는 필요에따라 추가 하면됩니다. -->
 		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
-	
+		
+		
 	</div>
 </body>
 </html>
