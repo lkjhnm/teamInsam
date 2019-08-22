@@ -1,33 +1,135 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>HANDUS/Studio</title>
+<title>Handus Studio</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/handus.css" />
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
-<script
-  src="https://code.jquery.com/jquery-3.4.1.js"
-  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-  crossorigin="anonymous"></script>
-<script type="text/javascript">
-	$(function () {
-		/* 상품 그리기 */
-		
-	});
-	function drawList() {
-		var itemCount = 4;
-		for(var i = 0 ; i < itemCount; i++){
-			var item;
-			var imageBox;
-			var titleBox; 
-			$("#items").append();
-		}
-	};
-</script>
-<style type="text/css">
+<style>
+	body{
+		font-family: 'Hepta Slab', serif;
+	}
+	#studioListContainer{
+		width:80%;
+		font-family: 'Nanum Myeongjo', serif;
+	}
+	.container{
+		display:flex;
+		justify-content: flex-start;
+	}
+/* 	페이지 상단  */
+	.sortBox{
+		position:relative;
+		top: 0;
+		left: 0;
+		height: 200px;
+	}
+	
+	#sort{
+		position: absolute;
+		top: 100px;
+		right: 185px;
+	}
+	#pageTitle{
+		font-size: 40px;
+		position: absolute;
+		top: 70px;
+		left: 55px;
+		font-family: 'Hepta Slab', serif;
+	}
+	/* select */
+	select {
+    -webkit-appearance: none;  /* 네이티브 외형 감추기 */
+    -moz-appearance: none;
+    appearance: none;
+/*     background: url(이미지 경로) no-repeat 95% 50%;  /* 화살표 모양의 이미지 */ 
+	
+	width: 170px; /* 원하는 너비설정 */
+    padding: .8em .5em; /* 여백으로 높이 설정 */
+    font-family: inherit;  /* 폰트 상속 */
+   								/* 네이티브 화살표를 커스텀 화살표로 대체 */
+    border: 1px solid #999;
+    -webkit-appearance: none; /* 네이티브 외형 감추기 */
+    -moz-appearance: none;
+    appearance: none;
+	
+	}
+	/* IE 10, 11의 네이티브 화살표 숨기기 */
+	select::-ms-expand {
+	    display: none;
+	}
+	
+/* 	리스트 목록  */
+	
+	.studioList{
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: initial;
+		font-size: 0.8em;
+	}
+	.studioBox{
+		width: 400px;
+		height:400px;
+		margin: 50px 0 50px 50px;
+		position: relative;
+		top:0;
+		left:0;
+	}
+	
+	.studioImg{
+		width: 400px;
+		height:400px;
+		background-color : #fff;
+		position:absolute;
+		top:0;
+		left:0;
+	}
+	.studioImg:hover{
+		cursor: pointer;
+	}
+
+/* 	아이콘 및 제목 */
+	.imgChange{
+		position:absolute;
+		bottom:-35px;
+		right: 10px;
+	}
+	.imgChange span{
+		font-size: 15px;
+	}
+	.imgChange span:hover{
+		cursor:pointer;
+	}
+	.studioTitle{
+		position: absolute;
+		bottom: -35px;
+		left: 10px;
+		font-size: 20px;
+	}
+	.studioTitle a{
+		color: black;
+		text-decoration: none;
+	}
+	.studioTitle a:hover{
+		color: #ab926c;
+	}
+	
+/* 	상세 정보  */
+	.studioInfo{
+		position: absolute;
+		bottom: 30px;
+		right: 0;
+		display:none;
+		opacity:0;
+	}
+	.info{
+		font-size: 25px;
+	}
+	
 /* 	사이드 카테고리 */
 	#sideCategoryContainer{
 		width: 20%;
@@ -57,53 +159,17 @@
 		color: inherit;
 		text-decoration: none;
 	}
-	.wrapper{
-		padding-top: 80px;
-		width: 1536px;
-		margin: 0 auto; 
-		background-color: #FBF9F6;
-	}
-	.items{
-		width: 1300px;
-		margin: 0 auto;
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: flex-start;
-/* 		border: 1px solid #707070; */
-/* 		text-align: center; */
-	}
-	.item{
-		display: inline-block;
-		width: 410px;
-		margin-bottom: 20px;
-	}
-	#image{
-		width: 400px;
-		height: 400px;
-		background-color: #ffff;
-	}
-	#title{
-		text-align: left;
-		margin-top: 7px;
-		margin-left: 10px;
-		font-size: 1.1em;
-	}
-	#subscribe{
-		margin-left: 270px;
-		text-align: right;
-		font-size: 1.1em;
-	}
-	.margin-right{
-/* 		margin-right: 30px; */
-	}
 </style>
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+	
+</script>
 </head>
 <body>
-<div class='container'> <!-- 필수!! side,header는 필요에따라 추가 하면됩니다. -->
-		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp"/>
+	<div class="container">
+		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
-	<!-- 사이드 카테고리 -->
-	<div id="sideCategoryContainer">
+		<div id="sideCategoryContainer">
 			<div id="sideGrid">
 				<div id="category">
 					<div class="categoryTitle"><span> C A T E G O R Y ----- </span></div>
@@ -119,23 +185,38 @@
 				</div>
 			</div>
 		</div>
-	<!-- 공방 리스트 -->
-	<div class="wrapper">
-
-		<div class="items">
-			<div class="item margin-right">
-				<div class="image-box " id="image">
-					<img alt="" src="">
-				</div>
-				<div class="title-box" id="title">
-					<span id="name">상품이름1</span>
-					<span id="subscribe"><i class='far fa-heart'></i></span>
+		<div id="studioListContainer">
+			<div class='sortBox'>
+				<p id="pageTitle"> Studio </p>
+				<div id="sort">
+					<select>
+						<option>Sort&hellip;</option>
+						<option>최신순</option>
+						<option>인기순</option>
+						<option>별점순</option>
+					</select>
 				</div>
 			</div>
+			<div class="studioList">
+				<c:forEach items="${studioList }" var="studio">
+					<div class="studioBox">
+						<div class='imgChange'>
+<!-- 							<span><i class="fas fa-camera"></i></span> -->
+<!-- 							<span><i class="far fa-user"></i></span> -->
+							<span><i class="far fa-heart fa-lg"></i></span>
+						</div>
+						<img class='studioImg'>
+<!-- 						<div class='studioInfo'> -->
+<%-- 							<p class='info'><i>작가 ${item.m_pk_writer }</i></p> --%>
+<%-- 							<p class='info'><i>현재 가격 <fmt:formatNumber value="${item.a_startPrice }" pattern="#,###원"/></i></p> --%>
+<!-- 						</div> -->
+						<div class="studioTitle">
+							<span><a href='detail?num=${studio.s_pk}'>${studio.s_title }</a></span>
+						</div>
+					</div>
+				</c:forEach>
+			</div>
 		</div>
-		
-		
 	</div>
-</div>
 </body>
 </html>

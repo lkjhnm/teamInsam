@@ -17,7 +17,7 @@ public class Studio {
 	private Date s_classend; 
 	private int s_read_count;
 	private String s_content;
-	
+	private String s_comment;
 	public int getS_pk() {
 		return s_pk;
 	}
@@ -102,19 +102,24 @@ public class Studio {
 	public void setS_content(String s_content) {
 		this.s_content = s_content;
 	}
+	public String getS_comment() {
+		return s_comment;
+	}
+	public void setS_comment(String s_comment) {
+		this.s_comment = s_comment;
+	}
 	@Override
 	public String toString() {
 		return "Studio [s_pk=" + s_pk + ", s_title=" + s_title + ", m_pk_writer=" + m_pk_writer + ", s_price=" + s_price
 				+ ", s_location=" + s_location + ", s_category=" + s_category + ", s_regdate=" + s_regdate
 				+ ", s_updatedate=" + s_updatedate + ", s_maximum=" + s_maximum + ", s_current=" + s_current
 				+ ", s_classstart=" + s_classstart + ", s_classend=" + s_classend + ", s_read_count=" + s_read_count
-				+ ", s_content=" + s_content + ", getS_pk()=" + getS_pk() + ", getS_title()=" + getS_title()
-				+ ", getM_pk_writer()=" + getM_pk_writer() + ", getS_price()=" + getS_price() + ", getS_location()="
-				+ getS_location() + ", getS_category()=" + getS_category() + ", getS_regdate()=" + getS_regdate()
-				+ ", getS_updatedate()=" + getS_updatedate() + ", getS_maximum()=" + getS_maximum()
-				+ ", getS_current()=" + getS_current() + ", getS_classstart()=" + getS_classstart()
-				+ ", getS_classend()=" + getS_classend() + ", getS_read_count()=" + getS_read_count()
-				+ ", getS_content()=" + getS_content() + "]";
+				+ ", s_content=" + s_content + ", s_comment=" + s_comment + ", getS_pk()=" + getS_pk()
+				+ ", getS_title()=" + getS_title() + ", getM_pk_writer()=" + getM_pk_writer() + ", getS_price()="
+				+ getS_price() + ", getS_location()=" + getS_location() + ", getS_category()=" + getS_category()
+				+ ", getS_regdate()=" + getS_regdate() + ", getS_updatedate()=" + getS_updatedate()
+				+ ", getS_maximum()=" + getS_maximum() + ", getS_current()=" + getS_current() + ", getS_classstart()="
+				+ getS_classstart() + ", getS_classend()=" + getS_classend() + ", getS_read_count()="
+				+ getS_read_count() + ", getS_content()=" + getS_content() + ", getS_comment()=" + getS_comment() + "]";
 	}
-	
 }
