@@ -38,9 +38,18 @@
 		height: 850px;
 		position: absolute;
 		top:0;
-		right:0;
+		left:30px;
 		color: #544a4a;
 		font-size: 18px;
+		background-color:#FBF9F6;
+	}
+	.auctionInfoContainer{
+		width: 850px;
+		height: 850px;
+		background-color:#FBF9F6;
+		position: absolute;
+		top:0;
+		left:850px;
 	}
 	.infoBold{
 		font-weight: 600;
@@ -74,6 +83,9 @@
 	#icon{
 		width:30px;
 		height:15px;
+	}
+	.iconContainer{
+		height: 100px;
 	}
 	.iconContainer div{
 		margin-top: 15px;
@@ -110,6 +122,12 @@
 		display:inline-block;
 	}
 	
+	#buyButton:hover{
+		cursor:pointer;
+	}
+	#subButton:hover{
+		cursor:pointer;
+	}
 /* 	아이템 디테일 및 스펙  */
 	
 	#detailContainer{
@@ -131,7 +149,7 @@
 		margin-top:10px;
 	}
 	#specBox{
-		margin-left: 100px;
+		margin-left: 250px;
 		width: 500px;
 		height: 280px;
 	}
@@ -149,20 +167,135 @@
 		font-weight:600;
 		font-size: 19px;
 	}
+/* 	차트 */
+	#chartContainer{
+		width:850px;
+		height:850px;
+		position:absolute;
+		top:0;
+		left:0;
+		display:none;
+	}
+	#auctionChart{
+		width: 600px;
+		height:600px;
+		position:absolute;
+		top:50%;
+		left:50%;
+		transform:translate(-50%, -50%);
+	}
+	.infoButton:hover{
+		cursor:pointer;
+		color:#ff1d43;
+		border-color:#ff1d43;
+	}
+/* 	모달 */
+	#biddingModal{
+		width:600px;
+		height:300px;
+		background-color: white;
+		position:fixed;
+		top:50%;
+		left:50%;
+		transform:translate(-50%, -50%);
+		display:none;
+	}
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script>
 	$(function(){
-		var formatDate = ${remainTime}
+		var chartShow = false;
+		var modalShow = false;
+		var dps;
 		
+		var formatDate = ${auction.a_remain}
 		setTimeout(() => {
+			formatDate = formatDate - 1000;
+			$("#auctionTime").text(msToTime(formatDate))
+			
 			setInterval(() => {
 				$("#auctionTime").text(msToTime(formatDate))
 				formatDate = formatDate - 1000;			
 			}, 1000)	
-		}, 600);
+		}, 1000 - new Date().getMilliseconds());
 		
+		var i = 80000;
+		var xval = 13;
+		$("#chartBtn").on("click",function(){
+			if(!chartShow){
+				//옥션 그래프 데이터 요청
+				$.ajax({
+					url: "graph",
+					data: {"a_pk": '${auction.a_pk}'},
+					type : 'get',
+					dataType: "json",
+					success: function(data){
+						dps = data;
+						makeChart(dps)
+					}
+				})
+				
+				$("#chartContainer").fadeIn(1000)
+				i= i+5000;
+				$("#auctionImg").animate({
+					opacity: '0.1'
+				},500)
+				
+			}else{
+				$("#chartContainer").fadeOut(500)
+				$("#auctionImg").animate({
+					opacity: '1'
+				},500)
+			}
+			chartShow = !chartShow
+		})
+		
+		$("#buyButton").on("click",function(){
+			if(!modalShow){
+				$("#biddingModal").fadeIn();
+			}else{
+				$("#biddingModal").fadeOut();
+			}
+			modalShow = !modalShow
+		})
 	})
+	
+	function makeChart(dps){
+		
+		var chart = new CanvasJS.Chart("auctionChart",{
+			animationEnabled : true,
+			backgroundColor:"transparent",
+			 axisX:{
+				    gridThickness: 0,
+				    tickLength: 0,
+				    lineThickness: 0,
+				    interlacedColor: "rgba(0,0,0,0)",
+				    labelFormatter: function(){
+				      return " ";
+				    }
+				  },
+				  axisY:{
+				    gridThickness: 0,
+				    tickLength: 0,
+				    lineThickness: 0,
+				    interlacedColor: "rgba(0,0,0,0)",
+				    labelFormatter: function(){
+				      return " ";
+				    }
+				  },
+			data: [{
+				type: "line",
+				color:'#ff1d43',
+				lineThickness : 5,
+				markerColor: "blue",
+				markerSize: 10,
+				dataPoints: dps
+			}]
+		})
+		
+		chart.render()
+	}
 	
 	function msToTime(duration) {
         var milliseconds = parseInt((duration%1000)/100)
@@ -183,50 +316,54 @@
 	<div class='container'>
 		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
-		sdsd
+
 		<div id="main">
 			<div id="auctionInfoBox">
-				<img id="auctionImg">
-				<div id="auctionInfo">
-					<div class='infoPosition infoBold'><span> 작품 제목 </span></div>
-					<div class='infoPosition'><span> 작가 이름 </span></div>				
-					<div class='infoPosition'>
-						<div class='infoButton'><span> 작가 페이지 </span></div> <div class='infoButton'><span>메시지 문의</span></div>
-					</div>
-					<div id="button-boundary"></div>
-					
-					
-					<div class='infoPosition'>
-						<div class='infoButton'><span> 실시간 차트 </span></div>
-					</div>
-					
-					<div id="button-boundary"></div>
-					<div class='infoPosition'><span> 유리공예 </span></div>
-					<div class='infoPosition'><span> 카카오 프렌즈와 콜라보하여 만든  라이언 유리공예 </span></div>
-					<div class='infoPosition iconContainer'>
-						<div><img id='icon' src='${pageContext.request.contextPath }/img/hand-right.svg'>
-						<span> 조회수 999 명 </span></div>
-						<div><img id='icon' src='${pageContext.request.contextPath }/img/brush.svg'>
-						<span> 리뷰수 77 개 </span></div>
-						<div><img id='icon' src='${pageContext.request.contextPath }/img/like.svg'>
-						<span> 구독자 650 명 </span></div>
-					</div>
-					<div id="button-boundary"></div>
-					<div class='infoPosition'><span> 남은 시간 </span><span id="auctionTime"> ${remainTimeText}</span></div>
-					<div class='infoPosition infoBold'>
-						<span class='smallText'> &lt; 2019/08/21 08:15 입찰 &gt;</span>
-						<span id='price'> &nbsp;&nbsp;5 0, 0 0 0 원</span>
-					</div>
-					
-					<div id="button-boundary"></div>
-					
-					<div class='infoPosition' id="buy_sub_container">
-						<div id='buttonContainer'>
-							<div id='buyButton'>
-								<span>입 찰</span>
-							</div>
-							<div id='subButton'>
-								<span style='font-size:13px'><i class="far fa-heart"></i></span><span> 구 독 </span>
+				<img id="auctionImg" src="${pageContext.request.contextPath }/auction/img?a_pk=1">
+				<div id="chartContainer">
+					<div id="auctionChart"></div>
+				</div>
+				<div class="auctionInfoContainer">
+					<div id="auctionInfo">
+						<div class='infoPosition infoBold'><span> ${auction.a_title } </span></div>
+						<div class='infoPosition'><span> 작가 이름 </span></div>				
+						<div class='infoPosition'>
+							<div class='infoButton'><span> 작가 페이지 </span></div> <div class='infoButton'><span>메시지 문의</span></div>
+						</div>
+						<div id="button-boundary"></div>
+						
+						
+						<div class='infoPosition'>
+							<div class='infoButton' id="chartBtn"><span> 실시간 차트 </span></div>
+						</div>
+						
+						<div id="button-boundary"></div>
+						<div class='infoPosition'><span> ${auction.c_category } </span></div>
+						<div class='infoPosition'><span> ${auction.a_comment }</span></div>
+						<div class='infoPosition iconContainer'>
+							<div><img id='icon' src='${pageContext.request.contextPath }/img/hand-right.svg'>
+							<span> 조회수 ${auction.a_readCount } 명 </span></div>
+							<div><img id='icon' src='${pageContext.request.contextPath }/img/like.svg'>
+							<span> 구독자 650 명 </span></div>
+						</div>
+						<div id="button-boundary"></div>
+						<div class='infoPosition'><span> 종료 시간 </span><span id="auctionTime"> ${auction.a_remainText}</span></div>
+						<div class='infoPosition'></div>
+						<div class='infoPosition infoBold'>
+							<span class='smallText'> &lt; 2019/08/21 08:15 입찰 &gt;</span>
+							<span id='price'> &nbsp;&nbsp;5 0, 0 0 0 원</span>
+						</div>
+						
+						<div id="button-boundary"></div>
+						
+						<div class='infoPosition' id="buy_sub_container">
+							<div id='buttonContainer'>
+								<div id='buyButton'>
+									<span>입 찰</span>
+								</div>
+								<div id='subButton'>
+									<span style='font-size:13px'><i class="far fa-heart"></i></span><span> 구 독 </span>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -250,6 +387,8 @@
 					<div class='specPosition'><div class='specType'><span> s i z e </span></div><span> 200 * 150 * 150 (cm)</span></div>
 				</div>
 			</div>
+		</div>
+		<div id="biddingModal">
 		</div>
 	</div>
 </body>

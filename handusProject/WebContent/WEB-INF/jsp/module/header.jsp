@@ -42,6 +42,13 @@
 				opacity : '1'
 			})
 		})
+		
+		$("#menuAuction").on("click",function(){
+			location.href='${pageContext.request.contextPath}/auction/list'
+		})
+		$("#menuStudio").on("click",function(){
+			location.href='${pageContext.request.contextPath}/studio/list'
+		})
 	})
 </script>
 <div id="header">
