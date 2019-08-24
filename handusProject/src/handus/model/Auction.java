@@ -17,9 +17,16 @@ public class Auction {
 	private String a_comment;
 	private long a_remain;
 	private String a_remainText;
+	private int a_currentPrice;
 	
 	
 	
+	public int getA_currentPrice() {
+		return a_currentPrice;
+	}
+	public void setA_currentPrice(int a_currentPrice) {
+		this.a_currentPrice = a_currentPrice;
+	}
 	public Date getA_startTime() {
 		return a_startTime;
 	}
@@ -105,6 +112,7 @@ public class Auction {
 				+ a_startPrice + ", a_endPrice=" + a_endPrice + ", c_category=" + c_category + ", a_regDate="
 				+ a_regDate + ", a_startTime=" + a_startTime + ", a_endTime=" + a_endTime + ", a_readCount="
 				+ a_readCount + ", a_comment=" + a_comment + ", a_remain=" + a_remain + ", a_remainText=" + a_remainText
-				+ "]";
+				+ ", a_currentPrice=" + a_currentPrice + "]";
 	}
+	
 }
