@@ -10,8 +10,15 @@
 	
 	<select id="selectAuction" parameterType="int" resultType="auction">
 		select a_pk, m_pk_writer, a_title, a_startprice, a_endprice, c_category, a_regDate, a_starttime,
-			   a_endtime, a_readcount, a_comment, r_pk, a_subscribe
-		from AUCTION a JOIN CATEGORY c ON (a.c_pk = c.c_pk) where a_pk = #{a_pk}
+			   a_endtime, a_readcount, a_comment, r_pk, a_subscribe ,
+			   <!-- 최근 입찰 가격 가져오는 서브쿼리 -->
+			   ( select ag_bidding 
+          		   from (select /*+ INDEX_DESC (ag AUCTION_GRAPH_PK)*/
+                			 rownum rn, ag_bidding
+			   					from AUCTION_GRAPH ag
+			   						where a_pk = 1 ORDER BY AG_PK DESC)
+                   											where rn = 1 ) as a_currentprice
+		from AUCTION a JOIN CATEGORYNAME c ON (a.c_pk = c.c_pk)  where a_pk = #{a_pk}
 	</select>
 	
 	<select id="selectAuctionImagePath" parameterType="int" resultType="map">
@@ -19,6 +26,11 @@
 	</select>
 	
 	<select id="selectAuctionGraphData" parameterType="int" resultType="int">
-		select AG_BIDDING from AUCTION_GRAPH where a_pk = #{a_pk}
+		select AG_BIDDING from AUCTION_GRAPH where a_pk = #{a_pk} order by ag_bidding
 	</select>
+	
+	<insert id="insertBidding" parameterType="int">
+		insert into AUCTION_GRAPH (AG_PK, M_PK_USER, AG_BIDDING, A_pK) 
+			values (AUCTION_GRAPH_SEQ.NEXTVAL, 10050, #{bidPrice}, #{a_pk} )
+	</insert>
 </mapper>
