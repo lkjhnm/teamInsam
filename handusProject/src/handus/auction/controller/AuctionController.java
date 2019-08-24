@@ -1,19 +1,22 @@
 package handus.auction.controller;
 
+import org.springframework.http.MediaType;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import handus.auction.service.AuctionService;
 
@@ -23,6 +26,9 @@ public class AuctionController {
 	
 	@Autowired
 	private AuctionService auctionService;
+	
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
 	
 	@RequestMapping(value="/list",method= RequestMethod.GET)
 	public String auctionList(Model model) {
@@ -57,4 +63,14 @@ public class AuctionController {
 		return graphData;
 	}
 	
+	@RequestMapping(value="/bidding",method=RequestMethod.POST
+					,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public String auctionBidding(int a_pk, int bidPrice) {
+		
+		String dataAfterBid = auctionService.biddingAuction(a_pk, bidPrice);
+		messagingTemplate.convertAndSend("/subscribe/bidding", dataAfterBid);
+		
+		return dataAfterBid;
+	}
 }

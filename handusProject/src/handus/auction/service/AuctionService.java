@@ -58,17 +58,53 @@ public class AuctionService {
 	}
 	
 	public String getAuctionGraphData(int a_pk) {
+		Gson gson = new Gson();
+		List<JsonObject> objectList = new ArrayList<>();
+		
+		makeGraphData(objectList,a_pk);
+		
+		return gson.toJson(objectList);
+	}
+	
+	
+	public String biddingAuction(int a_pk, int bidPrice) {
+		
 		List<Integer> graphData = auctionDao.selectAuctionGraphData(a_pk);
+		int lastData = graphData.get(graphData.size()-1);
 		
 		Gson gson = new Gson();
 		List<JsonObject> objectList = new ArrayList<>();
 		
+		if(bidPrice > lastData) {
+			boolean result = auctionDao.insertBidding(a_pk, bidPrice);
+			JsonObject object = new JsonObject();
+			object.addProperty("result", result);
+			objectList.add(object);
+			
+			if(result) {
+				makeGraphData(objectList,a_pk);
+			}else {
+				object.addProperty("msg", "서버상의 오류로 입찰에 실패했습니다.");
+			}
+		}else {
+			JsonObject object = new JsonObject();
+			object.addProperty("result", false);
+			object.addProperty("msg", "최고가 보다 낮은 금액은 입찰이 불가능합니다.");
+			objectList.add(object);
+		}
+		
+		return gson.toJson(objectList);
+	}
+	
+	private void makeGraphData(List<JsonObject> objectList, int a_pk){
+		
+		List<Integer> graphData = auctionDao.selectAuctionGraphData(a_pk);
 		for(int i=0; i<graphData.size(); i++) {
 			JsonObject object = new JsonObject();
 			if(i == 0) {
-				object.addProperty("markerType","cross");
+				object.addProperty("markerType","triangle");
 			}else if(i == graphData.size()-1) {
-				object.addProperty("markerType", "triangle");
+				object.addProperty("markerType", "cross");
 			}else {
 				object.addProperty("markerType", "none");
 			}
@@ -76,6 +112,5 @@ public class AuctionService {
 			object.addProperty("y", graphData.get(i));
 			objectList.add(object);
 		}
-		return gson.toJson(objectList);
 	}
 }

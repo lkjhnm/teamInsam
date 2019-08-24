@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -129,7 +130,12 @@
 		cursor:pointer;
 	}
 /* 	아이템 디테일 및 스펙  */
-	
+	.currentPrice{
+		
+	}
+	#auctionInfoPrice{
+		letter-spacing: 5px;
+	}
 	#detailContainer{
 		height: 400px;
 		display:flex;
@@ -183,6 +189,7 @@
 		top:50%;
 		left:50%;
 		transform:translate(-50%, -50%);
+		z-index: 103;
 	}
 	.infoButton:hover{
 		cursor:pointer;
@@ -192,22 +199,164 @@
 /* 	모달 */
 	#biddingModal{
 		width:600px;
-		height:300px;
-		background-color: white;
-		position:fixed;
-		top:50%;
-		left:50%;
+		height:200px;
+		background-color: #EBE9E5;
+		position:absolute;
+		top: 525px;
+		left:1500px;
 		transform:translate(-50%, -50%);
+		box-shadow : rgba(0,0,0,0.5) 0 0 0 9999px;
+	}
+	#modalTitle{
+		font-size: 18px;
+		border-bottom: 1px solid #707070;
+		padding: 10px 10px 10px 30px;
+	}
+	#modalContainer{
+		width:100%;
+		height: 1000px;
+		position :fixed;
+		top:0;
+		left:0;
 		display:none;
+		z-index:101;
+	}
+	.modalPosition{
+		width: 100%;
+		margin: 10px;
+	}
+	#modalBody{
+		width: 90%;
+		height: 125px;
+		margin: 0 auto;
+		border-bottom: 1px solid #707070;
+	}
+	#modalClose{
+		position: absolute;
+		top:5px;
+		right:10px;
+	}
+	#modalClose:hover{
+		cursor:pointer;
+	}
+	#bidButton{
+		width: 200px;
+		height: 35px;
+		position: absolute;
+		border: 1px solid #707070;
+		background-color: #191919;
+		color: #fff;
+		bottom: 35px;
+		right: 30px;
+		text-align: center;
+		line-height: 35px;
+	}
+	#bidContainer{
+		position:absolute;
+		bottom: 35px;
+		left: 30px;
+		width: 340px;
+		display:flex;
+		justify-content: initial;
+	}
+	#bidInput{
+		width: 150px;
+		height: 33px;
+		border-top:0;
+		border-left:0;
+		border-right:0;
+		border-bottom:1px solid #707070;
+		text-align: center;
+		background-color: inherit;
+	}
+	#bidInput:hover{
+		cursor:pointer;
+	}
+	.priceBtn{
+		width: 40px;
+		height:35px;
+		font-size: 25px;
+		font-weight:600;
+		text-align: center;
+		line-height: 35px;
+	}
+	.priceBtn:hover{
+		cursor:pointer;
+		color: #ff1d43;
+	}
+	#modalBoundary{
+		height:10px;
+	}
+	#calculate{
+		width: 230px;
+		height: 235px;
+		background-color: #EBE9E5;
+		border: 1px solid #191919;
+		position:absolute;
+		top:355px;
+		left: 1500px;
+		z-index: 106; 
+		display:none;
+	}
+	#calculateTitle{
+		height: 40px;
+		font-size: 15px;
+		font-weight: 600;
+		text-align: center;
+		line-height: 40px;
+		border-bottom: 1px solid #707070;
+	}
+	#unitButtonBox{
+		height: 125px;
+		display: flex;
+		justify-content: initial;
+		flex-wrap: wrap;
+	}
+	.unitButton{
+		width: 85px;
+		height: 25px;
+		background-color: #dbdbdb;
+		color: #191919;
+		border: 1px solid #707070;
+		margin: 10px auto;
+		text-align: center;
+		line-height: 25px;
+		font-size: 13px;
+	}
+	.unitButton:hover{
+		cursor: pointer;
+	}
+	#setButtonBox{
+		height: 60px;
+	}
+	#setButton{
+		width: 90px;
+		height: 30px;
+		margin: 25px auto;
+		background-color: #191919;
+		color:#fff;
+		text-align: center;
+		line-height: 30px;
+	}
+	#setButton:hover{
+		cursor:pointer;
+	}
+	#bidButton:hover{
+		cursor:pointer;
 	}
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="${pageContext.request.contextPath }/js/sockjs.js"></script>
+<script src="${pageContext.request.contextPath }/js/stomp.js"></script>
 <script>
+	var dps;
+	var chart;
 	$(function(){
 		var chartShow = false;
 		var modalShow = false;
-		var dps;
+		var calculateShow = false;
+		var increments = 1000;
 		
 		var formatDate = ${auction.a_remain}
 		setTimeout(() => {
@@ -220,9 +369,25 @@
 			}, 1000)	
 		}, 1000 - new Date().getMilliseconds());
 		
-		var i = 80000;
-		var xval = 13;
-		$("#chartBtn").on("click",function(){
+		$("#chartBtn").on("click",showChart)
+		
+		$("#buyButton").on("click",function(){
+			if(!modalShow && !chartShow){
+				$("#modalContainer").show();
+				showChart();
+			}else if(!modalShow && chartShow){
+				$("#modalContainer").show();
+			}
+			modalShow = !modalShow
+		})
+			
+		$("#modalClose").on("click",function(e){
+			$("#modalContainer").hide();
+			showChart();
+			modalShow = !modalShow
+		})
+		
+		function showChart(){
 			if(!chartShow){
 				//옥션 그래프 데이터 요청
 				$.ajax({
@@ -231,17 +396,16 @@
 					type : 'get',
 					dataType: "json",
 					success: function(data){
+						$(".currentPrice").text(comma(data[data.length - 1].y))
 						dps = data;
-						makeChart(dps)
+						
+						$("#chartContainer").fadeIn(1000)
+						$("#auctionImg").animate({
+							opacity: '0.1'
+						},500)
+						makeChart(dps);
 					}
-				})
-				
-				$("#chartContainer").fadeIn(1000)
-				i= i+5000;
-				$("#auctionImg").animate({
-					opacity: '0.1'
-				},500)
-				
+				})	
 			}else{
 				$("#chartContainer").fadeOut(500)
 				$("#auctionImg").animate({
@@ -249,21 +413,71 @@
 				},500)
 			}
 			chartShow = !chartShow
+		}
+		
+		$("#bidInput").on("click",function(){
+			if(!calculateShow){
+				$("#calculate").show()
+			}else{
+				$("#calculate").hide()
+			}
+			calculateShow = !calculateShow
 		})
 		
-		$("#buyButton").on("click",function(){
-			if(!modalShow){
-				$("#biddingModal").fadeIn();
-			}else{
-				$("#biddingModal").fadeOut();
-			}
-			modalShow = !modalShow
+		$(".unitButton").on("click",function(){
+			$(this).css({
+				'color' : "#ff1d43",
+				'border-color' :"#ff1d43"
+			})
+			$(this).addClass("checked")
+			
+			$(this).siblings().css({
+				'color': "#191919",
+				'border-color':"#707070"
+			})
+			$(this).siblings().removeClass("checked")
+		})
+		
+		$("#setButton").on("click",function(){
+			increments = $("#unitButtonBox").children(".checked").children("input").val()
+			$("#calculate").hide()
+			calculateShow = false;
+		})
+		
+		$("#minusBtn").on("click",function(){
+			var nowVal = Number($("#bidInput").val()) - Number(increments);
+			$("#bidInput").val(nowVal)
+		})
+		$("#plusBtn").on("click",function(){
+			var nowVal = Number($("#bidInput").val()) + Number(increments);
+			$("#bidInput").val(nowVal)
+		})
+		
+// 		입찰 
+		$("#bidButton").on("click",function(){
+			$.ajax({
+				url: "bidding",
+				type : "post",
+				data : {"bidPrice": $("#bidInput").val(), "a_pk": "${auction.a_pk}"},
+				dataType: "json",
+				success: function(data){
+					var result = data[0].result
+					
+					if(result){
+						data.shift()
+						makeChart(data)
+						$(".currentPrice").text(comma(data[data.length - 1].y))
+					}else{
+						alert(data[0].msg)
+					}
+				}
+			})
 		})
 	})
-	
+// 	윈도우 온로드 종료  --------------------------------------------------------------
 	function makeChart(dps){
 		
-		var chart = new CanvasJS.Chart("auctionChart",{
+		chart = new CanvasJS.Chart("auctionChart",{
 			animationEnabled : true,
 			backgroundColor:"transparent",
 			 axisX:{
@@ -310,6 +524,38 @@
 
         return days +"일 "+ hours + ":" + minutes + ":" + seconds;
     }
+	
+	function comma(num){
+	    var len, point, str; 
+	       
+	    num = num + ""; 
+	    point = num.length % 3 ;
+	    len = num.length; 
+	   
+	    str = num.substring(0, point); 
+	    while (point < len) { 
+	        if (str != "") str += ","; 
+	        str += num.substring(point, point + 3); 
+	        point += 3; 
+	    } 
+	  
+	    return str +"원";
+	}
+	
+// 	웹소켓
+	
+	var sock;
+	var stompClient;
+	
+	function connect(){
+		sock = new SockJS("${pageContext.request.contextPath}/connect");
+		stompClient = Stomp.over(sock);
+		stompClient.connect({},function(){
+			stompClient.subscribe("/subscribe/bidding",function(data){
+				console.log(data)
+			})
+		})
+	}
 </script>
 </head>
 <body>
@@ -351,7 +597,9 @@
 						<div class='infoPosition'></div>
 						<div class='infoPosition infoBold'>
 							<span class='smallText'> &lt; 2019/08/21 08:15 입찰 &gt;</span>
-							<span id='price'> &nbsp;&nbsp;5 0, 0 0 0 원</span>
+							<span class='currentPrice' id="auctionInfoPrice"> 
+								<fmt:formatNumber value="${auction.a_currentPrice }" pattern="#,###원"/>
+							</span>
 						</div>
 						
 						<div id="button-boundary"></div>
@@ -359,7 +607,7 @@
 						<div class='infoPosition' id="buy_sub_container">
 							<div id='buttonContainer'>
 								<div id='buyButton'>
-									<span>입 찰</span>
+									입 찰
 								</div>
 								<div id='subButton'>
 									<span style='font-size:13px'><i class="far fa-heart"></i></span><span> 구 독 </span>
@@ -388,7 +636,41 @@
 				</div>
 			</div>
 		</div>
-		<div id="biddingModal">
+		<div id="modalContainer">
+			<div id="biddingModal">
+				<div class='infoBold' id="modalTitle"><div id="modalClose">x</div> <span>${auction.a_title }</span> </div>
+				<div id="modalBody">
+					<div class='modalPosition'>
+						<div><span>시작 가격 : <fmt:formatNumber value="${auction.a_startPrice }" pattern="#,###원"/></span></div>
+						<div id='modalBoundary'></div>
+						<div><span>최고 가격 : </span><span class='currentPrice'> 
+							<fmt:formatNumber value="${auction.a_currentPrice }" pattern="#,###원"/></span>
+						</div>
+					</div>
+				</div>
+				<div id="bidContainer">
+					<div class='priceBtn' id="minusBtn"> - </div>
+					<input id="bidInput" type="number" name="bidding" readonly="readonly" min="${auction.a_currentPrice }" 
+						value="${auction.a_currentPrice }">
+					<div class='priceBtn' id="plusBtn"> + </div>
+					
+				</div>
+				<div id="bidButton">입 찰</div>
+			</div>
+			<div id="calculate">
+				<div id="calculateTitle"> 입력 단위 설정 </div>
+				<div id="unitButtonBox">
+					<div class='unitButton'> + 1천 <input type="hidden" value="1000"/></div>
+					<div class='unitButton'> + 5천 <input type="hidden" value="5000"/></div>
+					<div class='unitButton'> + 1만 <input type="hidden" value="10000"/></div>
+					<div class='unitButton'> + 10만 <input type="hidden" value="100000"/></div>
+					<div class='unitButton'> + 100만 <input type="hidden" value="1000000"/></div>
+					<div class='unitButton'> + 1000만 <input type="hidden" value="10000000"/></div>
+				</div>
+				<div id="setButtonBox">
+					<div id="setButton"> 설 정 </div>				
+				</div>
+			</div>
 		</div>
 	</div>
 </body>
