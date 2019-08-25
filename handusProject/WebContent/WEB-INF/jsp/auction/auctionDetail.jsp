@@ -206,6 +206,7 @@
 		left:1500px;
 		transform:translate(-50%, -50%);
 		box-shadow : rgba(0,0,0,0.5) 0 0 0 9999px;
+		border: 2px solid #191919;
 	}
 	#modalTitle{
 		font-size: 18px;
@@ -292,6 +293,7 @@
 		height: 235px;
 		background-color: #EBE9E5;
 		border: 1px solid #191919;
+		border-radius: 5px;
 		position:absolute;
 		top:355px;
 		left: 1500px;
@@ -301,7 +303,7 @@
 	#calculateTitle{
 		height: 40px;
 		font-size: 15px;
-		font-weight: 600;
+		font-weight: 1000;
 		text-align: center;
 		line-height: 40px;
 		border-bottom: 1px solid #707070;
@@ -396,7 +398,7 @@
 					type : 'get',
 					dataType: "json",
 					success: function(data){
-						$(".currentPrice").text(comma(data[data.length - 1].y))
+						$(".currentPrice").text(" " +comma(data[data.length - 1].y))
 						dps = data;
 						
 						$("#chartContainer").fadeIn(1000)
@@ -458,21 +460,26 @@
 			$.ajax({
 				url: "bidding",
 				type : "post",
-				data : {"bidPrice": $("#bidInput").val(), "a_pk": "${auction.a_pk}"},
+				data : {"ag_bidding": $("#bidInput").val() , 
+						"a_pk": "${auction.a_pk}",
+						"m_pk_user" : "10050"					// %Q 유저부분 수정
+						},
 				dataType: "json",
 				success: function(data){
-					var result = data[0].result
+// 					var result = data[0].result			%Q 입찰 성공과 실패 알람 어떻게할지 고민하기
 					
-					if(result){
-						data.shift()
-						makeChart(data)
-						$(".currentPrice").text(comma(data[data.length - 1].y))
-					}else{
-						alert(data[0].msg)
-					}
+// 					if(result){
+// 						data.shift();
+// 						makeChart(data);
+// 						$(".currentPrice").text(comma(data[data.length - 1].y))
+// 					}else{
+// 						alert(data[0].msg)
+// 					}
 				}
 			})
 		})
+		
+		connect();
 	})
 // 	윈도우 온로드 종료  --------------------------------------------------------------
 	function makeChart(dps){
@@ -500,9 +507,9 @@
 				  },
 			data: [{
 				type: "line",
-				color:'#ff1d43',
+				color:'blue',
 				lineThickness : 5,
-				markerColor: "blue",
+				markerColor: "red",
 				markerSize: 10,
 				dataPoints: dps
 			}]
@@ -551,8 +558,21 @@
 		sock = new SockJS("${pageContext.request.contextPath}/connect");
 		stompClient = Stomp.over(sock);
 		stompClient.connect({},function(){
-			stompClient.subscribe("/subscribe/bidding",function(data){
-				console.log(data)
+			stompClient.subscribe("/subscribe/bidding/${auction.a_pk}",function(webSocketData){		// %Q 아이디 추가해서 alert 개별적으로 동작하게끔
+				var data = JSON.parse(webSocketData.body);
+				
+				if(data[0].result){
+					$("#bidTime").text("< " + data[0].regDate + " >")
+					data.shift()
+					makeChart(data);
+					$(".currentPrice").text(comma(data[data.length - 1].y))
+					$(".currentPrice").css("color","#ff1d43")
+					setTimeout(() => {
+						$(".currentPrice").css("color","#544a4a")
+					},2000)
+				}else{
+					alert(data[0].msg)
+				}
 			})
 		})
 	}
@@ -596,12 +616,14 @@
 						<div class='infoPosition'><span> 종료 시간 </span><span id="auctionTime"> ${auction.a_remainText}</span></div>
 						<div class='infoPosition'></div>
 						<div class='infoPosition infoBold'>
-							<span class='smallText'> &lt; 2019/08/21 08:15 입찰 &gt;</span>
+							<span class='smallText' id="bidTime">
+								 &lt; <fmt:formatDate value="${auction.ag_regDate }" pattern="yyyy/MM/dd kk:mm 입찰" /> &gt; 
+							</span>
+							&nbsp;
 							<span class='currentPrice' id="auctionInfoPrice"> 
 								<fmt:formatNumber value="${auction.a_currentPrice }" pattern="#,###원"/>
 							</span>
 						</div>
-						
 						<div id="button-boundary"></div>
 						
 						<div class='infoPosition' id="buy_sub_container">

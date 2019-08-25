@@ -18,9 +18,15 @@ public class Auction {
 	private long a_remain;
 	private String a_remainText;
 	private int a_currentPrice;
+	private Date ag_regDate;
 	
 	
-	
+	public Date getAg_regDate() {
+		return ag_regDate;
+	}
+	public void setAg_regDate(Date ag_regDate) {
+		this.ag_regDate = ag_regDate;
+	}
 	public int getA_currentPrice() {
 		return a_currentPrice;
 	}
