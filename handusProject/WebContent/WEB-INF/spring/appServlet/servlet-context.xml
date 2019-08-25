@@ -15,7 +15,7 @@
 	
 	<mvc:annotation-driven />
 	
-	<context:component-scan base-package="handus.**.*"/>
+	<context:component-scan base-package="handus.*.controller"/>
 	
 	<mvc:resources location="/WEB-INF/resources/img/" mapping="/img/**"/>
 	<mvc:resources location="/WEB-INF/resources/js/" mapping="/js/**"/>

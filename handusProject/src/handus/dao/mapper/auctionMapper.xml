@@ -10,15 +10,18 @@
 	
 	<select id="selectAuction" parameterType="int" resultType="auction">
 		select a_pk, m_pk_writer, a_title, a_startprice, a_endprice, c_category, a_regDate, a_starttime,
-			   a_endtime, a_readcount, a_comment, r_pk, a_subscribe ,
+			   a_endtime, a_readcount, a_comment, r_pk, a_subscribe , a_currentprice, ag_regdate
+			   
+		from AUCTION a JOIN CATEGORYNAME c ON (a.c_pk = c.c_pk),
 			   <!-- 최근 입찰 가격 가져오는 서브쿼리 -->
-			   ( select ag_bidding 
-          		   from (select /*+ INDEX_DESC (ag AUCTION_GRAPH_PK)*/
-                			 rownum rn, ag_bidding
+				( select ag_bidding as a_currentprice, ag_regdate
+          		   from (select /*+ INDEX (ag AG_BIDDING_INDEX)*/
+                			 rownum rn, ag_bidding ,ag_regdate
 			   					from AUCTION_GRAPH ag
-			   						where a_pk = 1 ORDER BY AG_PK DESC)
-                   											where rn = 1 ) as a_currentprice
-		from AUCTION a JOIN CATEGORYNAME c ON (a.c_pk = c.c_pk)  where a_pk = #{a_pk}
+			   						where a_pk = #{a_pk})
+                   								where rn = 1 )   
+			
+		where a_pk = #{a_pk}
 	</select>
 	
 	<select id="selectAuctionImagePath" parameterType="int" resultType="map">
@@ -29,8 +32,15 @@
 		select AG_BIDDING from AUCTION_GRAPH where a_pk = #{a_pk} order by ag_bidding
 	</select>
 	
+	<select id="selectAuctionRegDate" parameterType="int" resultType="date">
+		select ag_regdate from AUCTION_GRAPH where ag_pk = #{ag_pk}
+	</select>
+	
 	<insert id="insertBidding" parameterType="int">
+		<selectKey order="BEFORE" keyProperty="ag_pk" resultType="int" >
+			select AUCTION_GRAPH_SEQ.NEXTVAL from dual
+		</selectKey>
 		insert into AUCTION_GRAPH (AG_PK, M_PK_USER, AG_BIDDING, A_pK) 
-			values (AUCTION_GRAPH_SEQ.NEXTVAL, 10050, #{bidPrice}, #{a_pk} )
+			values ( #{ag_pk}, #{m_pk_user}, #{ag_bidding}, #{a_pk} )
 	</insert>
 </mapper>
