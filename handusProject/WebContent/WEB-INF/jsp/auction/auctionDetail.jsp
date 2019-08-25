@@ -34,6 +34,20 @@
 		top: 0;
 		left: 0;
 	}
+	#thumnailContainer{
+		width: 92px;
+		height: 600px;
+		position:absolute;
+		left: 805px;
+		top: 110px;
+		z-index: 104;
+	}
+	.thumnail{
+		width: 90px;
+		height: 90px;
+		background-color: #fff;
+		margin-top: 10px;
+	}
 	#auctionInfo{
 		width: 500px;
 		height: 850px;
@@ -405,12 +419,18 @@
 						$("#auctionImg").animate({
 							opacity: '0.1'
 						},500)
+						$(".thumnail").animate({
+							opacity: '0.1'
+						},500)
 						makeChart(dps);
 					}
 				})	
 			}else{
 				$("#chartContainer").fadeOut(500)
 				$("#auctionImg").animate({
+					opacity: '1'
+				},500)
+				$(".thumnail").animate({
 					opacity: '1'
 				},500)
 			}
@@ -544,7 +564,7 @@
 	        if (str != "") str += ","; 
 	        str += num.substring(point, point + 3); 
 	        point += 3; 
-	    } 
+	    }
 	  
 	    return str +"원";
 	}
@@ -586,6 +606,14 @@
 		<div id="main">
 			<div id="auctionInfoBox">
 				<img id="auctionImg" src="${pageContext.request.contextPath }/auction/img?a_pk=1">
+				<div id="thumnailContainer">
+					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+				</div>
 				<div id="chartContainer">
 					<div id="auctionChart"></div>
 				</div>
