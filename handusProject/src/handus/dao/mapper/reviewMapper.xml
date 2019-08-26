@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="handus.dao.ReviewDao">
+	<insert id="insertRS" parameterType="int">
+		insert into REVIEW_STUDIO 
+    	( RS_PK, RS_M_PK, RS_M_NAME, RS_M_ID, RS_GRADE, RS_CONTENT, RS_S_PK )
+    	values (MEMBER_SEQ.NEXTVAL, #{m_id}, #{m_password}, #{m_name}, #{m_email}, #{m_phonenum}, #{m_address} )
+	</insert>
+	<update id="updateRS" parameterType="int">
+		update REVIEW_STUDIO
+		set M_PASSWORD = #{m_password}, M_NAME = #{m_name}, M_ADDRESS = 3{M_ADDRESS} 
+		where M_PK = #{m_pk} 
+	</update>
+	<delete id="deleteRS" parameterType="int">
+		delete from REVIEW_STUDIO
+		where M_PK = #{m_pk} 
+	</delete>
+	<select id="selectAllRS" resultMap="rsMap">
+		select * from REVIEW_STUDIO 
+	</select>
+	<resultMap type="reviewStudio" id="rsMap">
+		<result column="RS_PK" property="rs_pk"/>
+		<result column="RS_M_PK" property="rs_m_pk"/>
+		<result column="RS_M_NAME" property="rs_m_name"/>
+		<result column="RS_M_ID" property="rs_m_id"/>
+		<result column="RS_GRADE" property="rs_grade"/>
+		<result column="RS_CONTENT" property="rs_content"/>
+		<result column="RS_S_PK" property="rs_s_pk"/>
+	</resultMap>
+</mapper>

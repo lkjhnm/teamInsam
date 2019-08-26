@@ -236,7 +236,15 @@
 		margin-left: 20px;
 		margin-right: 100px;
 	}
-	
+	.reviewWrite{
+		display: inline-block;
+		width: 125px;
+		height: 20px;
+		padding:5px;
+		text-align:center;
+		border: 1px solid #707070;
+		float: right;
+	}
 }
 </style>
 <script
@@ -260,6 +268,13 @@
 		});
 		$(".close").on("click", function () {
 			$("#modalContainer").hide("slow");
+		});
+		// 리뷰 남기기 클릭시 해당 회원이 구매했는지 안했는지 확인 
+		$(".reviewWrite").on("click", function () {
+			var member = '세션의 회원정보, 회원 번호 필요';
+			alert(member);
+			// ajax로 확인요청 
+			
 		});
 	});
 </script>
@@ -349,24 +364,23 @@
 			<!-- 리뷰 -->
 			<div id="reviewContiner">
 				<div class="reviewTitle"><span> S T U D I O &nbsp;&nbsp; R E V I E W </span></div>
-				<div class="reviewWrite"><span> $리뷰 남기기 </span></div>
 				<div id="reviewBox">
 					<div class='reviewPosition'>
-							<div class='reviewType'><span> </span></div>
-							<span> </span>
-						</div>
-						<div class='reviewPosition'>
-							<div class='reviewType'><span> m e m b e r &nbsp; n a m e </span></div>
-							<span> $리뷰 내용 </span>
-						</div>
-						<div class='reviewPosition'>
-							<div class='reviewType'><span> m e m b e r &nbsp; n a m e </span></div>
-							<span> $리뷰 내용 </span>
-						</div>
-						<div class='reviewPosition'>
-							<div class='reviewType'><span> m e m b e r &nbsp; n a m e </span></div>
-							<span> $리뷰 내용 </span>
-						</div>
+						<div class='reviewWrite'><span> $리뷰 남기기 </span></div>
+<!-- 							<div class="reviewWrite"><span> $리뷰 남기기 </span></div> -->
+					</div>
+					<div class='reviewPosition'>
+						<div class='reviewType'><span> m e m b e r &nbsp; n a m e </span></div>
+						<span> $리뷰 내용 </span>
+					</div>
+					<div class='reviewPosition'>
+						<div class='reviewType'><span> m e m b e r &nbsp; n a m e </span></div>
+						<span> $리뷰 내용 </span>
+					</div>
+					<div class='reviewPosition'>
+						<div class='reviewType'><span> m e m b e r &nbsp; n a m e </span></div>
+						<span> $리뷰 내용 </span>
+					</div>
 				</div>
 			</div>
 		</div>
