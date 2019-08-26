@@ -41,6 +41,7 @@ public class StudioService implements IStudioService {
 	}
 	@Override
 	public Studio getStudioByNum(int stuNum) {
+//		System.out.println(studioDao.selectStudioByNum(stuNum).getC_category());
 		return studioDao.selectStudioByNum(stuNum);
 	}
 	@Override

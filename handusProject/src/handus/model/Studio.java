@@ -18,6 +18,35 @@ public class Studio {
 	private int s_read_count;
 	private String s_content;
 	private String s_comment;
+	private String m_name;
+	private String c_category;
+	private int rs_count;
+	private int hs_count;
+	
+	public String getM_name() {
+		return m_name;
+	}
+	public void setM_name(String m_name) {
+		this.m_name = m_name;
+	}
+	public String getC_category() {
+		return c_category;
+	}
+	public void setC_category(String c_category) {
+		this.c_category = c_category;
+	}
+	public int getRs_count() {
+		return rs_count;
+	}
+	public void setRs_count(int rs_count) {
+		this.rs_count = rs_count;
+	}
+	public int getHs_count() {
+		return hs_count;
+	}
+	public void setHs_count(int hs_count) {
+		this.hs_count = hs_count;
+	}
 	public int getS_pk() {
 		return s_pk;
 	}
@@ -114,12 +143,15 @@ public class Studio {
 				+ ", s_location=" + s_location + ", s_category=" + s_category + ", s_regdate=" + s_regdate
 				+ ", s_updatedate=" + s_updatedate + ", s_maximum=" + s_maximum + ", s_current=" + s_current
 				+ ", s_classstart=" + s_classstart + ", s_classend=" + s_classend + ", s_read_count=" + s_read_count
-				+ ", s_content=" + s_content + ", s_comment=" + s_comment + ", getS_pk()=" + getS_pk()
-				+ ", getS_title()=" + getS_title() + ", getM_pk_writer()=" + getM_pk_writer() + ", getS_price()="
-				+ getS_price() + ", getS_location()=" + getS_location() + ", getS_category()=" + getS_category()
-				+ ", getS_regdate()=" + getS_regdate() + ", getS_updatedate()=" + getS_updatedate()
-				+ ", getS_maximum()=" + getS_maximum() + ", getS_current()=" + getS_current() + ", getS_classstart()="
-				+ getS_classstart() + ", getS_classend()=" + getS_classend() + ", getS_read_count()="
-				+ getS_read_count() + ", getS_content()=" + getS_content() + ", getS_comment()=" + getS_comment() + "]";
+				+ ", s_content=" + s_content + ", s_comment=" + s_comment + ", m_name=" + m_name + ", c_category="
+				+ c_category + ", rs_count=" + rs_count + ", hs_count=" + hs_count + ", getM_name()=" + getM_name()
+				+ ", getC_category()=" + getC_category() + ", getRs_count()=" + getRs_count() + ", getHs_count()="
+				+ getHs_count() + ", getS_pk()=" + getS_pk() + ", getS_title()=" + getS_title() + ", getM_pk_writer()="
+				+ getM_pk_writer() + ", getS_price()=" + getS_price() + ", getS_location()=" + getS_location()
+				+ ", getS_category()=" + getS_category() + ", getS_regdate()=" + getS_regdate() + ", getS_updatedate()="
+				+ getS_updatedate() + ", getS_maximum()=" + getS_maximum() + ", getS_current()=" + getS_current()
+				+ ", getS_classstart()=" + getS_classstart() + ", getS_classend()=" + getS_classend()
+				+ ", getS_read_count()=" + getS_read_count() + ", getS_content()=" + getS_content()
+				+ ", getS_comment()=" + getS_comment() + "]";
 	}
 }
