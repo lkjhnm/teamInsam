@@ -162,16 +162,25 @@
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
 $(function () {
-	// 하트를 누르면 
-	$(".heart").on("click", function () {
-		$(this).toggleClass("far");
-		$(this).toggleClass("fas");
+	checkHeart();
+	$("#imgChange").on("click", function () {
+		// 하트가 클릭되면 해당 게시글 번호를 받아와서 구독중인지 아닌지 검사
+		// 결과에 따라 onHeart 또는 offHeart 실행 
+		
 	});
 });
-function subOn() {
+// 해당 멤버가 좋아요를 하고 있는지 아닌지 검사하는 함수 
+function checkHeart() {
 	
 };
-
+// 좋아요
+function onHeart() {
+	
+};
+// 좋아요 취소
+function offHeart() {
+	
+};
 </script>
 </head>
 <body>

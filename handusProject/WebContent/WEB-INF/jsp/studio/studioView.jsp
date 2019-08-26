@@ -7,6 +7,7 @@
 <title>Handus Studio:Detail</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/handus.css" />
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&display=swap" rel="stylesheet">
 <style>
 	body{
 		font-family: 'Hepta Slab', serif;
@@ -71,6 +72,10 @@
 		text-align:center;
 		border: 1px solid #707070;
 	}
+	.infoButton:hover{
+		background-color: #191919;
+		color: #FBF9F6; 
+	}
 	.personnel{
 		display: inline-block;
 		width: 200px;
@@ -89,7 +94,7 @@
 	#price{
 		font-size: 24px;
 	}
-	#buyButton, #cartButton {
+	#reservButton, #cartButton {
 		width: 300px;
 		height: 45px;
 		border : 1px solid #707070;
@@ -151,12 +156,113 @@
 		display:inline-block;
 		width: 150px;
 	}
-	#auctionTime{
-		margin-left: 15px;
-		font-weight:600;
-		font-size: 19px;
+	.locPosition{
+		width:100%;
+		margin-top:15px;
 	}
+	.locType{
+		display:inline-block;
+		width: 150px;
+	}
+/* 	#auctionTime{ */
+/* 		margin-left: 15px; */
+/* 		font-weight:600; */
+/* 		font-size: 19px; */
+/* 	} */
+
+/* 		모달 		*/
+	#modalContainer{
+		display: none;
+		width: 500px;
+		height: 700px;
+		border: 1px solid black;
+		position: fixed;
+		background-color: #ffff;
+		padding: 20px;
+	}
+	.calendarBox, .weatherBox{
+		width: 450px;
+		height: 300px;
+		border: 1px solid black;
+		margin: 0 auto;
+		margin-bottom: 20px;
+	}
+	.close, .reservation{
+		width: 200px;
+		height: 45px;
+		border : 1px solid #707070;
+		text-align: center;
+/* 		background-color : #191919; */
+		color:#191919;
+		display: table-cell;
+		vertical-align: middle;
+		margin: 20px auto;
+	}
+	.reservation{
+		background-color: #191919;
+		color: #ffff;
+/* 		margin-right: 40px; */
+	}
+	#mapBox{
+		display: inline-block;
+		width: 500px;
+		height: 350px;
+		background-color: #ffff;
+		margin-top: 10px;
+		margin-bottom: 30px;
+		border: none;
+	}
+	
+/* 		리뷰 		*/
+	#reviewContiner{
+		margin: 200px auto;
+		margin-bottom: 100px;
+		width: 1300px;
+	}
+	.reviewTitle{
+		font-size: 45px;
+		font-weight: bold;
+		font-family: 'Roboto Slab', serif;
+	}
+	.reviewPosition{
+		display:inline-block;
+		width:100%;
+		border-bottom: 1px solid #707070;
+		padding: 40px;
+	}
+	.reviewType{
+		display:inline-block;
+		width: 150px;
+		margin-left: 20px;
+		margin-right: 100px;
+	}
+	
+}
 </style>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+<script type="text/javascript">
+	$(function () {
+		// 작가 페이지, 메세지 문의 이동 
+		$("#autherPage").on("click", function () {
+			alert("작가페이지 이동");
+		});
+		$("#messagePage").on("click", function () {
+			alert("메세지 창");
+		});
+		// 예약 클릭시 모달 띄우기 
+		$("#reservButton").on("click", function () {
+			$("#modalContainer").css("top","18%");
+			$("#modalContainer").css("left","60%");
+			$("#modalContainer").show("slow");
+		});
+		$(".close").on("click", function () {
+			$("#modalContainer").hide("slow");
+		});
+	});
+</script>
 </head>
 <body>
 	<div class='container'>
@@ -168,26 +274,26 @@
 				<img id="studioImg">
 				<div id="studioInfo">
 					<div class='infoPosition infoBold'><span>${studio.s_title }</span></div>
-					<div class='infoPosition'><span>${member.m_name }</span></div>				
+					<div class='infoPosition'><span>${studio.m_name }</span></div>				
 					<div class='infoPosition'>
-						<div class='infoButton'><span> $작가 페이지 </span></div> <div class='infoButton'><span>메시지 문의</span></div>
+						<div class='infoButton' id="autherPage"><span> 작가 페이지 </span></div> <div class='infoButton' id="messagePage"><span>메시지 문의</span></div>
 					</div>
 <!-- 					<div id="button-boundary"></div> -->
 					
 					<div class='infoPosition'>
-						<div class='personnel'><span> $현재인원 / $최대인원 </span></div>
+						<div class='personnel'><span> ${studio.s_current }명 /  ${studio.s_maximum }명 </span></div>
 					</div>
 					
 					<div id="button-boundary"></div>
-					<div class='infoPosition'><span>${studio.s_category }카테고리</span></div>
+					<div class='infoPosition'><span>${studio.c_category }</span></div>
 					<div class='infoPosition'><span>${studio.s_comment } </span></div>
 					<div class='infoPosition iconContainer'>
 						<div><img id='icon' src='${pageContext.request.contextPath }/img/hand-right.svg'>
 						<span> 조회수 ${studio.s_read_count } 명 </span></div>
 						<div><img id='icon' src='${pageContext.request.contextPath }/img/brush.svg'>
-						<span> 리뷰수 77 개 </span></div>
+						<span> 리뷰수 ${studio.rs_count } 개 </span></div>
 						<div><img id='icon' src='${pageContext.request.contextPath }/img/like.svg'>
-						<span> 구독자 650 명 </span></div>
+						<span> 좋아요 ${studio.hs_count } 회 </span></div>
 					</div>
 					<div id="button-boundary"></div>
 					<div class='infoPosition infoBold'>
@@ -195,14 +301,14 @@
 						<span id='price'> &nbsp;&nbsp;5 0, 0 0 0 원</span>
 					</div>
 					
-					<div id="button-boundary"></div>
+<!-- 					<div id="button-boundary"></div> -->
 					
 					<div class='infoPosition' id="buy_sub_container">
 						<div id='buttonContainer'>
 							<div id='cartButton'>
 								<span><a> My Cart </a></span>
 							</div>
-							<div id='buyButton'>
+							<div id='reservButton'>
 								<span><a> Reservation </a></span>
 							</div>
 							<div id='subButton'>
@@ -210,6 +316,15 @@
 							</div>
 						</div>
 					</div>
+				</div>
+			</div>
+			<!-- 예약 페이지 모달창 -->
+			<div id="modalContainer">
+				<div id="modalBox">
+					<div class="calendarBox"><span> $달력API </span></div>
+					<div class="weatherBox"><span> $날씨API </span></div>
+					<div class="reservation"><span> reservation </span></div>
+					<div class="close"><span> close </span></div>
 				</div>
 			</div>
 			<!-- 설명, 규격 -->
@@ -228,10 +343,32 @@
 					<div class='infoBold'><span>STUDIO LOCATION</span></div>
 					<div class='specPosition'><div class='specType'><span> s t u d i o </span></div><span> HAND STUDIO </span></div>
 					<div class='specPosition'><div class='specType'><span> a d d r e s s </span></div><span> ${studio.s_location } </span></div>
-					<div class='specPosition'><div class='specType'><span> l o c a t i o n </span></div><span> $지도 API </span></div>
+					<div class='locPosition'><div class='locType'><span> l o c a t i o n </span></div><div id="mapBox"><span> $지도 API </span></div></div>
 				</div>
 			</div>
 			<!-- 리뷰 -->
+			<div id="reviewContiner">
+				<div class="reviewTitle"><span> S T U D I O &nbsp;&nbsp; R E V I E W </span></div>
+				<div class="reviewWrite"><span> $리뷰 남기기 </span></div>
+				<div id="reviewBox">
+					<div class='reviewPosition'>
+							<div class='reviewType'><span> </span></div>
+							<span> </span>
+						</div>
+						<div class='reviewPosition'>
+							<div class='reviewType'><span> m e m b e r &nbsp; n a m e </span></div>
+							<span> $리뷰 내용 </span>
+						</div>
+						<div class='reviewPosition'>
+							<div class='reviewType'><span> m e m b e r &nbsp; n a m e </span></div>
+							<span> $리뷰 내용 </span>
+						</div>
+						<div class='reviewPosition'>
+							<div class='reviewType'><span> m e m b e r &nbsp; n a m e </span></div>
+							<span> $리뷰 내용 </span>
+						</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>
