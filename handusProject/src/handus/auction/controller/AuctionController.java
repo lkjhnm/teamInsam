@@ -3,12 +3,17 @@ package handus.auction.controller;
 import org.springframework.http.MediaType;
 import java.io.IOException;
 
-
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -69,7 +74,17 @@ public class AuctionController {
 		
 		String dataAfterBid = auctionService.biddingAuction(ag);
 		simpMessagingTemplate.convertAndSend("/subscribe/bidding/"+ag.getA_pk(), dataAfterBid);
-		
+		System.out.println(simpMessagingTemplate);
 		return dataAfterBid;
+	}
+	
+	@RequestMapping(value="/alarm", method=RequestMethod.GET)
+	public String auctionAlarm(int a_pk,boolean a_end) {
+		if(a_end) {
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "경매종료");
+		}else {
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "1시간 남았습니다.");
+		}
+		return null;
 	}
 }
