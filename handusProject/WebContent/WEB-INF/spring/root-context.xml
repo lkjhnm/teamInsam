@@ -46,4 +46,12 @@
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 		<property name="mapperInterface" value="handus.dao.MemberDao"></property>
   	</bean>
+  	<bean id="heartDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+		<property name="mapperInterface" value="handus.dao.HeartDao"></property>
+  	</bean>
+  	<bean id="reviewDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+		<property name="mapperInterface" value="handus.dao.ReviewDao"></property>
+  	</bean>
 </beans>
