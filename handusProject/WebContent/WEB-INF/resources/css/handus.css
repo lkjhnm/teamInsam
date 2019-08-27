@@ -138,21 +138,24 @@ html,body{
 	top:0;
 	left:0;
 	background-color: #FBF9F6;
-	z-index:98;
+	z-index:150;
 }
 #menuContainer{
 	width: 30%;
 	position: absolute;
-	right: 15%;
+	right: 22%;
 	bottom:7%;
 	display:flex;
 	justify-content: space-around;
 }
 #headerTitle{
 	position:absolute;
-	left:10%;
+	left:5%;
 	bottom:0;	
 	font-size:40px;
+}
+#headerTitle:hover{
+	cursor:pointer;
 }
 .menuLink{
 	font-size:20px;
@@ -160,3 +163,15 @@ html,body{
 .menuLink:hover{
 	cursor:pointer;
 }
+#iconContainer{
+	position:absolute;
+	right: 6%;
+	bottom: 7%;
+	width: 150px;
+	display:flex;
+	justify-content: space-between;
+}
+#iconContainer span:hover{
+	cursor:pointer;
+}
+
