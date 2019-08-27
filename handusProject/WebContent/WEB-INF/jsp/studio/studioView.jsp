@@ -93,6 +93,7 @@
 	}
 	#price{
 		font-size: 24px;
+		letter-spacing: 10px;
 	}
 	#reservButton, #cartButton {
 		width: 300px;
@@ -252,13 +253,61 @@
   integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
   crossorigin="anonymous"></script>
 <script type="text/javascript">
+	var memberNum = 1;				// 회원 번호 
+	var studioNum = ${studio.s_pk};	// 게시글 번호
+	var isHeart = false;			// 구독중인지 판별
 	$(function () {
+		// 해당 회원이 게시글에 대해 좋아요를 눌렀는지 확인 후 하트 클래스 추가/삭제
+		heartCheck();
+		
 		// 작가 페이지, 메세지 문의 이동 
 		$("#autherPage").on("click", function () {
 			alert("작가페이지 이동");
 		});
 		$("#messagePage").on("click", function () {
 			alert("메세지 창");
+		});
+		// 구독(하트) 버튼 누르기
+		$("#subButton").on("click", function () {
+			if(isHeart){
+				// 까만하트 -> 구독 취소 후 빈 하트
+				$.ajax({
+					url: "${pageContext.request.contextPath}/heart/offHeart",
+					data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
+					type: "post",
+					success: function (result) {
+						if(result){
+							drawFar();
+							isHeart = false;
+						}else{
+							alert("구독취소 불가");
+						}
+					},
+					error: function () {
+						alert("offHeart에러");
+					}
+				});
+			}else{
+				// 빈하트 -> 구독 후 까만 하트 
+				$.ajax({
+					url: "${pageContext.request.contextPath}/heart/onHeart",
+					data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
+					type: "post",
+					success: function (result) {
+						if(result){
+							drawFas();
+							isHeart = true;
+						}else{
+							alert("구독 불가");
+						}
+					},
+					error: function () {
+						alert("onHeart에러");
+					}
+				});
+			}
+			// 바뀐 좋아요 수 다시 표기하기 
+			drawHeartCount();
 		});
 		// 예약 클릭시 모달 띄우기 
 		$("#reservButton").on("click", function () {
@@ -271,12 +320,51 @@
 		});
 		// 리뷰 남기기 클릭시 해당 회원이 구매했는지 안했는지 확인 
 		$(".reviewWrite").on("click", function () {
-			var member = '세션의 회원정보, 회원 번호 필요';
-			alert(member);
+			alert(memberNum);
 			// ajax로 확인요청 
 			
 		});
 	});
+	function heartCheck() {
+		$.ajax({
+			url: "${pageContext.request.contextPath}/heart/chekHeart",
+			data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
+			type: "post",
+			success: function (result) {
+				if(result){
+					// 까만 하트 
+					drawFas();
+					isHeart = true;
+				}else{
+					// 빈 하트 
+				}
+			},
+			error: function () {
+				alert("하트체크예외");
+			}
+		});
+	};
+	function drawFar() {
+		$("i").removeClass("fas");
+		$("i").addClass("far");
+	};
+	function drawFas() {
+		$("i").removeClass("far");
+		$("i").addClass("fas");
+	};
+	function drawHeartCount() {
+		$.ajax({
+			url: "${pageContext.request.contextPath}/heart/countHeart",
+			data: {"sNum":${studio.s_pk}},
+			type: "post",
+			success: function (data) {
+				$("#heartCount").text(data);
+			},
+			error: function () {
+				alert("갯수예외");
+			}
+		});
+	};
 </script>
 </head>
 <body>
@@ -304,16 +392,16 @@
 					<div class='infoPosition'><span>${studio.s_comment } </span></div>
 					<div class='infoPosition iconContainer'>
 						<div><img id='icon' src='${pageContext.request.contextPath }/img/hand-right.svg'>
-						<span> 조회수 ${studio.s_read_count } 명 </span></div>
+						<span> 조회수 ${studio.s_read_count } 회 </span></div>
 						<div><img id='icon' src='${pageContext.request.contextPath }/img/brush.svg'>
-						<span> 리뷰수 ${studio.rs_count } 개 </span></div>
+						<span> 리뷰수 <span id="reviewCount">${studio.rs_count }</span> 개 </span></div>
 						<div><img id='icon' src='${pageContext.request.contextPath }/img/like.svg'>
-						<span> 좋아요 ${studio.hs_count } 회 </span></div>
+						<span> 좋아요 <span id="heartCount">${studio.hs_count }</span> 명 </span></div>
 					</div>
 					<div id="button-boundary"></div>
 					<div class='infoPosition infoBold'>
 <!-- 						<span class='smallText'> &lt; 2019/08/21 08:15 입찰 &gt;</span> -->
-						<span id='price'> &nbsp;&nbsp;5 0, 0 0 0 원</span>
+						<span id='price'> &nbsp;&nbsp;${studio.s_price }원</span>
 					</div>
 					
 <!-- 					<div id="button-boundary"></div> -->

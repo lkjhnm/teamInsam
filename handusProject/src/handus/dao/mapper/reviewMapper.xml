@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="handus.dao.ReviewDao">
-	<insert id="insertRS" parameterType="int">
+	<insert id="insertRS" parameterType="reviewStudio">
 		insert into REVIEW_STUDIO 
     	( RS_PK, RS_M_PK, RS_M_NAME, RS_M_ID, RS_GRADE, RS_CONTENT, RS_S_PK )
-    	values (MEMBER_SEQ.NEXTVAL, #{m_id}, #{m_password}, #{m_name}, #{m_email}, #{m_phonenum}, #{m_address} )
+    	values (RS_SEQ.NEXTVAL, #{rs_m_pk}, #{rs_m_name}, #{rs_m_id}, #{rs_grade}, #{rs_content}, #{rs_s_pk} )
 	</insert>
-	<update id="updateRS" parameterType="int">
+	<update id="updateRS" parameterType="reviewStudio">
 		update REVIEW_STUDIO
-		set M_PASSWORD = #{m_password}, M_NAME = #{m_name}, M_ADDRESS = 3{M_ADDRESS} 
-		where M_PK = #{m_pk} 
+		set RS_CONTENT = #{rs_content}  
+		where RS_PK = #{rs_pk} 
 	</update>
 	<delete id="deleteRS" parameterType="int">
 		delete from REVIEW_STUDIO
-		where M_PK = #{m_pk} 
+		where RS_PK = #{rs_pk} 
 	</delete>
 	<select id="selectAllRS" resultMap="rsMap">
 		select * from REVIEW_STUDIO 

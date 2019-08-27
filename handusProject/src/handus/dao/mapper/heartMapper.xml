@@ -1,30 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="handus.dao.HeartDao">
-	<insert id="insertMember" parameterType="int">
-		insert into MEMBER 
-    	( M_PK, M_ID, M_PASSWORD, M_NAME, M_EMAIL, M_PHONENUM, M_ADDRESS )
-    	values (MEMBER_SEQ.NEXTVAL, #{m_id}, #{m_password}, #{m_name}, #{m_email}, #{m_phonenum}, #{m_address} )
+	<insert id="insertHS" parameterType="heartStudio">
+		insert into HEART_STUDIO
+		( HS_PK, HS_M_PK, HS_S_PK )
+		values (HS_SEQ.NEXTVAL, #{hs_m_pk}, #{hs_s_pk})
 	</insert>
-	<update id="updateMember" parameterType="int">
-		update MEMBER
-		set M_PASSWORD = #{m_password}, M_NAME = #{m_name}, M_ADDRESS = 3{M_ADDRESS} 
-		where M_PK = #{m_pk} 
-	</update>
-	<delete id="deleteMember" parameterType="int">
-		delete from MEMBER
-		where M_PK = #{m_pk} 
+<!-- 	<update id="updatdHS" parameterType="heartStudio"> -->
+<!-- 	</update> -->
+	<delete id="deleteHS" parameterType="heartStudio">
+		delete from HEART_STUDIO 
+		where HS_M_PK = #{hs_m_pk} AND HS_S_PK = #{hs_s_pk}
 	</delete>
-	<select id="selectByID" parameterType="String" resultMap="memberMap">
-		select * from MEMBER
-		where M_ID = #{m_id} 
+<!-- 	<select id="selectByMemberNum" parameterType="int" resultMap="hsMap"> -->
+<!-- 		select * from HEART_STUDIO -->
+<!-- 		where HS_M_PK = #{hs_m_pk}  -->
+<!-- 	</select> -->
+	<select id="selectHSCount" parameterType="int" resultType="int">
+		select count(*) from HEART_STUDIO
+		where HS_S_PK = #{hs_s_pk} 
 	</select>
-	<select id="selectByNum" parameterType="int" resultMap="memberMap">
-		select * from MEMBER
-		where M_PK = #{m_pk} 
+	<select id="isHeartStudio" parameterType="heartStudio" resultType="int">
+		select count(HS_PK) as isHeart from HEART_STUDIO
+		where HS_M_PK = #{hs_m_pk} AND HS_S_PK = #{hs_s_pk}
 	</select>
-	<select id="selectAllMember" resultMap="memberMap">
-		select * from MEMBER
-	</select>
-	
+<!-- 	<select id="selectAllHsBymNum" parameterType="int" resultMap="hsMap"> -->
+<!-- 		select * from HEART_STUDIO		 -->
+<!-- 		where where HS_M_PK = #{hs_m_pk}  -->
+<!-- 	</select> -->
+	<resultMap type="heartStudio" id="hsMap">
+		<result column="HS_PK" property="hs_pk"/>
+		<result column="HS_M_PK" property="hs_m_pk"/>
+		<result column="HS_S_PK" property="hs_s_pk"/>
+	</resultMap>
 </mapper>
