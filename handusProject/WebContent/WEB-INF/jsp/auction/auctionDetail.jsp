@@ -41,7 +41,7 @@
 		position:absolute;
 		left: 805px;
 		top: 110px;
-		z-index: 104;
+		z-index: 103;
 	}
 	.thumnail{
 		width: 90px;
@@ -606,7 +606,7 @@
 </head>
 <body>
 	<div class='container'>
-		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
+<%-- 		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" /> --%>
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
 
 		<div id="main">

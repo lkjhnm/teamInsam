@@ -215,7 +215,7 @@
 </head>
 <body>
 	<div class="container">
-		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
+<%-- 		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" /> --%>
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
 		<div id="sideCategoryContainer">
 			<div id="sideGrid">

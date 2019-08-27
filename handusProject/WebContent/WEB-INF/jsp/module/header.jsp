@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
 <script type="text/javascript">
 	$(function(){
 		
@@ -49,6 +50,14 @@
 		$("#menuStudio").on("click",function(){
 			location.href='${pageContext.request.contextPath}/studio/list'
 		})
+		
+		$("#headerTitle").on("click",function(){
+			location.href="${pageContext.request.contextPath}/main"
+		})
+		
+		$("#loginHeader").on("click",function(){
+			location.href="${pageContext.request.contextPath}/member/login"
+		})
 	})
 </script>
 <div id="header">
@@ -60,4 +69,9 @@
 	<span id="headerTitle">
 		<i>Handus</i>
 	</span>
+	<div id="iconContainer">
+		<span id="loginHeader"><img src="${pageContext.request.contextPath }/img/header-icon-account.svg"></span>
+		<span id="subscribeHeader"><img src="${pageContext.request.contextPath }/img/header-icon-bookmark.svg"></span>
+		<span id="shoppingCartHeader"><img src="${pageContext.request.contextPath }/img/header-icon-cart.svg"></span>
+	</div>
 </div>

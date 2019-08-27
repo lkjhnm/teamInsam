@@ -37,7 +37,7 @@ public class AuctionProcessor implements ItemProcessor<Auction, Auction>{
 			item.setA_endPrice(endprice);
 			
 			return item;
-		}else if(remainTime > 0 && remainTime < anHour && !item.isA_alarm()) {
+		}else if((remainTime > 0 && remainTime < anHour) && !item.isA_alarm()) {
 			item.setA_alarm(true);
 			HttpGet get = new HttpGet("http://localhost:8081/handusProject/auction/alarm?a_pk="+item.getA_pk()+"&a_end="+item.isA_end());
 			httpClient.execute(get);
