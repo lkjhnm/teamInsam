@@ -9,7 +9,7 @@
 	</select>
 	
 	<select id="selectAuction" parameterType="int" resultType="auction">
-		select a_pk, m_pk_writer, a_title, a_startprice, a_endprice, c_category, a_regDate, a_starttime,
+		select a_pk, m_pk_writer, a_title, a_startprice, a_endprice, c_category, a_regDate, a_starttime, a_end,
 			   a_endtime, a_readcount, a_comment, r_pk, a_subscribe , a_currentprice, ag_regdate
 			   
 		from AUCTION a JOIN CATEGORYNAME c ON (a.c_pk = c.c_pk),

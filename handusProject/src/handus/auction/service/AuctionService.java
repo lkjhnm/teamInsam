@@ -9,7 +9,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -25,6 +33,7 @@ public class AuctionService {
 	@Autowired
 	private AuctionDao auctionDao;
 	
+		
 	public List<Auction> getAuctionList(){
 		return auctionDao.selectAuctionList();
 	}
@@ -46,8 +55,9 @@ public class AuctionService {
         String hours = (hour < 10) ? "0" + hour : hour+"";
         String minutes = (minute < 10) ? "0" + minute : minute+"";
         String seconds = (second < 10) ? "0" + second : second+"";
-		
-		return days +"일 "+ hours + ":" + minutes + ":" + seconds;
+		String day  = (days  < 1 ) ? "" : days+"일 ";
+        
+		return day + hours + ":" + minutes + ":" + seconds;
 	}
 	
 	public byte[] getAuctionImages(int a_pk) throws IOException {		//예외발생시 예외 이미지 주기
@@ -102,6 +112,11 @@ public class AuctionService {
 		return gson.toJson(objectList);
 	}
 	
+	public int getAuctionEndPrice(int a_pk){
+		List<Integer> graphData = auctionDao.selectAuctionGraphData(a_pk);
+		return graphData.get(graphData.size() - 1);
+	}
+	
 	private void makeGraphData(List<JsonObject> objectList, int a_pk){
 		
 		List<Integer> graphData = auctionDao.selectAuctionGraphData(a_pk);
@@ -119,4 +134,6 @@ public class AuctionService {
 			objectList.add(object);
 		}
 	}
+	
+	
 }

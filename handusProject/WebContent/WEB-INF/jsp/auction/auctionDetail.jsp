@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -108,7 +109,7 @@
 	#price{
 		font-size: 24px;
 	}
-	#buyButton{
+	.button{
 		width: 300px;
 		height: 45px;
 		border : 1px solid #707070;
@@ -548,8 +549,8 @@
         hours = (hours < 10) ? "0" + hours : hours;
         minutes = (minutes < 10) ? "0" + minutes : minutes;
         seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-        return days +"일 "+ hours + ":" + minutes + ":" + seconds;
+		days = (days < 1) ? "" : days+"일 ";
+        return days + hours + ":" + minutes + ":" + seconds;
     }
 	
 	function comma(num){
@@ -593,6 +594,11 @@
 				}else{
 					alert(data[0].msg)
 				}
+			})
+			
+			stompClient.subscribe("/subscribe/alarm/${auction.a_pk}",function(webSocketData){
+				var data = webSocketData.body;
+				alert(data);
 			})
 		})
 	}
@@ -641,12 +647,31 @@
 							<span> 구독자 650 명 </span></div>
 						</div>
 						<div id="button-boundary"></div>
-						<div class='infoPosition'><span> 종료 시간 </span><span id="auctionTime"> ${auction.a_remainText}</span></div>
+						<div class='infoPosition'>
+							<c:choose>
+								<c:when test="${auction.a_end }">
+									<span class="infoBold"> 이미 종료된 경매입니다. </span>									
+								</c:when>
+								<c:otherwise>
+									<span> 종료 시간 </span><span id="auctionTime"> ${auction.a_remainText}</span>
+								</c:otherwise>			
+							</c:choose>
+						</div>  
 						<div class='infoPosition'></div>
 						<div class='infoPosition infoBold'>
-							<span class='smallText' id="bidTime">
-								 &lt; <fmt:formatDate value="${auction.ag_regDate }" pattern="yyyy/MM/dd kk:mm 입찰" /> &gt; 
-							</span>
+							
+							<c:choose>
+								<c:when test="${auction.a_end }">
+									<span class='smallText' id="bidTime">
+										 &lt; <fmt:formatDate value="${auction.ag_regDate }" pattern="yyyy/MM/dd kk:mm 낙찰" /> &gt; 
+									</span>									
+								</c:when>
+								<c:otherwise>
+									<span class='smallText' id="bidTime">
+										 &lt; <fmt:formatDate value="${auction.ag_regDate }" pattern="yyyy/MM/dd kk:mm 입찰" /> &gt; 
+									</span>
+								</c:otherwise>			
+							</c:choose>
 							&nbsp;
 							<span class='currentPrice' id="auctionInfoPrice"> 
 								<fmt:formatNumber value="${auction.a_currentPrice }" pattern="#,###원"/>
@@ -656,12 +681,21 @@
 						
 						<div class='infoPosition' id="buy_sub_container">
 							<div id='buttonContainer'>
-								<div id='buyButton'>
-									입 찰
-								</div>
-								<div id='subButton'>
-									<span style='font-size:13px'><i class="far fa-heart"></i></span><span> 구 독 </span>
-								</div>
+								<c:choose>
+									<c:when test="${auction.a_end }">
+										<div class="button">
+											종 료
+										</div>
+									</c:when>
+									<c:otherwise>
+										<div class="button" id='buyButton'>
+											입 찰
+										</div>
+										<div id='subButton'>
+												<span style='font-size:13px'><i class="far fa-heart"></i></span><span> 구 독 </span>
+										</div>
+									</c:otherwise>
+								</c:choose>
 							</div>
 						</div>
 					</div>
@@ -705,7 +739,9 @@
 					<div class='priceBtn' id="plusBtn"> + </div>
 					
 				</div>
+
 				<div id="bidButton">입 찰</div>
+		
 			</div>
 			<div id="calculate">
 				<div id="calculateTitle"> 입력 단위 설정 </div>
