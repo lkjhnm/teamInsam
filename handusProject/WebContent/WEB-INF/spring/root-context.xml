@@ -10,6 +10,11 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
 	<context:component-scan base-package="handus.*.service"/>
+	<tx:annotation-driven transaction-manager="txManager"/>
+	
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
 	
 	<!-- connection pull : 속도를 빠르게 함 -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
@@ -17,6 +22,7 @@
 		<property name="jdbcUrl" value="jdbc:oracle:thin:@teaminsam.cee8wpcnffqv.ap-northeast-2.rds.amazonaws.com:1521:orcl"/>
 		<property name="username" value="insam"/>
 		<property name="password" value="insam123"/>
+		<property name="maximumPoolSize" value="20"></property>
 	</bean>
 	
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
@@ -27,6 +33,20 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="mapperLocations" value="classpath:handus/dao/mapper/*"/>
 		<property name="typeAliasesPackage" value="handus.model"/>
+	</bean>
+	
+	<!-- 메일 SMTP -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com"/>
+		<property name="port" value="587"/>
+		<property name="username" value="handusCJA@gmail.com"/>
+		<property name="password" value="sd786486"/>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+			</props>
+		</property>
 	</bean>
 	
 	<!-- 스프링 Dao -->

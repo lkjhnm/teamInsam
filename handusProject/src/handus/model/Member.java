@@ -1,8 +1,9 @@
 package handus.model;
 
 import java.util.Date;
+import java.util.List;
 
-public class Member {
+public class Member{
 	private int m_pk;
 	private String m_id;
 	private String m_password;
@@ -12,7 +13,36 @@ public class Member {
 	private int m_enabled;
 	private Date m_regdate;
 	private String m_address;
+	private boolean m_eval;
+	private boolean m_pval;
+	private List<Auth> authList;
+	private List<MemberInterest> miList;
 	
+	
+	public List<MemberInterest> getMiList() {
+		return miList;
+	}
+	public void setMiList(List<MemberInterest> miList) {
+		this.miList = miList;
+	}
+	public List<Auth> getAuthList() {
+		return authList;
+	}
+	public void setAuthList(List<Auth> authList) {
+		this.authList = authList;
+	}
+	public boolean isM_eval() {
+		return m_eval;
+	}
+	public boolean isM_pval() {
+		return m_pval;
+	}
+	public void setM_eval(boolean m_eval) {
+		this.m_eval = m_eval;
+	}
+	public void setM_pval(boolean m_pval) {
+		this.m_pval = m_pval;
+	}
 	public int getM_pk() {
 		return m_pk;
 	}
@@ -71,10 +101,8 @@ public class Member {
 	public String toString() {
 		return "Member [m_pk=" + m_pk + ", m_id=" + m_id + ", m_password=" + m_password + ", m_name=" + m_name
 				+ ", m_email=" + m_email + ", m_phonenum=" + m_phonenum + ", m_enabled=" + m_enabled + ", m_regdate="
-				+ m_regdate + ", m_address=" + m_address + ", getM_pk()=" + getM_pk() + ", getM_id()=" + getM_id()
-				+ ", getM_password()=" + getM_password() + ", getM_name()=" + getM_name() + ", getM_email()="
-				+ getM_email() + ", getM_phonenum()=" + getM_phonenum() + ", getM_enabled()=" + getM_enabled()
-				+ ", getM_regdate()=" + getM_regdate() + ", getM_address()=" + getM_address() + "]";
+				+ m_regdate + ", m_address=" + m_address + ", m_eval=" + m_eval + ", m_pval=" + m_pval + ", authList="
+				+ authList + ", miList=" + miList + "]";
 	}
 	
 }

@@ -13,8 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import handus.member.service.MemberService;
 import handus.heart.service.IHeartService;
-import handus.member.service.IMemberService;
 import handus.model.HeartStudio;
 import handus.model.Studio;
 import handus.studio.service.IStudioService;
@@ -25,7 +25,7 @@ public class StudioController {
 	@Autowired
 	private IStudioService studioService;
 	@Autowired
-	private IMemberService memberService;
+	private MemberService memberService;
 	@Autowired
 	private IHeartService heartService;
 	

@@ -56,6 +56,9 @@
 		color: #fff;
 		border: none;
 	}
+	#buttonBox input:focus{
+		outline: none;
+	}
 	#buttonBox input:hover{
 		cursor:pointer;
 	}
@@ -104,15 +107,14 @@
 				L O G I N
 			</div>
 			<div id="loginContainer">
-				<form action="#" method="post">
+				<form action="login" method="post">
 					<div class='loginBox'>
-						<label> EMAIL 
-							<input type="text"></label>
+						<label> I D 
+							<input type="text" name="username"></label>
 					</div>
-					
 					<div class='loginBox'>
 						<label> PASSWORD  
-							<input type="password"></label></div>
+							<input type="password" name="password"></label></div>
 					<div id='buttonBox'>
 						<input type="submit" value="LOGIN">
 						<div id="apiButtonBox">

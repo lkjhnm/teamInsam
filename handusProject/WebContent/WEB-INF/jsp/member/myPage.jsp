@@ -10,8 +10,7 @@
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 </head>
 <body>
-	<div class='container'> <!-- 필수!! side,header는 필요에따라 추가 하면됩니다. -->
-<%-- 		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" /> --%>
+	<div class='container'>
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
 		
 		
