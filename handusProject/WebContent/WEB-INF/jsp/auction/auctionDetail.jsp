@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -235,7 +236,7 @@
 		top:0;
 		left:0;
 		display:none;
-		z-index:101;
+		z-index:150;
 	}
 	.modalPosition{
 		width: 100%;
@@ -366,6 +367,7 @@
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script src="${pageContext.request.contextPath }/js/sockjs.js"></script>
 <script src="${pageContext.request.contextPath }/js/stomp.js"></script>
+<sec:authorize access="isAnonymous()" var="isAnony"></sec:authorize>
 <script>
 	var dps;
 	var chart;
@@ -374,6 +376,7 @@
 		var modalShow = false;
 		var calculateShow = false;
 		var increments = 1000;
+		var isAnony = ${isAnony};
 		
 		var formatDate = ${auction.a_remain}
 		setTimeout(() => {
@@ -382,13 +385,17 @@
 			
 			setInterval(() => {
 				$("#auctionTime").text(msToTime(formatDate))
-				formatDate = formatDate - 1000;			
-			}, 1000)	
+				formatDate = formatDate - 1000;
+			}, 1000)
 		}, 1000 - new Date().getMilliseconds());
 		
 		$("#chartBtn").on("click",showChart)
 		
 		$("#buyButton").on("click",function(){
+			if(isAnony){
+				location.href='${pageContext.request.contextPath}/member/loginForm'
+				return;
+			}
 			if(!modalShow && !chartShow){
 				$("#modalContainer").show();
 				showChart();
@@ -483,7 +490,7 @@
 				type : "post",
 				data : {"ag_bidding": $("#bidInput").val() , 
 						"a_pk": "${auction.a_pk}",
-						"m_pk_user" : "10050"					// %Q 유저부분 수정
+						"m_pk_user" : "${m_pk}"					// %Q 유저부분 수정
 						},
 				dataType: "json",
 				success: function(data){
@@ -579,7 +586,7 @@
 		sock = new SockJS("${pageContext.request.contextPath}/connect");
 		stompClient = Stomp.over(sock);
 		stompClient.connect({},function(){
-			stompClient.subscribe("/subscribe/bidding/${auction.a_pk}",function(webSocketData){		// %Q 아이디 추가해서 alert 개별적으로 동작하게끔
+			stompClient.subscribe("/subscribe/bidding/${auction.a_pk}",function(webSocketData){
 				var data = JSON.parse(webSocketData.body);
 				
 				if(data[0].result){
@@ -591,12 +598,10 @@
 					setTimeout(() => {
 						$(".currentPrice").css("color","#544a4a")
 					},2000)
-				}else{
-					alert(data[0].msg)
 				}
 			})
 			
-			stompClient.subscribe("/subscribe/alarm/${auction.a_pk}",function(webSocketData){
+			stompClient.subscribe("/subscribe/alarm/${auction.a_pk}",function(webSocketData){	// 애를 개인 구독 페이지로 넘긴다.
 				var data = webSocketData.body;
 				alert(data);
 			})
@@ -606,7 +611,6 @@
 </head>
 <body>
 	<div class='container'>
-<%-- 		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" /> --%>
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
 
 		<div id="main">

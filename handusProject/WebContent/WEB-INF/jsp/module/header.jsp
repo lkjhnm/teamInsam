@@ -56,7 +56,7 @@
 		})
 		
 		$("#loginHeader").on("click",function(){
-			location.href="${pageContext.request.contextPath}/member/login"
+			location.href="${pageContext.request.contextPath}/member/loginForm"
 		})
 	})
 </script>
