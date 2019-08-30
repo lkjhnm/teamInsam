@@ -192,7 +192,7 @@
 				<form action="#" method="post" id="signForm"> 	<!-- 사인업 사인업 -->
 					<div class='signUpBox'>
 						<label> I D <span class='validate'>&nbsp;&nbsp;<i class="fas fa-check"></i></span>
-							<input type="text" id="m_id" name="m_id"></label>
+							<input type="text" id="m_id" name="m_id" autocomplete="off"></label>
 					</div>
 					<div class='signUpBox'>
 						<label> PASSWORD 
@@ -207,7 +207,7 @@
 					
 					<div class='signUpBox'>
 						<label> NAME
-							<input type="text" name="m_name"></label>
+							<input type="text" name="m_name" autocomplete="off"></label>
 					</div>
 					<div class='signUpBox'>
 						<label> EMAIL
@@ -225,7 +225,7 @@
 							<input id="zipCode" type="text" readonly="readonly" placeholder="Zip-code">					
 						<div>
 							<input id="address" type="text" readonly="readonly" placeholder="Address">		
-							<input id="address-detail" type="text"  placeholder="Detail">
+							<input id="address-detail" type="text"  placeholder="Detail" autocomplete="off">
 						</div>
 					</div>
 					

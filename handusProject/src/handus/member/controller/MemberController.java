@@ -24,7 +24,6 @@ public class MemberController {
 	public String handusLogin() {
 		return "member/login";
 	}
-	//로그인 포스트 작업 아직안함
 	
 	@RequestMapping(value="/signUp",method=RequestMethod.GET)
 	public String handusSignUp() {
@@ -79,5 +78,28 @@ public class MemberController {
 		boolean result = memberService.checkDuplicatedId(m_id);
 		
 		return result;
+	}
+	
+	@RequestMapping(value="/myPage", method=RequestMethod.GET)
+	public String myPage() {
+		
+		return "member/myPage";
+	}
+	
+	@RequestMapping(value="/oauth")
+	public String kakaoLogin(String code) {
+		System.out.println("값" + memberService.getAccessToken(code).asText());
+		return null;
+	}
+	
+	@RequestMapping(value="/token")
+	public String kakaoToken(String access_token, String token_type, String refresh_token, String expires_in, String scope) {
+		
+		System.out.println(access_token);
+		System.out.println(token_type);
+		System.out.println(refresh_token);
+		System.out.println(expires_in);
+		System.out.println(scope);
+		return null;
 	}
 }

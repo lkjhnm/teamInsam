@@ -28,13 +28,13 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 				.map(auth -> auth.getAuthority())
 				.anyMatch(auth -> auth.equals("ROLE_MEMBER_NV"));
 		
-		
 		if(!validate) {
 			String userid = authentication.getName();
 			Member mem = memberService.getMemberById(userid);
 			HttpSession session = request.getSession();
 			session.setAttribute("m_pk", mem.getM_pk());
-			response.sendRedirect("/handusProject/main");
+
+			response.sendRedirect("/handusProject/auction/list");
 		}else {
 			response.sendRedirect("signUpComplete");
 		}
