@@ -16,6 +16,7 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
+	<!-- connection pull : 속도를 빠르게 함 -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>	
 		<property name="jdbcUrl" value="jdbc:oracle:thin:@teaminsam.cee8wpcnffqv.ap-northeast-2.rds.amazonaws.com:1521:orcl"/>
@@ -64,5 +65,13 @@
   	<bean id="memberDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 		<property name="mapperInterface" value="handus.dao.MemberDao"></property>
+  	</bean>
+  	<bean id="heartDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+		<property name="mapperInterface" value="handus.dao.HeartDao"></property>
+  	</bean>
+  	<bean id="reviewDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+		<property name="mapperInterface" value="handus.dao.ReviewDao"></property>
   	</bean>
 </beans>
