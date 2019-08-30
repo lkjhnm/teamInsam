@@ -18,51 +18,30 @@
 	</delete>
 	<select id="selectStudioByNum" parameterType="int" resultMap="studioMap">
 		select S.S_PK, 
-		       S.M_PK_WRITER, 
-		       S.S_TITLE, 
-		       S.S_PRICE, 
-		       S.S_LOCATION, 
-		       S.S_CATEGORY, 
-		       S.S_REGDATE, 
-		       S.S_UPDATEDATE, 
-		       S.S_MAXIMUM, 
-		       S.S_CURRENT, 
-		       S.S_CLASSSTART, 
-		       S.S_CLASSEND, 
-		       S.S_READ_COUNT, 
-		       S.S_CONTENT, 
-		       S.S_COMMENT,  
-		       M.M_NAME, 
-		       C.C_CATEGORY, 
-		       count(RS_PK) as RS_COUNT,
-		       count(HS_PK) as HS_COUNT
-		from STUDIO S 
-		  JOIN MEMBER M 
-		  ON S.M_PK_WRITER = M.M_PK  
-		  JOIN CATEGORYNAME C 
-		  ON C.C_PK = S.S_CATEGORY 
-		  LEFT OUTER JOIN REVIEW_STUDIO RS
-		  ON RS.RS_S_PK = S.S_PK
-		  LEFT OUTER JOIN HEART_STUDIO HS
-		  ON HS.HS_S_PK = S.S_PK
-		where S.S_PK = #{s_pk}
-		group by S.S_PK, 
-		       S.M_PK_WRITER, 
-		       S.S_TITLE, 
-		       S.S_PRICE, 
-		       S.S_LOCATION, 
-		       S.S_CATEGORY, 
-		       S.S_REGDATE, 
-		       S.S_UPDATEDATE, 
-		       S.S_MAXIMUM, 
-		       S.S_CURRENT, 
-		       S.S_CLASSSTART, 
-		       S.S_CLASSEND, 
-		       S.S_READ_COUNT, 
-		       S.S_CONTENT, 
-		       S.S_COMMENT,  
-		       M.M_NAME, 
-		       C.C_CATEGORY 
+	       S.M_PK_WRITER, 
+	       S.S_TITLE, 
+	       S.S_PRICE, 
+	       S.S_LOCATION, 
+	       S.S_CATEGORY, 
+	       S.S_REGDATE, 
+	       S.S_UPDATEDATE, 
+	       S.S_MAXIMUM, 
+	       S.S_CURRENT, 
+	       S.S_CLASSSTART, 
+	       S.S_CLASSEND, 
+	       S.S_READ_COUNT, 
+	       S.S_CONTENT, 
+	       S.S_COMMENT, 
+	       M.M_NAME, 
+	       C.C_CATEGORY, 
+	       (select count(*) from REVIEW_STUDIO where S.S_PK = #{S_PK} ) as RS_COUNT, 
+	       (select count(*) from HEART_STUDIO where HS_S_PK = #{S_PK} )as HS_COUNT 
+	from STUDIO S 
+	  JOIN MEMBER M 
+	  ON S.M_PK_WRITER = M.M_PK  
+	  JOIN CATEGORYNAME C 
+	  ON C.C_PK = S.S_CATEGORY 
+	where S.S_PK = #{S_PK} 
 	</select>
 	<select id="selectStudioList" resultMap="studioMap">
 		select *  

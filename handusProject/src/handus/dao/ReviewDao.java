@@ -9,4 +9,5 @@ public interface ReviewDao {
 	public int updateRS(ReviewStudio review);
 	public int deleteRS(int num);
 	public List<ReviewStudio> selectAllRS();
+	public int selectRScount(int num);
 }
