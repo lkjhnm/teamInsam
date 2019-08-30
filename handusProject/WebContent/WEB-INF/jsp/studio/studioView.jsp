@@ -72,9 +72,10 @@
 		text-align:center;
 		border: 1px solid #707070;
 	}
-	.infoButton:hover{
-		background-color: #191919;
-		color: #FBF9F6; 
+	.infoButton:hover, .reviewButton:hover, .smallFont:hover{
+		cursor:pointer;
+		color: #ff1d43; 
+		border-color:#ff1d43;
 	}
 	.personnel{
 		display: inline-block;
@@ -105,6 +106,7 @@
 		display: table-cell;
 		vertical-align: middle;
 		margin-left: 100px;
+		cursor:pointer;
 	}
 	#subButton{
 		width:300px;
@@ -113,6 +115,7 @@
 		margin-top: 5px;
 		text-align: center;
 		line-height: 30px;
+		cursor:pointer;
 	}
 
 	#blank{
@@ -229,13 +232,16 @@
 		display:inline-block;
 		width:100%;
 		border-bottom: 1px solid #707070;
-		padding: 40px;
+		padding: 20px;
 	}
 	.reviewType{
 		display:inline-block;
 		width: 150px;
 		margin-left: 20px;
 		margin-right: 100px;
+		margin-top: 20px;
+		margin-bottom: 20px;
+		text-align: center;
 	}
 	.reviewWrite{
 		display: inline-block;
@@ -245,6 +251,61 @@
 		text-align:center;
 		border: 1px solid #707070;
 		float: right;
+		cursor: pointer;
+	}
+	#reviewInput{
+		display: none;  
+	}
+	.reviewButton{
+		display: inline-block;
+		width: 125px;
+		height: 20px;
+		padding:5px;
+		text-align:center;
+		border: 1px solid #707070;
+		float: right;
+		cursor: pointer;
+		margin-top: 22px;
+	}
+	.reviewDate{
+		font-size: 0.7em;
+		width: 90px;
+		text-align: center;
+		margin: 0 auto;
+		margin-top: 3px;
+	}
+	.reviewContent{
+		display: inline-block;
+		vertical-align: middle;
+	}
+	.starGrade{
+		display: inline-block;
+		width: 100px;
+		cursor: pointer;
+		margin-top: 8px;
+	}
+	.smallFont{
+/* 		display: inline-block; */
+		font-size: 0.9em;
+		margin: 0 auto;
+		margin-top: 5px;
+		padding: 3px;
+		border: 1px solid #707070;
+		width: 70px;
+	}
+	.reviewArea{
+		resize: none;
+		padding: 5px;
+		background-color: #ffff;
+		border: none;
+		overflow: auto;
+		outline: none;
+		box-shadow: none;
+		border-radius: 5px;
+	}
+	.reviewArea:focus, .reviewArea:hover {
+		border: 1px solid #FF1D43;
+		border-radius: 5px;
 	}
 }
 </style>
@@ -256,9 +317,15 @@
 	var memberNum = 1;				// 회원 번호 
 	var studioNum = ${studio.s_pk};	// 게시글 번호
 	var isHeart = false;			// 구독중인지 판별
+	var isLock = false;				
+	var isReview = true;			// 리뷰 남기기 창 (초기값: false)
 	$(function () {
 		// 해당 회원이 게시글에 대해 좋아요를 눌렀는지 확인 후 하트 클래스 추가/삭제
 		heartCheck();
+// 왜 HS_COUNT 가 자꾸 3으로 뜨는지 모르겟음 (DB에서 3으로 뜸... 확인해야함 )
+		drawHeartCount();
+		// 리뷰 그리기
+		drawReview();
 		
 		// 작가 페이지, 메세지 문의 이동 
 		$("#autherPage").on("click", function () {
@@ -277,8 +344,9 @@
 					type: "post",
 					success: function (result) {
 						if(result){
-							drawFar();
+							drawFarHeart();
 							isHeart = false;
+							drawHeartCount();
 						}else{
 							alert("구독취소 불가");
 						}
@@ -295,8 +363,9 @@
 					type: "post",
 					success: function (result) {
 						if(result){
-							drawFas();
+							drawFasHeart();
 							isHeart = true;
+							drawHeartCount();
 						}else{
 							alert("구독 불가");
 						}
@@ -306,8 +375,6 @@
 					}
 				});
 			}
-			// 바뀐 좋아요 수 다시 표기하기 
-			drawHeartCount();
 		});
 		// 예약 클릭시 모달 띄우기 
 		$("#reservButton").on("click", function () {
@@ -318,13 +385,78 @@
 		$(".close").on("click", function () {
 			$("#modalContainer").hide("slow");
 		});
-		// 리뷰 남기기 클릭시 해당 회원이 구매했는지 안했는지 확인 
+		// 리뷰 남기기
 		$(".reviewWrite").on("click", function () {
-			alert(memberNum);
-			// ajax로 확인요청 
-			
+			// ajax로 확인요청 후 맞으면 isReview = true 로 변경 
+			if(isReview){
+				$("#reviewInput").css("display", "block");
+				isReview = false;
+			}else{
+				$("#reviewInput").css("display", "none");
+				isReview = true;
+			}
 		});
-	});
+		$(".reviewArea").on("click", function () {
+			$(this).removeAttr("placeholder"); 
+		});
+		// (마우스온: isLock=false)
+		$(".starGrade span i").on("mouseover", function () {
+			if(!isLock){
+				// prevAll : 형제요소만 선택 가능 
+				$(this).parent().prevAll().children().removeClass("far").addClass("fas");
+				// <div> 의 span의 i 요소 선택 
+				$(this).removeClass("far").addClass("fas");
+			}
+		});
+		// (마우스아웃 isLock=false)
+		$(".starGrade span i").on("mouseout", function () {
+			if(!isLock){
+				$(this).parent().prevAll().children().removeClass("fas").addClass("far");
+				$(this).removeClass("fas").addClass("far");
+			}
+		});
+		// (마우스 클릭 isLock=true)
+		$(".starGrade span i").on("click", function () {
+			isLock = true;
+			if(isLock){
+				$(this).parent().prevAll().children().removeClass("far").addClass("fas");
+				$(this).removeClass("far").addClass("fas").attr("grade", "here");
+// 			var score = $("i[grade='here']").attr("data-value");
+// 			alert("점수: "+score);
+			}
+		});
+		// 별점수정 
+		$(".smallFont").on("click", function () {
+			isLock = false;
+			$(".starGrade span i").removeClass("fas").removeClass("far").addClass("far").removeAttr("grade");
+		});
+		// 리뷰 등록
+		$("#registerReview").on("click", function () {
+			// 해당 별의 점수 가져오기 
+			var score = $("i[grade='here']").attr("data-value");
+			var content = $("#writeContent").val();
+			$.ajax({
+				url: "${pageContext.request.contextPath}/review/writeReview",
+				data: {"mNum": memberNum,
+					"grade": score,
+					"content": content,
+					"sNum": studioNum
+				},
+				type: "post",
+				success: function (result) {
+					if(result){
+						alert("리뷰가 등록되었습니다");
+						drawReview();
+					}else{
+						alert("리뷰 등록 실패");
+					}
+				},
+				error: function () {
+					alert("리뷰 등록 에러");
+				}
+			});
+		});
+	});  // ------------------------------------- onload 끝 
 	function heartCheck() {
 		$.ajax({
 			url: "${pageContext.request.contextPath}/heart/chekHeart",
@@ -333,7 +465,7 @@
 			success: function (result) {
 				if(result){
 					// 까만 하트 
-					drawFas();
+					drawFasHeart();
 					isHeart = true;
 				}else{
 					// 빈 하트 
@@ -344,13 +476,13 @@
 			}
 		});
 	};
-	function drawFar() {
-		$("i").removeClass("fas");
-		$("i").addClass("far");
+	function drawFarHeart() {
+		$("i[data-what='heart']").removeClass("fas");
+		$("i[data-what='heart']").addClass("far");
 	};
-	function drawFas() {
-		$("i").removeClass("far");
-		$("i").addClass("fas");
+	function drawFasHeart() {
+		$("i[data-what='heart']").removeClass("far");
+		$("i[data-what='heart']").addClass("fas");
 	};
 	function drawHeartCount() {
 		$.ajax({
@@ -362,6 +494,52 @@
 			},
 			error: function () {
 				alert("갯수예외");
+			}
+		});
+	};
+	// 리뷰 그리기 
+	function drawReview() {
+		$("#reviewBox div:gt[1]").remove();
+		$.ajax({
+			url: "${pageContext.request.contextPath}/review/drawReview",
+			data: {"sNum":${studio.s_pk}},
+			type: "post",
+			success: function (data) {
+				var list = data;
+				// 리스트 만큼 돌면서 그리기 
+				for(var i = 0; i < list.length; i++){
+					var div1 = $("<div class='reviewPosition'></div>");
+					var div21 = $("<div class='reviewType'></div>");
+					div21.append($("<span></span>").text(list[i].rs_m_name));
+					div21.append($("<div class='reviewDate'></div>")
+							.append($("<span></span>").text(list[i].rs_reg_date)));
+					var div22 = $("<div class='reviewContent'></div>");
+					div22.append($("<span></span>").text(list[i].rs_content));
+					var btnSpan;
+					// 게시글 쓴 사람 번호 = 회원 번호 확인
+					if(memberNum==list[i].rs_m_pk){
+						// 삭제 버튼 
+						btnSpan = $("<span class='reviewButton'></span>").text("삭제");
+						(function (n) {
+							btnSpan.on("click", function () {
+								alert(list[n].rs_pk+" 삭제");
+							});
+						})(i);
+					}else{
+						// 신고 버튼
+						btnSpan = $("<span class='reviewButton'></span>").text("신고");
+						(function (n) {
+							btnSpan.on("click", function () {
+								alert(list[n].rs_pk+" 신고");
+							});
+						})(i);
+					}
+					div1.append(div21).append(div22).append(btnSpan);
+					$("#reviewBox").append(div1);
+				}
+			},
+			error: function () {
+				alert("리뷰 불러오기 에러");
 			}
 		});
 	};
@@ -408,14 +586,14 @@
 					
 					<div class='infoPosition' id="buy_sub_container">
 						<div id='buttonContainer'>
-							<div id='cartButton'>
-								<span><a> My Cart </a></span>
-							</div>
+<!-- 							<div id='cartButton'> -->
+<!-- 								<span><a> My Cart </a></span> -->
+<!-- 							</div> -->
 							<div id='reservButton'>
 								<span><a> Reservation </a></span>
 							</div>
 							<div id='subButton'>
-								<span style='font-size:13px'><i class="far fa-heart"></i></span><span> subscribe </span>
+								<span style='font-size:13px'><i class="far fa-heart" data-what="heart"></i></span><span> subscribe </span>
 							</div>
 						</div>
 					</div>
@@ -457,18 +635,33 @@
 						<div class='reviewWrite'><span> $리뷰 남기기 </span></div>
 <!-- 							<div class="reviewWrite"><span> $리뷰 남기기 </span></div> -->
 					</div>
-					<div class='reviewPosition'>
-						<div class='reviewType'><span> m e m b e r &nbsp; n a m e </span></div>
-						<span> $리뷰 내용 </span>
+					<!-- 후기 입력란  -->
+					<div class='reviewPosition' id="reviewInput">
+						<div class='reviewType'>
+							<span id="review-memberName"> m e m b e r &nbsp; n a m e </span>
+							<div class="starGrade">
+								<span style='font-size:12px'><i class="far fa-star" data-what="star" data-value='1'></i></span>
+								<span style='font-size:12px'><i class="far fa-star" data-what="star" data-value='2'></i></span>
+								<span style='font-size:12px'><i class="far fa-star" data-what="star" data-value='3'></i></span>
+								<span style='font-size:12px'><i class="far fa-star" data-what="star" data-value='4'></i></span>
+								<span style='font-size:12px'><i class="far fa-star" data-what="star" data-value='5'></i></span>
+							</div>
+							<div class="smallFont"><span> 별점수정 </span></div>
+						</div>
+<!-- 						<span> <input type="text" name="RS_CONTENT" class=""> </span> -->
+						<span> <textarea rows="4" cols="105" class="reviewArea" id="writeContent"></textarea> </span>
+						<span class="reviewButton" id="registerReview"> 등록 </span>
 					</div>
+					<!-- ajax로 그릴 부분  -->
 					<div class='reviewPosition'>
-						<div class='reviewType'><span> m e m b e r &nbsp; n a m e </span></div>
-						<span> $리뷰 내용 </span>
+						<div class='reviewType'>
+							<span> m e m b e r &nbsp; n a m e </span>
+							<div class='reviewDate'><span> 2019-XX-XX </span></div>
+						</div>
+						<div class="reviewContent"><span> $리뷰 내용 </span></div>
+						<span class="reviewButton" id="delDecReview"> 삭제 </span>
 					</div>
-					<div class='reviewPosition'>
-						<div class='reviewType'><span> m e m b e r &nbsp; n a m e </span></div>
-						<span> $리뷰 내용 </span>
-					</div>
+					
 				</div>
 			</div>
 		</div>

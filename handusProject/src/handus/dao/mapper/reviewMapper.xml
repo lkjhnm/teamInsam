@@ -3,8 +3,8 @@
 <mapper namespace="handus.dao.ReviewDao">
 	<insert id="insertRS" parameterType="reviewStudio">
 		insert into REVIEW_STUDIO 
-    	( RS_PK, RS_M_PK, RS_M_NAME, RS_M_ID, RS_GRADE, RS_CONTENT, RS_S_PK )
-    	values (RS_SEQ.NEXTVAL, #{rs_m_pk}, #{rs_m_name}, #{rs_m_id}, #{rs_grade}, #{rs_content}, #{rs_s_pk} )
+    	( RS_PK, RS_M_PK, RS_M_NAME, RS_GRADE, RS_CONTENT, RS_S_PK )
+    	values (RS_SEQ.NEXTVAL, #{rs_m_pk}, #{rs_m_name}, #{rs_grade}, #{rs_content}, #{rs_s_pk} )
 	</insert>
 	<update id="updateRS" parameterType="reviewStudio">
 		update REVIEW_STUDIO
@@ -26,5 +26,6 @@
 		<result column="RS_GRADE" property="rs_grade"/>
 		<result column="RS_CONTENT" property="rs_content"/>
 		<result column="RS_S_PK" property="rs_s_pk"/>
+		<result column="RS_REG_DATE" property="rs_reg_date"/>
 	</resultMap>
 </mapper>
