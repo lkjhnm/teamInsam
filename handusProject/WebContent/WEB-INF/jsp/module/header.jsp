@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
 <script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
+<sec:authorize access="isAnonymous()" var="isAnon"></sec:authorize>
 <script type="text/javascript">
 	$(function(){
 		
@@ -10,6 +12,7 @@
 		var indexL = url.indexOf('/',indexS+1)
 		var page = url.substring(indexS+1,indexL)
 		var headInter;
+		var isAnon = ${isAnon}
 		
 		switch(page){
 			case 'auction':
@@ -56,7 +59,11 @@
 		})
 		
 		$("#loginHeader").on("click",function(){
-			location.href="${pageContext.request.contextPath}/member/loginForm"
+			if(isAnon){
+				location.href="${pageContext.request.contextPath}/member/loginForm"
+			}else{
+				location.href="${pageContext.request.contextPath}/member/myPage"
+			}
 		})
 	})
 </script>
@@ -73,5 +80,6 @@
 		<span id="loginHeader"><img src="${pageContext.request.contextPath }/img/header-icon-account.svg"></span>
 		<span id="subscribeHeader"><img src="${pageContext.request.contextPath }/img/header-icon-bookmark.svg"></span>
 		<span id="shoppingCartHeader"><img src="${pageContext.request.contextPath }/img/header-icon-cart.svg"></span>
+		
 	</div>
 </div>

@@ -44,6 +44,9 @@
 		border-right: 0;
 		border-bottom: 1px solid;
 	}
+	.loginBox input:focus{
+		outline:none;
+	}
 	#buttonBox{
 		width: 500px;
 		height: 100px;
@@ -110,7 +113,7 @@
 				<form action="login" method="post">
 					<div class='loginBox'>
 						<label> I D 
-							<input type="text" name="username"></label>
+							<input type="text" name="username" autocomplete="off"></label>
 					</div>
 					<div class='loginBox'>
 						<label> PASSWORD  

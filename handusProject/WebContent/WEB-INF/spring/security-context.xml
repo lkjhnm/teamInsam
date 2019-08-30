@@ -17,11 +17,14 @@
 		<security:form-login 
 			login-page="/member/loginForm" 
 			login-processing-url="/member/login" 
-			default-target-url="/main"
+			default-target-url="/auction/list"
 			authentication-failure-url="/member/loginForm"
 			authentication-success-handler-ref="customLoginSuccessHandler"
 		/>
-		<security:logout logout-url="/logout" invalidate-session="true" logout-success-url="/main"/>
+		<security:session-management >
+			<security:concurrency-control max-sessions="1" expired-url="/main" />
+		</security:session-management>
+		<security:logout logout-url="/logout" invalidate-session="true" logout-success-url="/member/loginForm"/>
 		<security:csrf disabled="true"/>
 	</security:http>
 	

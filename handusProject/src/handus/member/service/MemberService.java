@@ -1,15 +1,27 @@
 package handus.member.service;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import handus.dao.MemberDao;
 import handus.model.Auth;
@@ -158,4 +170,32 @@ public class MemberService {
 		return true;
 	}
 	
+	//카카오 로그인 api
+	public JsonNode getAccessToken(String authorize_code){
+		final String REQUEST_URL = "https://kauth.kakao.com/oauth/token";
+		final List<NameValuePair> postParams = new ArrayList<NameValuePair>();
+		
+		postParams.add(new BasicNameValuePair("grant_type", "authorization_code"));
+		postParams.add(new BasicNameValuePair("client_id", "7085b4545de8b2f34a25a4248fcdbce0"));
+		postParams.add(new BasicNameValuePair("redirect_uri", "http://localhost:8081/handusProject/member/oauth"));
+		postParams.add(new BasicNameValuePair("code", authorize_code));
+		
+		final HttpClient client = HttpClientBuilder.create().build();
+		final HttpPost post = new HttpPost(REQUEST_URL);
+		JsonNode node = null;
+		
+		try {
+			post.setEntity(new UrlEncodedFormEntity(postParams));
+			final HttpResponse response = client.execute(post);
+			ObjectMapper mapper = new ObjectMapper();
+			node = mapper.readTree(response.getEntity().getContent());	
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return node;
+	}
 }
