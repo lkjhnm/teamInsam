@@ -41,14 +41,12 @@ public class HeartController {
 	@RequestMapping(value = "/chekHeart", method = RequestMethod.POST)
 	public boolean checkHeart(HeartStudio hs) {
 		// 회원번호 받아와서 해당 회원의 HS 리스트 반환 
-		System.out.println("?");
 		return heartService.isHeartStudio(hs);
 	}
 	
 	@ResponseBody
 	@RequestMapping("/countHeart")
 	public int heartCount(int sNum) {
-		System.out.println(sNum);
 		return heartService.getCountHS(sNum);
 	}
 	
