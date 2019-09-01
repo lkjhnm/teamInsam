@@ -72,7 +72,7 @@
 		text-align:center;
 		border: 1px solid #707070;
 	}
-	.infoButton:hover, .reviewButton:hover, .smallFont:hover{
+	.infoButton:hover, .reviewButton:hover, .smallFont:hover, .delModButton:hover{
 		cursor:pointer;
 		color: #ff1d43; 
 		border-color:#ff1d43;
@@ -168,11 +168,6 @@
 		display:inline-block;
 		width: 150px;
 	}
-/* 	#auctionTime{ */
-/* 		margin-left: 15px; */
-/* 		font-weight:600; */
-/* 		font-size: 19px; */
-/* 	} */
 
 /* 		모달 		*/
 	#modalContainer{
@@ -243,6 +238,9 @@
 		margin-bottom: 20px;
 		text-align: center;
 	}
+	.letterSpacing{
+		letter-spacing: 3px;
+	}
 	.reviewWrite{
 		display: inline-block;
 		width: 125px;
@@ -256,7 +254,7 @@
 	#reviewInput{
 		display: none;  
 	}
-	.reviewButton{
+	.reviewButton, .delModButton{
 		display: inline-block;
 		width: 125px;
 		height: 20px;
@@ -267,12 +265,27 @@
 		cursor: pointer;
 		margin-top: 22px;
 	}
+	.delModButton{
+		width: 60px;
+	}
+	.marginRight{
+		margin-right: 5px;
+	}
 	.reviewDate{
 		font-size: 0.7em;
 		width: 90px;
 		text-align: center;
 		margin: 0 auto;
 		margin-top: 3px;
+	}
+	.starBox{
+		width: 100px;
+		margin: 0 auto;
+		margin-top: 5px;
+		font-size: 12px;
+	}
+	.starBox span{
+		margin: 0 auto; 
 	}
 	.reviewContent{
 		display: inline-block;
@@ -285,7 +298,6 @@
 		margin-top: 8px;
 	}
 	.smallFont{
-/* 		display: inline-block; */
 		font-size: 0.9em;
 		margin: 0 auto;
 		margin-top: 5px;
@@ -293,7 +305,7 @@
 		border: 1px solid #707070;
 		width: 70px;
 	}
-	.reviewArea{
+	.reviewArea, .reviewArea2{
 		resize: none;
 		padding: 5px;
 		background-color: #ffff;
@@ -303,9 +315,18 @@
 		box-shadow: none;
 		border-radius: 5px;
 	}
-	.reviewArea:focus, .reviewArea:hover {
+	textarea{
+		font-family: 'Nanum Myeongjo', serif;
+		letter-spacing: 1px;
+		word-spacing: 2.5px;
+	}
+	.reviewArea2{
+		background-color: #FBF9F6;
+	}
+	.reviewArea:focus, .reviewArea:hover, .redBorder:focus, .redBorder:hover {
 		border: 1px solid #FF1D43;
 		border-radius: 5px;
+		background-color: #ffff;
 	}
 }
 </style>
@@ -319,11 +340,10 @@
 	var isHeart = false;			// 구독중인지 판별
 	var isLock = false;				
 	var isReview = true;			// 리뷰 남기기 창 (초기값: false)
+	var modBtn = 0; 				// 수정 버튼 기능 0=수정창보이기, 1=수정로직실행
 	$(function () {
 		// 해당 회원이 게시글에 대해 좋아요를 눌렀는지 확인 후 하트 클래스 추가/삭제
 		heartCheck();
-// 왜 HS_COUNT 가 자꾸 3으로 뜨는지 모르겟음 (DB에서 3으로 뜸... 확인해야함 )
-		drawHeartCount();
 		// 리뷰 그리기
 		drawReview();
 		
@@ -385,9 +405,9 @@
 		$(".close").on("click", function () {
 			$("#modalContainer").hide("slow");
 		});
-		// 리뷰 남기기
+		// 리뷰 남기기 버튼 
 		$(".reviewWrite").on("click", function () {
-			// ajax로 확인요청 후 맞으면 isReview = true 로 변경 
+			// ajax로 확인요청 후 맞으면 isReview(구매했으면) = true 로 변경 
 			if(isReview){
 				$("#reviewInput").css("display", "block");
 				isReview = false;
@@ -421,8 +441,6 @@
 			if(isLock){
 				$(this).parent().prevAll().children().removeClass("far").addClass("fas");
 				$(this).removeClass("far").addClass("fas").attr("grade", "here");
-// 			var score = $("i[grade='here']").attr("data-value");
-// 			alert("점수: "+score);
 			}
 		});
 		// 별점수정 
@@ -447,12 +465,13 @@
 					if(result){
 						alert("리뷰가 등록되었습니다");
 						drawReview();
+						closeArea();
 					}else{
 						alert("리뷰 등록 실패");
 					}
 				},
 				error: function () {
-					alert("리뷰 등록 에러");
+					alert("별점을 등록해주세요");
 				}
 			});
 		});
@@ -497,34 +516,87 @@
 			}
 		});
 	};
-	// 리뷰 그리기 
-	function drawReview() {
-		$("#reviewBox div:gt[1]").remove();
+	function drawReviewCount() {
 		$.ajax({
-			url: "${pageContext.request.contextPath}/review/drawReview",
+			url: "${pageContext.request.contextPath}/review/countReview",
 			data: {"sNum":${studio.s_pk}},
 			type: "post",
+			success: function (data) {
+				$("#reviewCount").text(data);
+			},
+			error: function () {
+				alert("갯수예외");
+			}
+		});
+	};
+	// 리뷰 그리기 
+	function drawReview() {
+		$("#reviewBox div:gt(5)").remove();
+		$.ajax({
+			url: "${pageContext.request.contextPath}/review/drawReview",
+			data: {"sNum":"${studio.s_pk}"},
+			type: "post",
+			dataType: "json", 
 			success: function (data) {
 				var list = data;
 				// 리스트 만큼 돌면서 그리기 
 				for(var i = 0; i < list.length; i++){
 					var div1 = $("<div class='reviewPosition'></div>");
-					var div21 = $("<div class='reviewType'></div>");
-					div21.append($("<span></span>").text(list[i].rs_m_name));
-					div21.append($("<div class='reviewDate'></div>")
-							.append($("<span></span>").text(list[i].rs_reg_date)));
+					var div11 = $("<div class='reviewType'></div>");
+					div11.append($("<span class='letterSpacing'></span>").text(list[i].rs_m_name));
+					var date = new Date(list[i].rs_reg_date);
+					div11.append($("<div class='reviewDate'></div>")
+							.append($("<span></span>").text(getFormatDate(date))));
+					var divStar = $("<div class='starBox'></div>");
+					// 별그리기 = 별갯수만큼 반복문 돌면서 fas = list[i].rs_grade
+					var sGrade = list[i].rs_grade;
+					for(var j = 1; j <= 5; j ++){
+						if(j <= sGrade){
+							var starSpan = $("<span style='font-size:12px'></span>");
+							starSpan.append("<i class='fas fa-star' data-what='star' data-value='"+(j)+"'></i>");
+							divStar.append(starSpan);
+						}else{
+							var starSpan = $("<span style='font-size:12px'></span>");
+							starSpan.append("<i class='far fa-star' data-what='star' data-value='"+(j)+"'></i>");
+							divStar.append(starSpan);
+						}
+					}
+					div11.append(divStar);
 					var div22 = $("<div class='reviewContent'></div>");
-					div22.append($("<span></span>").text(list[i].rs_content));
-					var btnSpan;
+					var textArea = $("<textarea rows='4' cols='105' class='reviewArea2' id='modifyCon"+list[i].rs_pk+"' readonly='readonly'></textarea>").val(list[i].rs_content);
+					div22.append($("<span></span>").append(textArea));
 					// 게시글 쓴 사람 번호 = 회원 번호 확인
 					if(memberNum==list[i].rs_m_pk){
-						// 삭제 버튼 
-						btnSpan = $("<span class='reviewButton'></span>").text("삭제");
+						// 삭제 버튼
+						btnSpan1 = $("<span class='delModButton'></span>").text("삭제");
 						(function (n) {
-							btnSpan.on("click", function () {
-								alert(list[n].rs_pk+" 삭제");
+							btnSpan1.on("click", function () {
+								if(confirm("리뷰를 삭제하시겠습니까?")){
+									removeReview(list[n].rs_pk);
+								}
 							});
 						})(i);
+						// 수정버튼 
+						btnSpan2 = $("<span class='delModButton marginRight'></span>").text("수정");
+						(function (n) {
+							btnSpan2.on("click", function () {
+								// redBorder클래스 추가, readonly 속성 지우기 
+								var modifyArea = $("textArea[id=modifyCon"+list[n].rs_pk+"]");
+								// 0일땐 입력 가능하도록 
+								if(modBtn == 0){
+									modifyArea.removeAttr("readonly").addClass("redBorder");
+									modifyArea.focus();
+									modBtn = 1;
+								// 1일땐 수정로직 실행하도록, 입력하고 다시 입력 불가능하게 만들기 
+								}else{
+									modifyReview(list[n].rs_pk, modifyArea.val());
+									modifyArea.attr("readonly", "readonly").removeClass("redBorder");
+									modBtn = 0; 
+								}
+							});
+						})(i);
+						div1.append(div11).append(div22).append(btnSpan1);
+						div1.append(div11).append(div22).append(btnSpan2);
 					}else{
 						// 신고 버튼
 						btnSpan = $("<span class='reviewButton'></span>").text("신고");
@@ -533,15 +605,61 @@
 								alert(list[n].rs_pk+" 신고");
 							});
 						})(i);
+						div1.append(div11).append(div22).append(btnSpan);
 					}
-					div1.append(div21).append(div22).append(btnSpan);
 					$("#reviewBox").append(div1);
 				}
+				drawReviewCount();
 			},
 			error: function () {
 				alert("리뷰 불러오기 에러");
 			}
 		});
+	};
+	function getFormatDate(date){ 
+		var year = date.getFullYear();			// 년도 
+		var month = (1 + date.getMonth());		// 월
+		month = month >= 10 ? month : '0' + month;	//month 두자리로 저장 
+		var day = date.getDate();				// 일
+		day = day >= 10 ? day : '0' + day;		//day 두자리로 저장 
+		return year + '-' + month + '-' + day; 
+	}
+	function removeReview(rsNum) {
+		$.ajax({
+			url: "${pageContext.request.contextPath}/review/removeReview",
+			data: {"rsNum":rsNum},
+			success: function (result) {
+				if(result){
+					drawReview();
+				}else{
+					alert("삭제 예외");
+				}
+			},
+			error: function () {
+				alert("리뷰 삭제 에러");
+			}
+		});
+	};
+	function modifyReview(rsNum, content) {
+		$.ajax({
+			url: "${pageContext.request.contextPath}/review/modifyReview",
+			data: {"rs_pk":rsNum, "rs_content":content},
+			success: function (result) {
+				if(result){
+					alert("수정됐습니다");
+					drawReview();
+				}else{
+					alert("수정 예외");
+				}
+			},
+			error: function () {
+				alert("리뷰 수정 에러");
+			}
+		});
+	};
+	function closeArea() {
+		$("#writeContent").val(" ");
+		$("#reviewInput").css("display", "none");
 	};
 </script>
 </head>
@@ -631,8 +749,9 @@
 			<div id="reviewContiner">
 				<div class="reviewTitle"><span> S T U D I O &nbsp;&nbsp; R E V I E W </span></div>
 				<div id="reviewBox">
+				<!-- 리뷰 버튼 -->
 					<div class='reviewPosition'>
-						<div class='reviewWrite'><span> $리뷰 남기기 </span></div>
+						<div class='reviewWrite'><span> 리뷰 남기기 </span></div>
 <!-- 							<div class="reviewWrite"><span> $리뷰 남기기 </span></div> -->
 					</div>
 					<!-- 후기 입력란  -->
@@ -653,15 +772,22 @@
 						<span class="reviewButton" id="registerReview"> 등록 </span>
 					</div>
 					<!-- ajax로 그릴 부분  -->
-					<div class='reviewPosition'>
-						<div class='reviewType'>
-							<span> m e m b e r &nbsp; n a m e </span>
-							<div class='reviewDate'><span> 2019-XX-XX </span></div>
-						</div>
-						<div class="reviewContent"><span> $리뷰 내용 </span></div>
-						<span class="reviewButton" id="delDecReview"> 삭제 </span>
-					</div>
-					
+<!-- 					<div class='reviewPosition'> -->
+<!-- 						<div class='reviewType'>	 -->
+<!-- 							<span> m e m b e r &nbsp; n a m e </span> -->
+<!-- 							<div class='reviewDate'><span> 2019-XX-XX </span></div> -->
+<!-- 							<div class="starBox">	 -->
+<!-- 								<span style='font-size:12px'><i class="far fa-star" data-what="star" data-value='1'></i></span> -->
+<!-- 								<span style='font-size:12px'><i class="far fa-star" data-what="star" data-value='2'></i></span> -->
+<!-- 								<span style='font-size:12px'><i class="far fa-star" data-what="star" data-value='3'></i></span> -->
+<!-- 								<span style='font-size:12px'><i class="far fa-star" data-what="star" data-value='4'></i></span> -->
+<!-- 								<span style='font-size:12px'><i class="far fa-star" data-what="star" data-value='5'></i></span> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 						<div class="reviewContent"><span> <textarea rows="4" cols="90" class="reviewArea2" id="modifyContent" readonly="readonly"> aaaa </textarea> </span></div> -->
+<!-- 						<span class="delModButton"> 삭제 </span> -->
+<!-- 						<span class="delModButton marginRight"> 수정 </span> -->
+<!-- 					</div> -->
 				</div>
 			</div>
 		</div>

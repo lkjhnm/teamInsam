@@ -17,6 +17,11 @@
 	</delete>
 	<select id="selectAllRS" resultMap="rsMap">
 		select * from REVIEW_STUDIO 
+		order by RS_PK 
+	</select>
+	<select id="selectRScount" parameterType="int" resultType="int">
+		select count(*) from REVIEW_STUDIO
+		where RS_S_PK = #{rs_s_pk} 
 	</select>
 	<resultMap type="reviewStudio" id="rsMap">
 		<result column="RS_PK" property="rs_pk"/>

@@ -38,5 +38,8 @@ public class ReviewService {
 		return reviewDao.selectAllRS();
 	}
 	
+	public int selectCountRs(int sNum) {
+		return reviewDao.selectRScount(sNum);
+	}
 	
 }

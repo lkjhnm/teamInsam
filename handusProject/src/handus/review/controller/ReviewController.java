@@ -22,14 +22,12 @@ public class ReviewController {
 	@ResponseBody
 	@RequestMapping("/drawReview")
 	public List<ReviewStudio> drawReview(int sNum){
-		System.out.println(reviewService.getAllRS());
 		return reviewService.getAllRS();
 	}
 	
 	@ResponseBody
 	@RequestMapping("/writeReview")
 	public boolean writeReview(int mNum, int grade, String content, int sNum) {
-		System.out.println(mNum+" "+grade+" "+content+" "+sNum);
 		ReviewStudio review = new ReviewStudio();
 		review.setRs_content(content);
 		review.setRs_m_pk(mNum);
@@ -40,5 +38,31 @@ public class ReviewController {
 			return true;
 		}
 		return false;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/removeReview")
+	public boolean removeReview(int rsNum){
+		if(reviewService.removeReviewStudio(rsNum)) {
+			return true;
+		}
+		return false;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/modifyReview")
+	public boolean modifyReview(ReviewStudio review) {
+		System.out.println(review);
+		if(reviewService.modifyReviewStudio(review)) {
+			return true;
+		}
+		return false;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/countReview")
+	public int countReview(int sNum) {
+		System.out.println(sNum);
+		return reviewService.selectCountRs(sNum);
 	}
 }
