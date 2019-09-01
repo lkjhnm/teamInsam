@@ -4,18 +4,27 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,10 +76,13 @@ public class MemberService {
 	private void insertInfo(Member member, List<Integer> interList) {
 		
 		String rawPw = member.getM_password();
-		String encodePw = encoder.encode(rawPw);
+		if(rawPw != null) {
+			String encodePw = encoder.encode(rawPw);
+			member.setM_password(encodePw);
+		}
 		
 		List<MemberInterest> miList = new ArrayList<MemberInterest>();
-		List<Auth> authList = makeAuth(2, member.getM_pk());
+		List<Auth> authList = makeAuth(2);
 		if(interList != null) {
 			for(int category : interList) {
 				MemberInterest mi = new MemberInterest();
@@ -79,10 +91,25 @@ public class MemberService {
 			}
 		}
 		member.setAuthList(authList);
-		member.setM_password(encodePw);
 		member.setMiList(miList);
 	}
-	
+	private List<Auth> makeAuth(int type){
+		List<Auth> authList = new ArrayList<>();
+		
+		switch(type) {
+		case 2:
+			Auth auth = new Auth();
+			auth.setMa_authority("ROLE_AUTHOR_NV");
+			authList.add(auth);
+		case 1:							
+			auth = new Auth();
+			auth.setMa_authority("ROLE_MEMBER_NV");
+			authList.add(auth);
+			break;
+		}
+		return authList;
+	}
+	//이메일 인증 관련
 	@Transactional
 	public boolean evalidateUpdate(String mv_ecode,int m_pk,String role) {	//가입 유형 선택에 따라서 권한 부여
 		MemberVerify mv = memberDao.selectMemberVerify(m_pk);
@@ -110,25 +137,6 @@ public class MemberService {
 		memberDao.updateMailUUID(mv);
 		mailUtil.mailSender(mem.getM_email(), m_pk, uuid);
 	}
-	
-	private List<Auth> makeAuth(int type,int m_pk){
-		List<Auth> authList = new ArrayList<>();
-		
-		switch(type) {
-		case 2:
-			Auth auth = new Auth();
-			auth.setM_pk(m_pk);
-			auth.setMa_authority("ROLE_AUTHOR_NV");
-			authList.add(auth);
-		case 1:							
-			auth = new Auth();
-			auth.setM_pk(m_pk);
-			auth.setMa_authority("ROLE_MEMBER_NV");
-			authList.add(auth);
-			break;
-		}
-		return authList;
-	}
 
 	public boolean modifyMember(Member member) {
 		if(memberDao.updateMember(member)>0) {
@@ -154,7 +162,10 @@ public class MemberService {
 	public Member getMemberById(String id) {
 		return memberDao.selectByID(id);
 	}
-
+	
+	public Member getMemberByApiId(String apiId){
+		return memberDao.selectByApiId(apiId);
+	}
 
 	public List<Member> getMemberList() {
 		return memberDao.selectAllMember();
@@ -171,7 +182,20 @@ public class MemberService {
 	}
 	
 	//카카오 로그인 api
-	public JsonNode getAccessToken(String authorize_code){
+	public UsernamePasswordAuthenticationToken kakaoLogin(String authorize_code) {
+		JsonNode accessNode = getAccessToken(authorize_code);
+		JsonNode userNode = getUserInfo(accessNode.findValue("access_token").toString());
+		String apiId = userNode.findValue("id").toString();
+		Member mem = memberDao.selectByApiId(apiId);
+		
+		if(mem == null) {
+			return new UsernamePasswordAuthenticationToken(apiId, null);
+		}
+		return new UsernamePasswordAuthenticationToken("Kakao_"+apiId, "Kakao_"+apiId ,
+					mem.getAuthList().stream().map( auth -> new SimpleGrantedAuthority(auth.getMa_authority())).collect(Collectors.toList()));
+	}
+	
+	private JsonNode getAccessToken(String authorize_code){
 		final String REQUEST_URL = "https://kauth.kakao.com/oauth/token";
 		final List<NameValuePair> postParams = new ArrayList<NameValuePair>();
 		
@@ -180,8 +204,9 @@ public class MemberService {
 		postParams.add(new BasicNameValuePair("redirect_uri", "http://localhost:8081/handusProject/member/oauth"));
 		postParams.add(new BasicNameValuePair("code", authorize_code));
 		
-		final HttpClient client = HttpClientBuilder.create().build();
-		final HttpPost post = new HttpPost(REQUEST_URL);
+		HttpClient client = HttpClients.createDefault();
+		HttpPost post = new HttpPost(REQUEST_URL);
+		
 		JsonNode node = null;
 		
 		try {
@@ -197,5 +222,43 @@ public class MemberService {
 			e.printStackTrace();
 		}
 		return node;
+	}
+	
+	private JsonNode getUserInfo(String access_token){
+		
+		final String REQUEST_URL = "https://kapi.kakao.com/v2/user/me";
+		
+		HttpClient client = HttpClients.createDefault();
+		HttpPost post = new HttpPost(REQUEST_URL);
+		post.setHeader("Authorization", "Bearer " + access_token);
+		JsonNode node = null;
+		
+		try {
+			HttpResponse response = client.execute(post);
+			ObjectMapper mapper = new ObjectMapper();
+			node = mapper.readTree(response.getEntity().getContent());
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+		return node;
+	}
+	
+	//API 추가 회원 가입
+	public boolean additionalSignUp(Member member, List<Integer> interList) {
+		insertInfo(member, interList);
+		
+		if(memberDao.insertApiMember(member)) {
+			String uuid = UUID.randomUUID().toString();
+			MemberVerify mv = new MemberVerify();
+			mv.setMv_ecode(uuid);
+			mv.setM_pk(member.getM_pk());
+			if(memberDao.insertMemberVerify(mv) == 1 ) {
+				mailUtil.mailSender(member.getM_email(),member.getM_pk(),uuid);
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -11,6 +11,8 @@
 	
 	<bean id="bcryptPasswordEncoder"
 		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+	
 	<context:component-scan base-package="handus.member.security"/>
 	
 	<security:http  use-expressions="true">
@@ -21,16 +23,16 @@
 			authentication-failure-url="/member/loginForm"
 			authentication-success-handler-ref="customLoginSuccessHandler"
 		/>
-		<security:session-management >
+		<security:session-management invalid-session-url="/member/loginForm">
 			<security:concurrency-control max-sessions="1" expired-url="/main" />
 		</security:session-management>
 		<security:logout logout-url="/logout" invalidate-session="true" logout-success-url="/member/loginForm"/>
 		<security:csrf disabled="true"/>
+		
 	</security:http>
 	
-	<security:authentication-manager>
-		<security:authentication-provider user-service-ref="customUserDetailsService">
-			<security:password-encoder ref="bcryptPasswordEncoder"/>
+	<security:authentication-manager id="authenticationManager">
+		<security:authentication-provider ref="customProvider" >
 		</security:authentication-provider>
 	</security:authentication-manager>
 </beans>

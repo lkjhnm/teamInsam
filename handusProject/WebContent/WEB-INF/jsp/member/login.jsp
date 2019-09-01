@@ -100,6 +100,26 @@
 		color:#ff1d43;
 	}
 </style>
+<script type="text/javascript">
+	$(function(){
+		var id;
+		
+		$.ajax({
+			url:"cid",
+			dataType:'text',
+			success:function(data){
+				id = data;				
+				$("#kakaoButton").on("click",function(){
+					window.open("https://kauth.kakao.com/oauth/authorize?client_id="
+							+id+"&redirect_uri=http://localhost:8081/handusProject/member/oauth&response_type=code","PopupWin",
+							"width=500,height=600");
+				})
+				
+			}
+		})
+		
+	})
+</script>
 </head>
 <body>
 	<div class='container'>

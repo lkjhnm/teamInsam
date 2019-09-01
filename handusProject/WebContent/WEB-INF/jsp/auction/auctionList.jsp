@@ -164,6 +164,7 @@
 	var auctionInter;
 	
 	$(function(){
+		console.log( "${sessionScope}")
 		$(".fa-heart").on('click',function(){
 			if(!isSub){
 				var result = confirm("알람 등록 하시겠습니까?");

@@ -77,9 +77,14 @@
 		<i>Handus</i>
 	</span>
 	<div id="iconContainer">
+		<sec:authorize access="isAuthenticated()">
+			<div id="bell"><span><i class="far fa-bell"></i></span><div id="redCircle"></div></div>
+		</sec:authorize>
+		<sec:authorize access="isAnonymous()">
+			<div id="bell"></div>
+		</sec:authorize>
 		<span id="loginHeader"><img src="${pageContext.request.contextPath }/img/header-icon-account.svg"></span>
 		<span id="subscribeHeader"><img src="${pageContext.request.contextPath }/img/header-icon-bookmark.svg"></span>
-		<span id="shoppingCartHeader"><img src="${pageContext.request.contextPath }/img/header-icon-cart.svg"></span>
-		
+		<span id="shoppingCartHeader"><img src="${pageContext.request.contextPath }/img/header-icon-cart.svg"></span>		
 	</div>
 </div>
