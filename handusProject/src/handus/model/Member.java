@@ -17,8 +17,22 @@ public class Member{
 	private boolean m_pval;
 	private List<Auth> authList;
 	private List<MemberInterest> miList;
+	private int m_apiType;
+	private String m_apiId;
 	
 	
+	public int getM_apiType() {
+		return m_apiType;
+	}
+	public String getM_apiId() {
+		return m_apiId;
+	}
+	public void setM_apiType(int m_apiType) {
+		this.m_apiType = m_apiType;
+	}
+	public void setM_apiId(String m_apiId) {
+		this.m_apiId = m_apiId;
+	}
 	public List<MemberInterest> getMiList() {
 		return miList;
 	}

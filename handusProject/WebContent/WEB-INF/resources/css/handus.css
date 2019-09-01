@@ -167,11 +167,27 @@ html,body{
 	position:absolute;
 	right: 6%;
 	bottom: 7%;
-	width: 150px;
+	width: 180px;
 	display:flex;
 	justify-content: space-between;
 }
 #iconContainer span:hover{
 	cursor:pointer;
 }
-
+#bell{
+	display:inline-block;
+	position:relative;
+}
+#bell span{
+	font-size:22px;
+	line-height:inherit;
+}
+#redCircle{
+	width: 12px;
+	height:12px;
+	border-radius: 50%;
+	background-color: red;
+	position:absolute;
+	top:0;
+	right:-5px;
+}

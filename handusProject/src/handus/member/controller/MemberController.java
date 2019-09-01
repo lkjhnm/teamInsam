@@ -1,8 +1,35 @@
 package handus.member.controller;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.ibatis.javassist.expr.NewArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +47,14 @@ public class MemberController {
 	@Autowired
 	private MemberService memberService;
 	
+	@Autowired
+	@Qualifier("authenticationManager")
+	private AuthenticationManager manager;
+	
+	@Autowired
+	private SessionRegistry sessionRegistry;
+	
+	
 	@RequestMapping(value="/loginForm", method=RequestMethod.GET)
 	public String handusLogin() {
 		return "member/login";
@@ -34,7 +69,7 @@ public class MemberController {
 	public String handusSignUp(Member mem , @RequestParam(value="c_pk", required = false) ArrayList<Integer> interList,RedirectAttributes ra){
 		
 		memberService.signUpMember(mem,interList);
-		ra.addFlashAttribute("m_id", mem.getM_id());
+		ra.addFlashAttribute("m_pk", mem.getM_pk());
 		
 		return "redirect:signUpComplete";
 	}
@@ -43,6 +78,8 @@ public class MemberController {
 	public String handusSignUpCompl() {
 		return "member/signUpComplete";
 	}
+	
+	
 	
 	final String ROLE_MEMBER = "ROLE_MEMBER";		// ROLE_MEMBER_NV --> ROLE_MEMBER 로 변환할때
 	final String ROLE_AUTHOR = "ROLE_AUTHOR";		// ROLE_AUTHOR_NV --> ROLE_AUTHOR 로 변환할때
@@ -63,7 +100,12 @@ public class MemberController {
 								 @RequestParam(value="m_id",required=false) String m_id){
 		
 		if(m_id != null) {
-			Member mem = memberService.getMemberById(m_id);
+			Member mem;
+			if(m_id.contains("kakao_")) {
+				mem = memberService.getMemberById(m_id.substring(6));
+			}else {
+				mem = memberService.getMemberById(m_id);				
+			}
 			m_pk = mem.getM_pk();
 		}
 		memberService.reSendMail(m_pk);
@@ -86,20 +128,66 @@ public class MemberController {
 		return "member/myPage";
 	}
 	
+	//------------SNS 로그인
+	
 	@RequestMapping(value="/oauth")
-	public String kakaoLogin(String code) {
-		System.out.println("값" + memberService.getAccessToken(code).asText());
-		return null;
+	@ResponseBody
+	public String kakaoLogin(String code,HttpSession session,HttpServletRequest req){
+		
+		UsernamePasswordAuthenticationToken token = memberService.kakaoLogin(code);
+		if(token.getCredentials() != null) {
+			token.setDetails(new WebAuthenticationDetails(req));
+			Authentication authentication = manager.authenticate(token);
+			
+			List<SessionInformation> sessionInfo = sessionRegistry.getAllSessions(authentication.getPrincipal(), false);	
+			
+			for(SessionInformation ssInfo : sessionInfo) {
+				Object p = authentication.getPrincipal();
+				if(p.equals(ssInfo.getPrincipal())) {
+					ssInfo.expireNow();
+				}
+			}
+			
+			sessionRegistry.registerNewSession(session.getId(), authentication.getPrincipal());
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			return "<script> window.close(); opener.location.href='/handusProject/auction/list';</script>";
+		}else {
+			session.setAttribute("apiId", token.getName());
+			session.setAttribute("apiType", 1);
+			return "<script> window.close(); opener.location.href='additionalSignUp';</script>";
+		}
 	}
 	
-	@RequestMapping(value="/token")
-	public String kakaoToken(String access_token, String token_type, String refresh_token, String expires_in, String scope) {
+	@RequestMapping(value="/cid")
+	@ResponseBody
+	public String getClientId() {	//카카오 clientid 반환 메서드
 		
-		System.out.println(access_token);
-		System.out.println(token_type);
-		System.out.println(refresh_token);
-		System.out.println(expires_in);
-		System.out.println(scope);
-		return null;
+		return "7085b4545de8b2f34a25a4248fcdbce0";
+	}
+	
+	// API 로그인 회원가입
+	
+	@RequestMapping(value="/additionalSignUp", method=RequestMethod.GET)
+	public String getAdditionalPage() {
+		
+		return "member/additionalSignUp";
+	}
+	
+	@RequestMapping(value="/additionalSignUp", method=RequestMethod.POST)
+	public String apiSignUp(Member member,
+			@RequestParam(value="c_pk", required = false) ArrayList<Integer> interList, HttpSession session, RedirectAttributes ra) {
+		
+		String apiId = (String)session.getAttribute("apiId");
+		int apiType = (int)session.getAttribute("apiType");
+		member.setM_apiId(apiId);
+		member.setM_apiType(apiType);
+		
+		session.removeAttribute("apiId");
+		session.removeAttribute("apiType");
+		
+		memberService.additionalSignUp(member, interList);
+		ra.addFlashAttribute("m_pk", member.getM_pk());
+		
+		return "redirect:signUpComplete";
 	}
 }

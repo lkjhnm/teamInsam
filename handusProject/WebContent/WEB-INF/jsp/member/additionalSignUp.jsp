@@ -118,46 +118,7 @@
 	}
 </style>
 <script>
-	$(function(){
-		
-		$("#m_id").on("blur",function(){
-			var id = $(this).val()
-			
-			if(!id){
-				$("#m_id").prev().css({"display":"inline","color":"red"})
-				$("#m_id").css({"border-color":"red"})
-				return;
-			}
-			
-			$.ajax({
-				url:"${pageContext.request.contextPath}/member/idCheck",
-				data : {"m_id": id},
-				type:"post",
-				dataType:"json",
-				success:function(data){
-					if(data){
-						$("#m_id").prev().css({"display":"inline","color":"green"});
-						$("#m_id").css({"border-color":"green"})
-					}else{
-						$("#m_id").prev().css({"display":"inline","color":"red"});
-						$("#m_id").css({"border-color":"red"})
-					}
-				}
-			})
-		})
-		
-		$("#m_confirm").on("blur",function(){
-			var pass = $("#m_password").val()
-			var confirm = $(this).val()
-			
-			if(pass == confirm && pass){
-				$("#m_password").css({"border-color":"green"})
-				$(this).css({"border-color":"green"})
-			}else{
-				$("#m_password").css({"border-color":"red"})
-				$(this).css({"border-color":"red"})
-			}
-		})		
+	$(function(){	
 		
 		$("#zipCode").on("click",function(){
 			daumPostcode()
@@ -186,24 +147,10 @@
 		
 		<div id="main">
 			<div id="signUpTitle">
-				S I G N  U P
+				ADDITIONAL SIGN  UP
 			</div>
 			<div id="signContainer">
-				<form action="signUp" method="post" id="signForm"> 	<!-- 사인업 사인업 -->
-					<div class='signUpBox'>
-						<label> I D <span class='validate'>&nbsp;&nbsp;<i class="fas fa-check"></i></span>
-							<input type="text" id="m_id" name="m_id" autocomplete="off"></label>
-					</div>
-					<div class='signUpBox'>
-						<label> PASSWORD 
-							<input type="password" id="m_password" name="m_password"></label>
-					</div>
-					<div class='signUpBox'>
-						<label> CONFIRM 
-							<input type="password" id="m_confirm"></label>
-					</div>
-					
-					<div class='boundary-sign'></div>
+				<form action="additionalSignUp" method="post" id="signForm"> 	<!-- 사인업 사인업 -->
 					
 					<div class='signUpBox'>
 						<label> NAME
