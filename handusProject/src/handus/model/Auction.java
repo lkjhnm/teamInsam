@@ -18,9 +18,29 @@ public class Auction {
 	private long a_remain;
 	private String a_remainText;
 	private int a_currentPrice;
+	private Date ag_regDate;
+	private boolean a_end;
+	private boolean a_alarm;
 	
 	
-	
+	public boolean isA_end() {
+		return a_end;
+	}
+	public void setA_end(boolean a_end) {
+		this.a_end = a_end;
+	}
+	public boolean isA_alarm() {
+		return a_alarm;
+	}
+	public void setA_alarm(boolean a_alarm) {
+		this.a_alarm = a_alarm;
+	}
+	public Date getAg_regDate() {
+		return ag_regDate;
+	}
+	public void setAg_regDate(Date ag_regDate) {
+		this.ag_regDate = ag_regDate;
+	}
 	public int getA_currentPrice() {
 		return a_currentPrice;
 	}

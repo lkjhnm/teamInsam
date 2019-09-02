@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,6 +35,20 @@
 		position: absolute;
 		top: 0;
 		left: 0;
+	}
+	#thumnailContainer{
+		width: 92px;
+		height: 600px;
+		position:absolute;
+		left: 805px;
+		top: 110px;
+		z-index: 103;
+	}
+	.thumnail{
+		width: 90px;
+		height: 90px;
+		background-color: #fff;
+		margin-top: 10px;
 	}
 	#auctionInfo{
 		width: 500px;
@@ -94,7 +110,7 @@
 	#price{
 		font-size: 24px;
 	}
-	#buyButton{
+	.button{
 		width: 300px;
 		height: 45px;
 		border : 1px solid #707070;
@@ -206,6 +222,7 @@
 		left:1500px;
 		transform:translate(-50%, -50%);
 		box-shadow : rgba(0,0,0,0.5) 0 0 0 9999px;
+		border: 2px solid #191919;
 	}
 	#modalTitle{
 		font-size: 18px;
@@ -219,7 +236,7 @@
 		top:0;
 		left:0;
 		display:none;
-		z-index:101;
+		z-index:150;
 	}
 	.modalPosition{
 		width: 100%;
@@ -292,6 +309,7 @@
 		height: 235px;
 		background-color: #EBE9E5;
 		border: 1px solid #191919;
+		border-radius: 5px;
 		position:absolute;
 		top:355px;
 		left: 1500px;
@@ -301,7 +319,7 @@
 	#calculateTitle{
 		height: 40px;
 		font-size: 15px;
-		font-weight: 600;
+		font-weight: 1000;
 		text-align: center;
 		line-height: 40px;
 		border-bottom: 1px solid #707070;
@@ -349,6 +367,7 @@
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script src="${pageContext.request.contextPath }/js/sockjs.js"></script>
 <script src="${pageContext.request.contextPath }/js/stomp.js"></script>
+<sec:authorize access="isAnonymous()" var="isAnony"></sec:authorize>
 <script>
 	var dps;
 	var chart;
@@ -357,6 +376,7 @@
 		var modalShow = false;
 		var calculateShow = false;
 		var increments = 1000;
+		var isAnony = ${isAnony};
 		
 		var formatDate = ${auction.a_remain}
 		setTimeout(() => {
@@ -365,13 +385,17 @@
 			
 			setInterval(() => {
 				$("#auctionTime").text(msToTime(formatDate))
-				formatDate = formatDate - 1000;			
-			}, 1000)	
+				formatDate = formatDate - 1000;
+			}, 1000)
 		}, 1000 - new Date().getMilliseconds());
 		
 		$("#chartBtn").on("click",showChart)
 		
 		$("#buyButton").on("click",function(){
+			if(isAnony){
+				location.href='${pageContext.request.contextPath}/member/loginForm'
+				return;
+			}
 			if(!modalShow && !chartShow){
 				$("#modalContainer").show();
 				showChart();
@@ -396,11 +420,14 @@
 					type : 'get',
 					dataType: "json",
 					success: function(data){
-						$(".currentPrice").text(comma(data[data.length - 1].y))
+						$(".currentPrice").text(" " +comma(data[data.length - 1].y))
 						dps = data;
 						
 						$("#chartContainer").fadeIn(1000)
 						$("#auctionImg").animate({
+							opacity: '0.1'
+						},500)
+						$(".thumnail").animate({
 							opacity: '0.1'
 						},500)
 						makeChart(dps);
@@ -409,6 +436,9 @@
 			}else{
 				$("#chartContainer").fadeOut(500)
 				$("#auctionImg").animate({
+					opacity: '1'
+				},500)
+				$(".thumnail").animate({
 					opacity: '1'
 				},500)
 			}
@@ -458,21 +488,26 @@
 			$.ajax({
 				url: "bidding",
 				type : "post",
-				data : {"bidPrice": $("#bidInput").val(), "a_pk": "${auction.a_pk}"},
+				data : {"ag_bidding": $("#bidInput").val() , 
+						"a_pk": "${auction.a_pk}",
+						"m_pk_user" : "${m_pk}"					// %Q 유저부분 수정
+						},
 				dataType: "json",
 				success: function(data){
-					var result = data[0].result
+// 					var result = data[0].result			%Q 입찰 성공과 실패 알람 어떻게할지 고민하기
 					
-					if(result){
-						data.shift()
-						makeChart(data)
-						$(".currentPrice").text(comma(data[data.length - 1].y))
-					}else{
-						alert(data[0].msg)
-					}
+// 					if(result){
+// 						data.shift();
+// 						makeChart(data);
+// 						$(".currentPrice").text(comma(data[data.length - 1].y))
+// 					}else{
+// 						alert(data[0].msg)
+// 					}
 				}
 			})
 		})
+		
+		connect();
 	})
 // 	윈도우 온로드 종료  --------------------------------------------------------------
 	function makeChart(dps){
@@ -500,9 +535,9 @@
 				  },
 			data: [{
 				type: "line",
-				color:'#ff1d43',
+				color:'blue',
 				lineThickness : 5,
-				markerColor: "blue",
+				markerColor: "red",
 				markerSize: 10,
 				dataPoints: dps
 			}]
@@ -521,8 +556,8 @@
         hours = (hours < 10) ? "0" + hours : hours;
         minutes = (minutes < 10) ? "0" + minutes : minutes;
         seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-        return days +"일 "+ hours + ":" + minutes + ":" + seconds;
+		days = (days < 1) ? "" : days+"일 ";
+        return days + hours + ":" + minutes + ":" + seconds;
     }
 	
 	function comma(num){
@@ -537,7 +572,7 @@
 	        if (str != "") str += ","; 
 	        str += num.substring(point, point + 3); 
 	        point += 3; 
-	    } 
+	    }
 	  
 	    return str +"원";
 	}
@@ -551,8 +586,24 @@
 		sock = new SockJS("${pageContext.request.contextPath}/connect");
 		stompClient = Stomp.over(sock);
 		stompClient.connect({},function(){
-			stompClient.subscribe("/subscribe/bidding",function(data){
-				console.log(data)
+			stompClient.subscribe("/subscribe/bidding/${auction.a_pk}",function(webSocketData){
+				var data = JSON.parse(webSocketData.body);
+				
+				if(data[0].result){
+					$("#bidTime").text("< " + data[0].regDate + " >")
+					data.shift()
+					makeChart(data);
+					$(".currentPrice").text(comma(data[data.length - 1].y))
+					$(".currentPrice").css("color","#ff1d43")
+					setTimeout(() => {
+						$(".currentPrice").css("color","#544a4a")
+					},2000)
+				}
+			})
+			
+			stompClient.subscribe("/subscribe/alarm/${auction.a_pk}",function(webSocketData){	// 애를 개인 구독 페이지로 넘긴다.
+				var data = webSocketData.body;
+				alert(data);
 			})
 		})
 	}
@@ -560,12 +611,19 @@
 </head>
 <body>
 	<div class='container'>
-		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
 
 		<div id="main">
 			<div id="auctionInfoBox">
 				<img id="auctionImg" src="${pageContext.request.contextPath }/auction/img?a_pk=1">
+				<div id="thumnailContainer">
+					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+				</div>
 				<div id="chartContainer">
 					<div id="auctionChart"></div>
 				</div>
@@ -593,25 +651,55 @@
 							<span> 구독자 650 명 </span></div>
 						</div>
 						<div id="button-boundary"></div>
-						<div class='infoPosition'><span> 종료 시간 </span><span id="auctionTime"> ${auction.a_remainText}</span></div>
+						<div class='infoPosition'>
+							<c:choose>
+								<c:when test="${auction.a_end }">
+									<span class="infoBold"> 이미 종료된 경매입니다. </span>									
+								</c:when>
+								<c:otherwise>
+									<span> 종료 시간 </span><span id="auctionTime"> ${auction.a_remainText}</span>
+								</c:otherwise>			
+							</c:choose>
+						</div>  
 						<div class='infoPosition'></div>
 						<div class='infoPosition infoBold'>
-							<span class='smallText'> &lt; 2019/08/21 08:15 입찰 &gt;</span>
+							
+							<c:choose>
+								<c:when test="${auction.a_end }">
+									<span class='smallText' id="bidTime">
+										 &lt; <fmt:formatDate value="${auction.ag_regDate }" pattern="yyyy/MM/dd kk:mm 낙찰" /> &gt; 
+									</span>									
+								</c:when>
+								<c:otherwise>
+									<span class='smallText' id="bidTime">
+										 &lt; <fmt:formatDate value="${auction.ag_regDate }" pattern="yyyy/MM/dd kk:mm 입찰" /> &gt; 
+									</span>
+								</c:otherwise>			
+							</c:choose>
+							&nbsp;
 							<span class='currentPrice' id="auctionInfoPrice"> 
 								<fmt:formatNumber value="${auction.a_currentPrice }" pattern="#,###원"/>
 							</span>
 						</div>
-						
 						<div id="button-boundary"></div>
 						
 						<div class='infoPosition' id="buy_sub_container">
 							<div id='buttonContainer'>
-								<div id='buyButton'>
-									입 찰
-								</div>
-								<div id='subButton'>
-									<span style='font-size:13px'><i class="far fa-heart"></i></span><span> 구 독 </span>
-								</div>
+								<c:choose>
+									<c:when test="${auction.a_end }">
+										<div class="button">
+											종 료
+										</div>
+									</c:when>
+									<c:otherwise>
+										<div class="button" id='buyButton'>
+											입 찰
+										</div>
+										<div id='subButton'>
+												<span style='font-size:13px'><i class="far fa-heart"></i></span><span> 구 독 </span>
+										</div>
+									</c:otherwise>
+								</c:choose>
 							</div>
 						</div>
 					</div>
@@ -655,7 +743,9 @@
 					<div class='priceBtn' id="plusBtn"> + </div>
 					
 				</div>
+
 				<div id="bidButton">입 찰</div>
+		
 			</div>
 			<div id="calculate">
 				<div id="calculateTitle"> 입력 단위 설정 </div>

@@ -164,6 +164,7 @@
 	var auctionInter;
 	
 	$(function(){
+		console.log( "${sessionScope}")
 		$(".fa-heart").on('click',function(){
 			if(!isSub){
 				var result = confirm("알람 등록 하시겠습니까?");
@@ -215,7 +216,7 @@
 </head>
 <body>
 	<div class="container">
-		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
+<%-- 		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" /> --%>
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
 		<div id="sideCategoryContainer">
 			<div id="sideGrid">

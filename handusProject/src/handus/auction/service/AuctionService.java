@@ -2,6 +2,7 @@ package handus.auction.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,7 @@ import com.google.gson.JsonObject;
 
 import handus.dao.AuctionDao;
 import handus.model.Auction;
+import handus.model.AuctionGraph;
 
 @Service
 public class AuctionService {
@@ -23,6 +25,7 @@ public class AuctionService {
 	@Autowired
 	private AuctionDao auctionDao;
 	
+		
 	public List<Auction> getAuctionList(){
 		return auctionDao.selectAuctionList();
 	}
@@ -44,8 +47,9 @@ public class AuctionService {
         String hours = (hour < 10) ? "0" + hour : hour+"";
         String minutes = (minute < 10) ? "0" + minute : minute+"";
         String seconds = (second < 10) ? "0" + second : second+"";
-		
-		return days +"일 "+ hours + ":" + minutes + ":" + seconds;
+		String day  = (days  < 1 ) ? "" : days+"일 ";
+        
+		return day + hours + ":" + minutes + ":" + seconds;
 	}
 	
 	public byte[] getAuctionImages(int a_pk) throws IOException {		//예외발생시 예외 이미지 주기
@@ -57,32 +61,36 @@ public class AuctionService {
 		return bytes;
 	}
 	
-	public String getAuctionGraphData(int a_pk) {
+	public String getAuctionGraphData(AuctionGraph ag) {
 		Gson gson = new Gson();
 		List<JsonObject> objectList = new ArrayList<>();
 		
-		makeGraphData(objectList,a_pk);
+		makeGraphData(objectList,ag.getA_pk());
 		
 		return gson.toJson(objectList);
 	}
 	
 	
-	public String biddingAuction(int a_pk, int bidPrice) {
+	public String biddingAuction(AuctionGraph ag) {
 		
-		List<Integer> graphData = auctionDao.selectAuctionGraphData(a_pk);
+		List<Integer> graphData = auctionDao.selectAuctionGraphData(ag.getA_pk());
 		int lastData = graphData.get(graphData.size()-1);
 		
 		Gson gson = new Gson();
 		List<JsonObject> objectList = new ArrayList<>();
 		
-		if(bidPrice > lastData) {
-			boolean result = auctionDao.insertBidding(a_pk, bidPrice);
+		if(ag.getAg_bidding() > lastData) {
+			boolean result = auctionDao.insertBidding(ag);
+			Date regDate =  auctionDao.selectAuctionRegDate(ag.getAg_pk());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm 입찰");
+			
 			JsonObject object = new JsonObject();
 			object.addProperty("result", result);
+			object.addProperty("regDate", sdf.format(regDate));
 			objectList.add(object);
 			
 			if(result) {
-				makeGraphData(objectList,a_pk);
+				makeGraphData(objectList,ag.getA_pk());
 			}else {
 				object.addProperty("msg", "서버상의 오류로 입찰에 실패했습니다.");
 			}
@@ -94,6 +102,11 @@ public class AuctionService {
 		}
 		
 		return gson.toJson(objectList);
+	}
+	
+	public int getAuctionEndPrice(int a_pk){
+		List<Integer> graphData = auctionDao.selectAuctionGraphData(a_pk);
+		return graphData.get(graphData.size() - 1);
 	}
 	
 	private void makeGraphData(List<JsonObject> objectList, int a_pk){
@@ -113,4 +126,6 @@ public class AuctionService {
 			objectList.add(object);
 		}
 	}
+	
+	
 }

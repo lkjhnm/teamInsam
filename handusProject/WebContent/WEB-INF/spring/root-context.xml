@@ -2,16 +2,31 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
-	<context:component-scan base-package="handus.**.*"></context:component-scan>
+	<context:component-scan base-package="handus.*.service"/>
+	<tx:annotation-driven transaction-manager="txManager"/>
 	
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<!-- connection pull : 속도를 빠르게 함 -->
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>	
-		<property name="url" value="jdbc:oracle:thin:@teaminsam.cee8wpcnffqv.ap-northeast-2.rds.amazonaws.com:1521:orcl"/>
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@teaminsam.cee8wpcnffqv.ap-northeast-2.rds.amazonaws.com:1521:orcl"/>
 		<property name="username" value="insam"/>
-		<property name="password" value="insam123"/>	
+		<property name="password" value="insam123"/>
+		<property name="maximumPoolSize" value="20"></property>
+	</bean>
+	
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="hikariConfig"/>
 	</bean>
 	
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -20,6 +35,21 @@
 		<property name="typeAliasesPackage" value="handus.model"/>
 	</bean>
 	
+	<!-- 메일 SMTP -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com"/>
+		<property name="port" value="587"/>
+		<property name="username" value="handusCJA@gmail.com"/>
+		<property name="password" value="sd786486"/>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- 스프링 Dao -->
 	<bean id="auctionDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="handus.dao.AuctionDao"/>
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
@@ -35,5 +65,13 @@
   	<bean id="memberDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 		<property name="mapperInterface" value="handus.dao.MemberDao"></property>
+  	</bean>
+  	<bean id="heartDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+		<property name="mapperInterface" value="handus.dao.HeartDao"></property>
+  	</bean>
+  	<bean id="reviewDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+		<property name="mapperInterface" value="handus.dao.ReviewDao"></property>
   	</bean>
 </beans>

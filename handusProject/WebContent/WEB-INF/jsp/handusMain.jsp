@@ -27,36 +27,35 @@
 	
 	#main{
 		width: 100%;
-		height:100%;
 		z-index:98;
 		text-align:center;
 	}
 	#title{
 		font-size: 45px;
 		opacity:0;
-		position:absolute;
-		top:-5%;
-		left:-5%;
+ 		position:absolute; 
+ 		top:-5%; 
+ 		left:-5%; 
 		transform:rotate(-30deg);
 		color: #707070;
 	}
 	
 	#infoContainer{
 		width: 70%;
- 		height: 70%;
-		position:absolute;
+ 		height: 700px;
+ 		position:relative; 
 		border: 1px solid;
-		border-color: #707070;
-		top:50%;
-		left:50%;
-		transform : translate(-50%,-50%);
+ 		border-color: #707070; 
+ 		top:50%; 
+ 		left:50%; 
+ 		transform : translate(-50%); 
 		display:flex;
 		justify-content:center;
 		align-items: center;
 	}
 	.info{
 		width: 10%;
-		height: 30%;
+		height: 500px;
 		float:left;
 		margin: 0 15px;
 		background-color: #fff;
@@ -86,7 +85,7 @@
 			
 			$(".info").animate({
 				width: '22%',
-				height: '70%'
+				height: '600px'
 			},700)
 		})
 		
@@ -141,7 +140,7 @@
 <body>
 	
 	<div class="container">
-		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
+<%-- 		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" /> --%>
 		<div id="preload">
 			<i>Handus <br> Project</i>
 		</div>

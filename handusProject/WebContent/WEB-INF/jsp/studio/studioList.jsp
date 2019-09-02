@@ -161,17 +161,69 @@
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
-$(function () {
-	// 하트를 누르면 
-	$(".heart").on("click", function () {
-		$(this).toggleClass("far");
-		$(this).toggleClass("fas");
+	var memberNum = 1;	// 회원 번호, 세션에서 얻어오면 됨 
+	var studioNum; 		// 게시글 번호, 리스트에서 얻어옴 
+	var isHeart;
+	$(function () {
+		// 좋아요 하기, 좋아요 취소하기 
+		$(".imgChange").on("click", function () {
+			isHeart = $(this).attr("data-iH");
+			studioNum = $(this).attr("data-sN");
+			if(isHeart === "true"){
+				offHeart(studioNum);
+				$(this).attr("data-iH", false);
+			}else{
+				// 왜 값이 false 인데 여기로 안 떨어지지 
+				onHeart(studioNum);
+				$(this).attr("data-iH", true);
+			}
+		});
 	});
-});
-function subOn() {
-	
-};
-
+	function onHeart(studioNum) {
+		$.ajax({
+			url: "${pageContext.request.contextPath}/heart/onHeart",
+			data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
+			type: "post",
+			success: function (result) {
+				if(result){
+					drawFas(studioNum);
+				}else{
+					alert("구독 불가");
+				}
+			},
+			error: function () {
+				alert("onHeart에러");
+			}
+		});
+	};
+	function offHeart(studioNum) {
+		$.ajax({
+			url: "${pageContext.request.contextPath}/heart/offHeart",
+			data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
+			type: "post",
+			success: function (result) {
+				if(result){
+					drawFar(studioNum);
+				}else{
+					alert("구독취소 불가");
+				}
+			},
+			error: function () {
+				alert("offHeart에러");
+			}
+		});
+	};
+	function drawFar(studioNum) {
+		// 해당 게시글 번호 속성을 가지고 있는 div의 i 속성 변경 
+		var faHeart = $("i[data-fa='"+studioNum+"']");
+		faHeart.removeClass("fas");
+		faHeart.addClass("far");
+	};
+	function drawFas(studioNum) {
+		var faHeart = $("i[data-fa='"+studioNum+"']");
+		faHeart.removeClass("far");
+		faHeart.addClass("fas");
+	};
 </script>
 </head>
 <body>
@@ -179,7 +231,7 @@ function subOn() {
 		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
 		<div id="sideCategoryContainer">
-			<div id="sideGrid">
+			<div id="sideGrid"> 
 				<div id="category">
 					<div class="categoryTitle"><span> C A T E G O R Y ----- </span></div>
 					<ul>
@@ -207,20 +259,24 @@ function subOn() {
 				</div>
 			</div>
 			<div class="studioList">
+				<!-- 리스트 그리기 -->
 				<c:forEach items="${studioList }" var="studio">
 					<div class="studioBox">
-						<div class='imgChange'>
-<!-- 							<span><i class="fas fa-camera"></i></span> -->
-<!-- 							<span><i class="far fa-user"></i></span> -->
-							<span><i class="far fa-heart fa-lg heart"></i></span>
+						<img alt="" src="">
+						<!-- 하트 결정하기 -->
+						<div class='imgChange' data-sN='${studio.num }' data-iH='${studio.isHeart }'>
+							<c:choose>
+								<c:when test="${!(studio.isHeart) }">
+									<span><i class="far fa-heart fa-lg heart" data-fa='${studio.num }'></i></span>
+								</c:when>
+								<c:otherwise>
+									<span><i class="fas fa-heart fa-lg heart" data-fa='${studio.num }'></i></span>
+								</c:otherwise>
+							</c:choose>
 						</div>
-						<span><a href="detail?num=${studio.s_pk}"><img class='studioImg'></a></span>
-<!-- 						<div class='studioInfo'> -->
-<%-- 							<p class='info'><i>작가 ${item.m_pk_writer }</i></p> --%>
-<%-- 							<p class='info'><i>현재 가격 <fmt:formatNumber value="${item.a_startPrice }" pattern="#,###원"/></i></p> --%>
-<!-- 						</div> -->
+						<span><a href="detail?num=${studio.num}"><img class='studioImg'></a></span>
 						<div class="studioTitle">
-							<span><a href='detail?num=${studio.s_pk}'>${studio.s_title }</a></span>
+							<span><a href='detail?num=${studio.num}'>${studio.title }</a></span>
 						</div>
 					</div>
 				</c:forEach>
