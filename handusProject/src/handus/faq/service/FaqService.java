@@ -9,5 +9,6 @@ public interface FaqService {
 	public boolean modifyFaq(FAQ faq);
 	public boolean removeFaq(int idNum);
 	public FAQ getFaq(int idNum);
-	public List<FAQ> gatAllFaq();
+	public List<FAQ> getAllFaq();
+	public List<FAQ> getListByFaq(int category);
 }

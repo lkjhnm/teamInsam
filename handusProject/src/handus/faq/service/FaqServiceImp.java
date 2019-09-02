@@ -49,9 +49,17 @@ public class FaqServiceImp implements FaqService{
 	}
 
 	@Override
-	public List<FAQ> gatAllFaq() {
+	public List<FAQ> getAllFaq() {
 		//전체 조회
 		return dao.selectAll();
 	}
+
+	@Override
+	public List<FAQ> getListByFaq(int category) {
+		// TODO Auto-generated method stub
+		return dao.selectListByFaq(category);
+	}
+	
+	
 	
 }

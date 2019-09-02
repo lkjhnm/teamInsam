@@ -11,5 +11,5 @@ public interface FaqDao {
 	public int updateFaq(FAQ faq);
 	public FAQ selectFaq(int idNum);
 	public List<FAQ> selectAll();
-	
+	public List<FAQ> selectListByFaq(int category);
 }
