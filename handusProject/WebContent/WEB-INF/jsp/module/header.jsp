@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
+<sec:authorize access="isAnonymous()" var="isAnon"></sec:authorize>
 <script type="text/javascript">
 	$(function(){
 		
@@ -8,6 +12,7 @@
 		var indexL = url.indexOf('/',indexS+1)
 		var page = url.substring(indexS+1,indexL)
 		var headInter;
+		var isAnon = ${isAnon}
 		
 		switch(page){
 			case 'auction':
@@ -24,22 +29,41 @@
 				break;
 		}
 		
-// 		$(".menuLink").on("mouseover",function(){
-// 			var i = 0;
-// 			headInter = setInterval(() => {
-// 				i++
-// 				if(i == 2){
-// 					$(this).siblings().animate({
-// 						opacity : '0.2'
-// 					})
-// 				}
-// 			}, 100);
-// 		})
+		$(".menuLink").on("mouseover",function(){
+			var i = 0;
+			headInter = setInterval(() => {
+				i++
+				if(i == 2){
+					$(this).siblings().animate({
+						opacity : '0.2'
+					})
+				}
+			}, 100);
+		})
 		$(".menuLink").on("mouseleave",function(){
 			clearInterval(headInter)
 			$(this).siblings().animate({
 				opacity : '1'
 			})
+		})
+		
+		$("#menuAuction").on("click",function(){
+			location.href='${pageContext.request.contextPath}/auction/list'
+		})
+		$("#menuStudio").on("click",function(){
+			location.href='${pageContext.request.contextPath}/studio/list'
+		})
+		
+		$("#headerTitle").on("click",function(){
+			location.href="${pageContext.request.contextPath}/main"
+		})
+		
+		$("#loginHeader").on("click",function(){
+			if(isAnon){
+				location.href="${pageContext.request.contextPath}/member/loginForm"
+			}else{
+				location.href="${pageContext.request.contextPath}/member/myPage"
+			}
 		})
 	})
 </script>
@@ -52,4 +76,15 @@
 	<span id="headerTitle">
 		<i>Handus</i>
 	</span>
+	<div id="iconContainer">
+		<sec:authorize access="isAuthenticated()">
+			<div id="bell"><span><i class="far fa-bell"></i></span><div id="redCircle"></div></div>
+		</sec:authorize>
+		<sec:authorize access="isAnonymous()">
+			<div id="bell"></div>
+		</sec:authorize>
+		<span id="loginHeader"><img src="${pageContext.request.contextPath }/img/header-icon-account.svg"></span>
+		<span id="subscribeHeader"><img src="${pageContext.request.contextPath }/img/header-icon-bookmark.svg"></span>
+		<span id="shoppingCartHeader"><img src="${pageContext.request.contextPath }/img/header-icon-cart.svg"></span>		
+	</div>
 </div>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="handus.dao.StudioDao">
+	<insert id="insertStudio" parameterType="studio">
+		insert into STUDIO 
+		(S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_MAXIMUM, S_CLASSSTART, S_CLASSEND, S_CONTENT, S_COMMENT)
+		values (STUDIO_SEQ.NEXTVAL, #{s_title}, #{m_pk_writer}, #{s_price}, #{s_location}, #{s_category}, 
+		#{s_maximum}, #{s_classstart}, #{s_classend}, #{s_content}, #{s_comment} )
+	</insert>
+	<update id="updateStudio" parameterType="studio">
+		update STUDIO 
+		set S_TITLE = #{s_title}, S_PRICE = #{s_price}, S_UPDATEDATE = #{s_updatedate}, S_MAXIMUM = #{s_maximum}, 
+			S_CONTENT = #{s_content}, S_COMMENT = #{s_comment} 
+		where S_PK = #{s_pk} 
+	</update>
+	<delete id="deleteStudio" parameterType="int">
+		delete from STUDIO where S_PK = #{s_pk} 
+	</delete>
+	<select id="selectStudioByNum" parameterType="int" resultMap="studioMap">
+		select S.S_PK, 
+	       S.M_PK_WRITER, 
+	       S.S_TITLE, 
+	       S.S_PRICE, 
+	       S.S_LOCATION, 
+	       S.S_CATEGORY, 
+	       S.S_REGDATE, 
+	       S.S_UPDATEDATE, 
+	       S.S_MAXIMUM, 
+	       S.S_CURRENT, 
+	       S.S_CLASSSTART, 
+	       S.S_CLASSEND, 
+	       S.S_READ_COUNT, 
+	       S.S_CONTENT, 
+	       S.S_COMMENT, 
+	       M.M_NAME, 
+	       C.C_CATEGORY, 
+	       (select count(*) from REVIEW_STUDIO where S.S_PK = #{S_PK} ) as RS_COUNT, 
+	       (select count(*) from HEART_STUDIO where HS_S_PK = #{S_PK} )as HS_COUNT 
+	from STUDIO S 
+	  JOIN MEMBER M 
+	  ON S.M_PK_WRITER = M.M_PK  
+	  JOIN CATEGORYNAME C 
+	  ON C.C_PK = S.S_CATEGORY 
+	where S.S_PK = #{S_PK} 
+	</select>
+	<select id="selectStudioList" resultMap="studioMap">
+		select *  
+		from(select rownum as rnum, S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_REGDATE, S_UPDATEDATE, S_MAXIMUM, S_CURRENT, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT
+			from (select S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_REGDATE, S_UPDATEDATE, S_MAXIMUM, S_CURRENT, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT 
+				from STUDIO
+				order by  desc))
+		where rnum between #{param1} and #{param2}
+	</select>
+	<select id="selectAllStudio" resultMap="studioMap">
+		select * from STUDIO
+	</select>
+	<update id="updateReadCount" parameterType="int">
+		update STUDIO 
+		set S_READ_COUNT = S_READ_COUNT + 1
+		where S_PK = #{s_pk} 
+	</update>
+	<select id="selectCount" resultType="int">
+		select count(*) from STUDIO
+	</select>
+<!-- 	<update id="minusHeart"> -->
+<!-- 		update STUDIO -->
+<!-- 		set S_HEART = S_HEART + 1  -->
+<!-- 		where where S_PK = #{s_pk}  -->
+<!-- 	</update> -->
+<!-- 	<update id="plusHeart"> -->
+<!-- 		update STUDIO -->
+<!-- 		set S_HEART = S_HEART - 1  -->
+<!-- 		where where S_PK = #{s_pk}  -->
+<!-- 	</update> -->
+	<resultMap type="studio" id="studioMap">
+		<result column="S_PK" property="s_pk"/>
+		<result column="S_TITLE" property="s_title"/>
+		<result column="M_PK_WRITER" property="m_pk_writer"/>
+		<result column="S_PRICE" property="s_price"/>
+		<result column="S_LOCATION" property="s_location"/>
+		<result column="S_CATEGORY" property="s_category"/>
+		<result column="S_REGDATE" property="s_regdate"/>
+		<result column="S_UPDATEDATE" property="s_updatedate"/>
+		<result column="S_MAXIMUM" property="s_maximum"/>
+		<result column="S_CURRENT" property="s_current"/>
+		<result column="S_CLASSSTART" property="s_classstart"/>
+		<result column="S_CLASSEND" property="s_classend"/>
+		<result column="S_READ_COUNT" property="s_read_count"/>
+		<result column="S_CONTENT" property="s_content"/>
+		<result column="M_NAME" property="m_name"/>
+		<result column="C_CATEGORY" property="c_category"/>
+		<result column="RS_COUNT" property="rs_count"/>
+		<result column="HS_COUNT" property="hs_count"/>
+	</resultMap>
+</mapper>

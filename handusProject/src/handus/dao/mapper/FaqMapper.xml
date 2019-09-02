@@ -1,36 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="handus.dao.FaqDao">
-	<insert id="insertFaq" parameterType="fAQ">
+	<insert id="insertFaq" parameterType="FAQ">
 		<selectKey order="BEFORE" keyColumn="int" keyProperty="num">
 			select faq_seq.nextval from dual
 		</selectKey>
 		insert into faq(faq_idNum,faq_title,faq_content)
 		values (#{idNum},#{title},#{content})
 	</insert>
-	<update id="updateFaq" parameterType="fAQ">
+	<update id="updateFaq" parameterType="FAQ">
 		update faq set
 			title = #{title},
 			content = #{content}
 		where idNum = #{idNum}	
 	</update>
 	<delete id="deleteFaq" parameterType="int">
-		delete from faq where idNum = #{idNum}
+		delete from faq idNum = #{idNum}
 	</delete>
 	<select id="selectFaq" parameterType="int" resultMap="faqMap">
-		select * from faq where idNum = #{idNum}
-	</select>
-	<select id="selectListByFaq" parameterType="int" resultMap="faqMap">
-		select * from faq where category = ${category}
+		select * from faq idNum = #{idNum}
 	</select>
 	<select id="selectAll" resultMap="faqMap">
 		select * from faq
 	</select>
-	<resultMap type="fAQ" id="faqMap">
+	<resultMap type="FAQ" id="faqMap">
 		<result column="FAQ_IDNUM" property="faq_idNum" />
 		<result column="FAQ_TITLE" property="faq_title" />
 		<result column="FAQ_CONTENT" property="faq_content" />
 		<result column="FAQ_REGDATE" property="faq_regdate" />
-		<result column="FAQ_CATEGORY" property="faq_category" />
 	</resultMap>
 </mapper>

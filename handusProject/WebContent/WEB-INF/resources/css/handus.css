@@ -5,17 +5,14 @@ html,body{
 	padding:0;
 	margin:0;
 	height:100%;
+	background-color:#FBF9F6;
 }
 
 .container{
 	width:1920px;
-	height:100%;
-	min-height: 1080px;
 	position:relative;
-	background-color:#F3F1ED;
-	overflow: visible;
+	background-color:#FBF9F6;
 	margin-top:108px;
-/* 	border-top: 1px solid transient; */
 }
 
 /* 	사이드 css 설정 */
@@ -141,7 +138,7 @@ html,body{
 	top:0;
 	left:0;
 	background-color: #FBF9F6;
-	z-index:98;
+	z-index:150;
 }
 #menuContainer{
 	width: 30%;
@@ -153,9 +150,12 @@ html,body{
 }
 #headerTitle{
 	position:absolute;
-	right:5%;
-	bottom:15%;
+	left:5%;
+	bottom:0;	
 	font-size:40px;
+}
+#headerTitle:hover{
+	cursor:pointer;
 }
 .menuLink{
 	font-size:20px;
@@ -163,196 +163,31 @@ html,body{
 .menuLink:hover{
 	cursor:pointer;
 }
-=======
-@charset "UTF-8";
-
-/* 공통 설정 */
-html,body{
-	padding:0;
-	margin:0;
-	height:100%;
-}
-
-.container{
-	width:1920px;
-	height:100%;
-	min-height: 1080px;
-	position:relative;
-	background-color:#F3F1ED;
-	padding-top: 108px;
-	overflow: auto;
-}
-
-/* 	사이드 css 설정 */
-#sideMenu{
-	width: 300px;
-	height: 100%;
-	position: fixed;
-	top:0;
-	left:-300px;
-	background-color: #D8C9BF;
-	z-index:99;
-}
-
-#menuBtn{
-	position: absolute;
-	width:40px;
-	border-radius: 5px;
-	background-color:transparent;
-	top:50px;
-	right: -40px;
-	z-index: 99;
-	text-align: center;
-}
-
-#menuBtn:hover{
-	cursor:pointer;
-}
-
-#sideContainer{
-	width: 200px;
-	height: 100%;
-	margin:0 auto;
-	padding-top: 6%;
-}
-
-#profile{
-	width: 100px;
-	height: 100px;
-	border-radius: 50%;
-	margin-top:60px;
-}
-
-#userName{
-	width: 70%;
-	height: 3%;
-	margin-top : 3%;
-}
-#userName span{
-	font-size: 20px;
-}
-#userGrade{
-	width: 70%;
-	height: 2%;
-}
-#userGrade span{
-	font-size: 18px;
-}
-
-#myPage{
-	margin-top: 50px;
-	background-color: #AB926C;
-	height: 35px;
-}
-#myCart{
-	margin-top: 20px;
-	background-color: #AB926C;
-	height: 35px;
-}
-#logout{
-	margin-top: 370px;
-	background-color: #AB926C;
-	height: 35px;
-}
-#copyrights{
-/* 	margin-top: 20px; */
-	font-size: 0.6em;
-	position: absolute;
-	bottom: 5px;
-/* 	top: 990px; */
-}
-#searchBar{
-	margin-top: 17px;
-
-	border-radius: 5px;
-	background-color: rgba( 0, 0, 0, 0 );
-
-/* 	border: 1px solid; */
-/* 	border-color: #707070; */
-	bottom: 10%;
-}
-#search-btn{
-	border: 1px solid;
-	border-color: #AB926C;
- 	padding: 3px;
-  	text-align: center;
-  	text-decoration: none;
-  	display: inline-block;
-  	font-size: 0.9em;
-  	background-color: #AB926C;
-  	border-radius: 5px;
-}
-#searchBar input{
-	border-style: none;
-	background-color: rgba( 0, 0, 0, 0 );
-	display: inline-block;
-	width: 110px;
-  	height: 22px;
-  	background: #F3F1ED;
-  	border: none;
-  	font-size: 0.9em;
-  	float: left;
-  	color: #ffff;
-  	padding-left: 10px;
-  	border-radius: 5px;
-  	margin-left: 10px;
-}
-#searchBar span{
-	font-size: 20px;
-	vertical-align: middle;
-}
-#searchBar span:hover{
-	cursor:pointer;
-}
-.center{
-	margin: 0 auto;
-	text-align: center;
-}	
-.menu{
-	width: 90%;
-	height: 5%;
-	border-radius: 5px;
-	background-color: #fff;
-/* 	border: 1px solid; */
-	border-color: #707070;
-}
-.menu span{
-	font-size: 1em;
-	vertical-align: middle;
-	
-}
-.menu:hover{
-	cursor:pointer;
-}
-	
-/* 	헤더 css 설정 */
-#header{
-	width: 1920px;
-	height: 108px;
-	position:fixed;
-	top:0;
-	left:0;
-	background-color: #FBF9F6;
-	z-index:98;
-}
-#menuContainer{
-	width: 30%;
-	position: absolute;
-	left:40%;
-	bottom:7%;
-	display:flex;
-	justify-content: space-around;
-}
-#headerTitle{
+#iconContainer{
 	position:absolute;
-	right:5%;
-	bottom:15%;
-	font-size:40px;
+	right: 6%;
+	bottom: 7%;
+	width: 180px;
+	display:flex;
+	justify-content: space-between;
 }
-.menuLink{
-	font-size:20px;
-}
-.menuLink:hover{
+#iconContainer span:hover{
 	cursor:pointer;
 }
-
+#bell{
+	display:inline-block;
+	position:relative;
+}
+#bell span{
+	font-size:22px;
+	line-height:inherit;
+}
+#redCircle{
+	width: 12px;
+	height:12px;
+	border-radius: 50%;
+	background-color: red;
+	position:absolute;
+	top:0;
+	right:-5px;
+}

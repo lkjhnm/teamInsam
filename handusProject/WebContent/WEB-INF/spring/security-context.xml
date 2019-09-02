@@ -8,6 +8,31 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<bean id="bcryptPasswordEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 
 	
+	<context:component-scan base-package="handus.member.security"/>
+	
+	<security:http  use-expressions="true">
+		<security:form-login 
+			login-page="/member/loginForm" 
+			login-processing-url="/member/login" 
+			default-target-url="/auction/list"
+			authentication-failure-url="/member/loginForm"
+			authentication-success-handler-ref="customLoginSuccessHandler"
+		/>
+		<security:session-management invalid-session-url="/member/loginForm">
+			<security:concurrency-control max-sessions="1" expired-url="/main" />
+		</security:session-management>
+		<security:logout logout-url="/logout" invalidate-session="true" logout-success-url="/member/loginForm"/>
+		<security:csrf disabled="true"/>
+		
+	</security:http>
+	
+	<security:authentication-manager id="authenticationManager">
+		<security:authentication-provider ref="customProvider" >
+		</security:authentication-provider>
+	</security:authentication-manager>
 </beans>

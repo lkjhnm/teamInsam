@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
-<!-- <script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script> -->
+<script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
 <script>
 	var isClicked = false;
 	
