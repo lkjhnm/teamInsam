@@ -334,6 +334,7 @@
   src="https://code.jquery.com/jquery-3.4.1.js"
   integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
   crossorigin="anonymous"></script>
+ <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=486df4f7ba9d0fcd564c18d5601724f6&libraries=services,clusterer"></script>
 <script type="text/javascript">
 	var memberNum = 1;				// 회원 번호 
 	var studioNum = ${studio.s_pk};	// 게시글 번호
@@ -341,11 +342,37 @@
 	var isLock = false;				
 	var isReview = true;			// 리뷰 남기기 창 (초기값: false)
 	var modBtn = 0; 				// 수정 버튼 기능 0=수정창보이기, 1=수정로직실행
+	var mapX = 127.02448266126561;
+	var mapY = 37.50312464278207;
 	$(function () {
 		// 해당 회원이 게시글에 대해 좋아요를 눌렀는지 확인 후 하트 클래스 추가/삭제
 		heartCheck();
 		// 리뷰 그리기
 		drawReview();
+		// 지도 API 
+		// 지도 - 그리기 
+		var mapBox = document.getElementById("mapBox");
+		var mapOption = {
+			center: new kakao.maps.LatLng(33.450701, 126.570667), 	// 지도의 중심 좌표 설정 
+			level: 3 	// 지도의 축소, 확대 정도 
+		};
+		var map = new kakao.maps.Map(mapBox, mapOption); 	// 지도 객체 생성 (지도 그릴곳, 옵션 )파라미터 대입 
+		var loc = "${studio.s_location }";
+		var geocoder = new kakao.maps.services.Geocoder();
+		geocoder.addressSearch(loc, function (result, status) {
+			if(status == kakao.maps.services.Status.OK){
+				var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+				var marker = new kakao.maps.Marker({
+					map: map,
+				    position: coords
+				});
+				var infowindow = new kakao.maps.InfoWindow({
+		            content: '<div style="width:150px;text-align:center;padding:6px 0;">${studio.s_name }</div>'
+		        });
+		        infowindow.open(map, marker);
+		        map.setCenter(coords);
+			}
+		});
 		
 		// 작가 페이지, 메세지 문의 이동 
 		$("#autherPage").on("click", function () {
@@ -731,18 +758,14 @@
 				<div id="detailBox">
 					<div class='infoBold'><span>ITEM DETAIL</span></div>
 						<p>${studio.s_content }</p>
-<!-- 					<ul> -->
-<!-- 						<li>코디의 주역이 될 한발.</li> -->
-<!-- 						<li>· 치마도 바지도 일치하는 레이디 아름다움 펌프스.</li> -->
-<!-- 						<li>· 다리를 단단히 잡아주는 인상적인 3 개의 스트랩</li> -->
-<!-- 						<li>· 6.5cm 힐 -->
-<!-- 					</ul> -->
 				</div>
 				<div id="specBox">
 					<div class='infoBold'><span>STUDIO LOCATION</span></div>
-					<div class='specPosition'><div class='specType'><span> s t u d i o </span></div><span> HAND STUDIO </span></div>
+					<div class='specPosition'><div class='specType'><span> s t u d i o </span></div><span> ${studio.s_name } </span></div>
 					<div class='specPosition'><div class='specType'><span> a d d r e s s </span></div><span> ${studio.s_location } </span></div>
-					<div class='locPosition'><div class='locType'><span> l o c a t i o n </span></div><div id="mapBox"><span> $지도 API </span></div></div>
+					<div class='locPosition'><div class='locType'><span> l o c a t i o n </span></div>
+						<div id="mapBox"><span> </span></div>
+					</div>
 				</div>
 			</div>
 			<!-- 리뷰 -->
