@@ -172,7 +172,7 @@
 /* 		모달 		*/
 	#modalContainer{
 		display: none;
-		width: 500px;
+		width: 400px;
 		height: 700px;
 		border: 1px solid black;
 		position: fixed;
@@ -180,11 +180,40 @@
 		padding: 20px;
 	}
 	.calendarBox, .weatherBox{
-		width: 450px;
+		width: 390px;
 		height: 300px;
 		border: 1px solid black;
 		margin: 0 auto;
 		margin-bottom: 20px;
+	}
+	.calendarBox table{
+		margin: 20px auto; 
+		width: 350px;
+		padding: 20px;
+	}
+	.calendarBox tr{
+		margin-top: 15px;
+	}
+	.calendarBox tr:first-child{
+		font-size: 20px;
+	}
+	.calendarBox tr:nth-child(2){
+		font-size: 12px;
+	}
+	.calendarBox td{
+		display: table-cell; 
+		width: 10%;
+		padding: 5px 0;
+		text-align: center;
+	}
+	.calMove:hover{
+		color: #FF1D43;
+		cursor: pointer;
+	}
+	.onDate:hover, .clickDate{
+		color: #FBF9F6;
+		background-color: #FF1D43;
+		cursor: pointer;
 	}
 	.close, .reservation{
 		width: 200px;
@@ -349,6 +378,8 @@
 		heartCheck();
 		// 리뷰 그리기
 		drawReview();
+		// 달력그리기 
+		drawCalendar(new Date());
 		// 지도 API 
 		// 지도 - 그리기 
 		var mapBox = document.getElementById("mapBox");
@@ -426,7 +457,7 @@
 		// 예약 클릭시 모달 띄우기 
 		$("#reservButton").on("click", function () {
 			$("#modalContainer").css("top","18%");
-			$("#modalContainer").css("left","60%");
+			$("#modalContainer").css("left","74%");
 			$("#modalContainer").show("slow");
 		});
 		$(".close").on("click", function () {
@@ -502,7 +533,25 @@
 				}
 			});
 		});
-	});  // ------------------------------------- onload 끝 
+		var today;
+		// 달력 < 버튼  
+		$(document).on("click", "#beforeMonth", function () {
+			if(today==null){
+				today = new Date();
+			}
+			today = new Date((today.getFullYear()), (today.getMonth()-1), (today.getDate()), (today.getHours()), (today.getMinutes()));
+			drawCalendar(today);
+		});
+		// 달력 > 버튼 
+		$(document).on("click", "#afterMonth", function () {
+			if(today==null){
+				today = new Date();
+			}
+			today = new Date((today.getFullYear()), (today.getMonth()-1), (today.getDate()), (today.getHours()), (today.getMinutes()));
+			drawCalendar(today);
+		});
+		
+	});  // ----------------------------------------------------------------------------- onload 끝 
 	function heartCheck() {
 		$.ajax({
 			url: "${pageContext.request.contextPath}/heart/chekHeart",
@@ -688,6 +737,62 @@
 		$("#writeContent").val(" ");
 		$("#reviewInput").css("display", "none");
 	};
+	function drawCalendar(today) {
+// 		$("#calendarBox1 div:gt(0)").remove();
+		$("#calBox1").remove();
+		var year = today.getFullYear();
+		var days;
+		if(year%4!=0){
+			days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+		}else{
+			days = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+		}
+		var month = today.getMonth();
+		var firstDay = new Date(year, month, 1);
+		var firstDayOfWeek = firstDay.getDay();
+		var num = Math.ceil((days[month]+firstDayOfWeek)/7); 
+		var calBox = $("<div id='calBox1'></div>");
+		var calendar = $("<table></table>");
+		var calInfo = $("<tr></tr>").append($("<td class='calMove' id='beforeMonth'><span>&lt;</span></td>")).append($("<th colspan='5' class='calTitle'>"+year+"년&nbsp;"+(month+1)+"월</td>")).append($("<td class='calMove' id='afterMonth'><span>&gt;</span></td>"));
+		calendar.append(calInfo);
+		var calWeek = $("<tr></tr>").append($("<td>SUN</td>")).append($("<td>MON</td>")).append($("<td>TUE</td>")).append($("<td>WED</td>")).append($("<td>THU</td>")).append($("<td>FRI</td>")).append($("<td>SAT</td>"));
+		calendar.append(calWeek);
+		var dNum = 1; 
+		var week; 
+		for(var i = 0; i < num; i++){
+			week = $("<tr></tr>");
+			for(var j = 0; j < 7; j++){
+				if(i==0 && j < firstDayOfWeek || dNum > days[month]){
+					// 비어있는 칸 
+					var dayRow = $("<td class='wPx'>&nbsp;</td>");
+					week.append(dayRow);
+				}else{
+					var dayRow = $("<td id='day"+dNum+"' class='wPx'>"+dNum+"</td>");
+					(function (d) {
+						dayRow.on("mouseover", function () {
+							$("#day"+d).addClass("onDate");
+						});
+						dayRow.on("click", function () {
+							$("#day"+d).toggleClass("clickDate");
+							today.setDate(d);
+							alert(today);
+// 							var date = today.getDate();
+// 							var hours = today.getHours();
+// 							var minutes = today.getMinutes();
+// 							if(minutes<30){
+// 								hours = hours - 1; 
+// 							}
+						});
+					})(dNum);
+					week.append(dayRow);
+					dNum++;
+				}
+			}
+			calendar.append(week);
+		}
+		calBox.append(calendar);
+		$("#calendarBox1").append(calBox);
+	};
 </script>
 </head>
 <body>
@@ -723,11 +828,8 @@
 					</div>
 					<div id="button-boundary"></div>
 					<div class='infoPosition infoBold'>
-<!-- 						<span class='smallText'> &lt; 2019/08/21 08:15 입찰 &gt;</span> -->
 						<span id='price'> &nbsp;&nbsp;${studio.s_price }원</span>
 					</div>
-					
-<!-- 					<div id="button-boundary"></div> -->
 					
 					<div class='infoPosition' id="buy_sub_container">
 						<div id='buttonContainer'>
@@ -747,7 +849,7 @@
 			<!-- 예약 페이지 모달창 -->
 			<div id="modalContainer">
 				<div id="modalBox">
-					<div class="calendarBox"><span> $달력API </span></div>
+					<div class="calendarBox" id='calendarBox1'></div>
 					<div class="weatherBox"><span> $날씨API </span></div>
 					<div class="reservation"><span> reservation </span></div>
 					<div class="close"><span> close </span></div>
