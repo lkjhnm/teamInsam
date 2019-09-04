@@ -32,6 +32,7 @@
 	       S.S_READ_COUNT, 
 	       S.S_CONTENT, 
 	       S.S_COMMENT, 
+	       S.S_NAME,
 	       M.M_NAME, 
 	       C.C_CATEGORY, 
 	       (select count(*) from REVIEW_STUDIO where S.S_PK = #{S_PK} ) as RS_COUNT, 
@@ -91,5 +92,6 @@
 		<result column="C_CATEGORY" property="c_category"/>
 		<result column="RS_COUNT" property="rs_count"/>
 		<result column="HS_COUNT" property="hs_count"/>
+		<result column="S_NAME" property="s_name"/>
 	</resultMap>
 </mapper>
