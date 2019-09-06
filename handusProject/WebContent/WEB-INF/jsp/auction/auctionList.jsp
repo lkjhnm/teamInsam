@@ -57,6 +57,9 @@
     -moz-appearance: none;
     appearance: none;
 	
+	background-color: #191919;
+	color:#fff;
+	font-weight:500;
 	}
 	/* IE 10, 11의 네이티브 화살표 숨기기 */
 	select::-ms-expand {
@@ -69,6 +72,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: initial;
+		height: 1000px;
 	}
 	.auctionBox{
 		width: 400px;
@@ -123,6 +127,7 @@
 		right: 0;
 		display:none;
 		opacity:0;
+		color:#ff1d43;
 	}
 	.info{
 		font-size: 25px;
@@ -157,6 +162,29 @@
 		color: inherit;
 		text-decoration: none;
 	}
+/* 페이징 처리  */
+	#pageContainer{
+		margin-top: 100px;
+		text-align: center;
+		padding-right: 125px;
+	}
+	.page{
+		font-size:20px;
+		color:#191919;
+		letter-spacing: 10px;
+		font-weight:600;
+		text-decoration: none;
+		cursor:pointer;
+	}
+	.page:hover{
+		color:#ff1d43;
+	}
+	#start{
+		letter-spacing: 0px;
+	}
+	#end{
+		letter-spacing:0px;
+	}
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
@@ -164,44 +192,31 @@
 	var auctionInter;
 	
 	$(function(){
-		$(".fa-heart").on('click',function(){
-			if(!isSub){
-				var result = confirm("알람 등록 하시겠습니까?");
-				if(result){
-					$(this).removeClass("far");
-					$(this).addClass("fas");
-					isSub = !isSub;
-				}
-			}else{
-				var result = confirm("알람 등록 취소 하시겠습니까?");
-				if(result){
-					$(this).removeClass("fas");
-					$(this).addClass("far");
-					isSub = !isSub;
-				}
-			}
-		})
 		
-		$(".auctionImg").on("mouseenter",function(e){
-			var i = 0;
-			auctionInter = setInterval(() => {
-				i++;
-				if(i == 4){
-					$(this).next().css('display','block')
-					$(this).next().animate({
-						opacity : '1.0'
-					},600)	
-				}
-			}, 100);
-		})
+// 		$(".auctionImg").on("mouseenter",function(e){
+// 			var i = 0;
+// 			auctionInter = setInterval(() => {
+// 				i++;
+// 				if(i == 4){
+// 					$(this).next().css('display','block')
+// 					$(this).next().animate({
+// 						opacity : '1.0'
+// 					},600)	
+// 				}
+// 			}, 100);
+// 		})
 		
-		$(".auctionImg").on("mouseleave",function(){
-			clearInterval(auctionInter)
-			$(this).next().animate({
-				opacity : '0'
-			},600,function(){
-				$(this).css('display','none')				
-			})
+// 		$(".auctionImg").on("mouseleave",function(){
+// 			clearInterval(auctionInter)
+// 			$(this).next().animate({
+// 				opacity : '0'
+// 			},600,function(){
+// 				$(this).css('display','none')				
+// 			})
+// 		})
+		
+		$(".auctionImg").on("click",function(){
+			var a = $(this).next().find("a").get(0).click();
 		})
 		
 		$("#category ul li a").on("mouseover",function(){
@@ -209,27 +224,25 @@
 		})
 		$("#category ul li a").on("mouseleave",function(){
 			$(this).css('color','#544a4a')
-		})
-		
+		})		
 	})
 </script>
 </head>
 <body>
 	<div class="container">
-<%-- 		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" /> --%>
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
 		<div id="sideCategoryContainer">
 			<div id="sideGrid">
 				<div id="category">
 					<div class="categoryTitle"><span> C A T E G O R Y ----- </span></div>
 					<ul>
-						<li><a href="#"> A L L</a> </li>
-						<li><a href="#"> C E R A M I C S </a></li>
-						<li><a href="#"> M E T A L </a></li>
-						<li><a href="#"> G L A S S </a></li>
-						<li><a href="#"> E M B R O I D E R Y </a></li>
-						<li><a href="#"> L E A T H E R </a></li>
-						<li><a href="#"> W O O D </a></li>
+						<li><a href="${pageContext.request.contextPath }/auction/list"> A L L</a> </li>
+						<li><a href="${pageContext.request.contextPath }/auction/list?type=ceramics"> C E R A M I C S </a></li>
+						<li><a href="${pageContext.request.contextPath }/auction/list?type=metal"> M E T A L </a></li>
+						<li><a href="${pageContext.request.contextPath }/auction/list?type=glass"> G L A S S </a></li>
+						<li><a href="${pageContext.request.contextPath }/auction/list?type=embroidery"> E M B R O I D E R Y </a></li>
+						<li><a href="${pageContext.request.contextPath }/auction/list?type=leather"> L E A T H E R </a></li>
+						<li><a href="${pageContext.request.contextPath }/auction/list?type=wood"> W O O D </a></li>
 					</ul>
 				</div>
 			</div>
@@ -249,21 +262,41 @@
 			<div class="auctionList">
 				<c:forEach items="${auctionList }" var="item">
 					<div class="auctionBox">
-						<div class='imgChange'>
-							<span><i class="fas fa-camera"></i></span>
-							<span><i class="far fa-user"></i></span>
-							<span><i class="far fa-heart"></i></span>
-						</div>
-						<img class='auctionImg'>
-						<div class='auctionInfo'>
-							<p class='info'><i>작가 ${item.m_pk_writer }</i></p>
-							<p class='info'><i>현재 가격 <fmt:formatNumber value="${item.a_startPrice }" pattern="#,###원"/></i></p>
-						</div>
+						<img class='auctionImg' src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${item.ai_pk}">
+<!-- 						<div class='auctionInfo'> -->
+<%-- 							<p class='info'><i>작가 ${item.m_pk_writer }</i></p> --%>
+<%-- 							<p class='info'><i>현재 가격 <fmt:formatNumber value="${item.a_currentPrice }" pattern="#,###원"/></i></p> --%>
+<!-- 						</div> -->
 						<div class="auctionTitle">
 							<span><a href='detail?a_pk=${item.a_pk}'>${item.a_title }</a></span>
 						</div>
 					</div>
 				</c:forEach>
+			</div>
+			<div id="pageContainer">
+				<a class='page' id="start" href="${pageContext.request.contextPath }/auction/list?page=1&type=${type}">
+					<i class="fas fa-caret-left"></i><i class="fas fa-caret-left"></i>
+				</a>&nbsp;&nbsp;
+				<a class='page' href="${pageContext.request.contextPath }/auction/list?page=${curPage <= 1 ? 1 : curPage -1 }&type=${type}">
+					<i class="fas fa-caret-left"></i>
+				</a>
+				<c:forEach begin="${startPage }" end="${endPage }" var="page">
+					<c:choose>
+						<c:when test="${page eq curPage}">
+							<span class='page' style='color:#ff1d43; cursor:default;'>${page }</span>
+						</c:when>
+						<c:otherwise>
+							<a class='page' href="${pageContext.request.contextPath }/auction/list?page=${page}&type=${type}"> ${page }</a>					
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+				&nbsp;&nbsp;
+				<a class='page' href="${pageContext.request.contextPath }/auction/list?page=${curPage >= total ? total : curPage + 1}&type=${type}">
+					<i class="fas fa-caret-right"></i>
+				</a>
+				<a class='page' id="end" href="${pageContext.request.contextPath }/auction/list?page=${total}&type=${type}">
+					<i class="fas fa-caret-right"></i><i class="fas fa-caret-right"></i>
+				</a>
 			</div>
 		</div>
 	</div>
