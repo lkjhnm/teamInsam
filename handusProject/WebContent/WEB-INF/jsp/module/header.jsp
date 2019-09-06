@@ -68,10 +68,10 @@
 	<script>
 		$(function(){
 			$("#loginHeader").on("mouseenter",function(){
-				$("#menuUser").stop().slideDown(500);
+				$("#menuUser").stop().slideDown();
 			})
 			$("#loginHeader").on("mouseleave",function(){
-				$("#menuUser").stop().slideUp(300);
+				$("#menuUser").stop().slideUp();
 			})
 		})
 	</script>

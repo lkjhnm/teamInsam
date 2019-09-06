@@ -688,7 +688,9 @@
 				<div id="thumnailContainer">
 					<div id="thumbnail_train">
 					<c:forEach items="${auctionImg }" var="img">
-						<img class='thumnail' src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${img.img_pk}">
+						<c:if test="${fn:length(auctionImg) > 1 }">
+							<img class='thumnail' src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${img.img_pk}">			
+						</c:if>
 					</c:forEach>
 					</div>
 				</div>

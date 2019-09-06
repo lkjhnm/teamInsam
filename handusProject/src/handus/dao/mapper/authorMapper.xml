@@ -55,7 +55,7 @@
 			<if test="type == 'studio'">
 				STUDIO_IMAGE
 			</if>
-			values (get_pk_img, #{item.img_fileName}, #{item.img_savePath}, #{item.img_fk})
+			values (get_pk_img, #{item.img_fileName}, #{item.img_savePath}, #{item.img_fk}, #{item.img_main})
 		</foreach>
 		select * from dual
 	</insert>

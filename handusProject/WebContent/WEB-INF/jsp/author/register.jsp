@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <style>
-
 	#main{
 		width: 70%;
 		height: 800px;
@@ -351,10 +350,15 @@
 			
 			// 이미지 데이터
 			var imgs = $("#thumbnail_train").children();
+			var mainImg = $("#mainImg").attr("data-name");
 			
 			$.each(imgs, function(i, item){
 				var value = $(item).attr("data-name")
 				var input = $("<input type='hidden' name='imgList["+i+"].img_fileName' value='"+value+"'>")
+				if(mainImg == value){
+					var isMain = $('<input type="hidden" name="imgList['+i+'].img_main" value="true" >')
+					$("#common_form").append(isMain)
+				}
 				$("#common_form").append(input)
 			})
 			
@@ -374,7 +378,6 @@
 			var textvalue = $("#"+subtype+"_form").find("textarea").attr("value")
 			var textarea = $("<textarea hidden='true'>").attr("name",textname).text(textvalue)
 			var m_pk = $("<input type='hidden'>").attr("name","m_pk_writer").attr("value","${m_pk}")
-// 			var urlType = $("<input type='hidden'>").attr("name","type").attr("value",subtype)
 			
 			$("#common_form").attr("action","${pageContext.request.contextPath}/author/register/"+subtype)
 			
@@ -441,11 +444,14 @@
 			imgSlide();
 			
 			var main = imgs.first().attr("src")
-			$("#mainImg").attr("src",main)
+			var main_name = imgs.first().attr("data-name")
+			$("#mainImg").attr("src",main).attr("data-name",main_name)
 			
 			$("#thumbnail_train").children().on("click",function(){
 				var src = $(this).attr("src")
+				var name = $(this).attr("data-name")
 				$("#mainImg").attr("src",src);
+				$("#mainImg").attr("data-name",name)
 			})
 			$("#img_modal").css("display","none")
 			$("#upload_container").children().remove()

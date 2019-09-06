@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import handus.auction.service.AuctionService;
@@ -29,8 +30,10 @@ public class AuctionController {
 	private SimpMessagingTemplate simpMessagingTemplate;
 	
 	@RequestMapping(value="/list",method= RequestMethod.GET)
-	public String auctionList(Model model) {
-		model.addAttribute("auctionList",auctionService.getAuctionList());
+	public String auctionList(Model model, @RequestParam(defaultValue = "1") int page, 
+											@RequestParam(defaultValue = "all") String type) {
+		model.addAttribute("auctionList",auctionService.getAuctionList(page,type));
+		model.addAllAttributes(auctionService.getPageInfo(page,type));
 		
 		return "auction/auctionList";
 	}

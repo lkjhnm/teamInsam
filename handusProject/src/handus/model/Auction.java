@@ -28,8 +28,14 @@ public class Auction {
 	private String a_color;
 	private String a_size;
 	private String a_details;
+	private int ai_pk;
 	
-	
+	public int getAi_pk() {
+		return ai_pk;
+	}
+	public void setAi_pk(int ai_pk) {
+		this.ai_pk = ai_pk;
+	}
 	public boolean isA_start() {
 		return a_start;
 	}
@@ -175,7 +181,6 @@ public class Auction {
 	public void setA_regDate(Date a_regDate) {
 		this.a_regDate = a_regDate;
 	}
-	
 	@Override
 	public String toString() {
 		return "Auction [a_pk=" + a_pk + ", m_pk_writer=" + m_pk_writer + ", a_title=" + a_title + ", a_startPrice="
@@ -185,6 +190,8 @@ public class Auction {
 				+ ", a_remainText=" + a_remainText + ", a_currentPrice=" + a_currentPrice + ", ag_regDate=" + ag_regDate
 				+ ", a_end=" + a_end + ", a_alarm=" + a_alarm + ", a_start=" + a_start + ", a_country=" + a_country
 				+ ", a_material=" + a_material + ", a_color=" + a_color + ", a_size=" + a_size + ", a_details="
-				+ a_details + "]";
+				+ a_details + ", ai_pk=" + ai_pk + "]";
 	}
+	
+	
 }
