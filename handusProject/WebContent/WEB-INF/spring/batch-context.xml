@@ -47,7 +47,7 @@
 	<bean id="auctionItemWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
 		<property name="dataSource" ref="dataSource"/>
 		<property name="sql" 
-			value="update auction set a_end = :a_end , a_alarm = :a_alarm ,a_endprice = :a_endPrice where a_pk = :a_pk"/>
+			value="update auction set a_end = :a_end , a_alarm = :a_alarm ,a_endprice = :a_endPrice, a_start = :a_start where a_pk = :a_pk"/>
 		<property name="itemSqlParameterSourceProvider">
 			<bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
 		</property>

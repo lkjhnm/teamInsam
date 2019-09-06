@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import handus.dao.AuctionDao;
 import handus.model.Auction;
 import handus.model.AuctionGraph;
+import handus.model.HandusImage;
 
 @Service
 public class AuctionService {
@@ -38,6 +39,10 @@ public class AuctionService {
 		return auction;
 	}
 	
+	public List<HandusImage> getAuctionImg(int a_pk) {
+		return auctionDao.selectImgListByA_pk(a_pk);
+	}
+	
 	private String getRemainTime(long remain){	
 		long second = (remain/1000)%60;
 		long minute = (remain/(1000*60))%60;
@@ -52,11 +57,15 @@ public class AuctionService {
 		return day + hours + ":" + minutes + ":" + seconds;
 	}
 	
-	public byte[] getAuctionImages(int a_pk) throws IOException {		//예외발생시 예외 이미지 주기
-		Map<String, Object> imageMap = auctionDao.selectAuctionImagePath(1);
-		String savePath = (String)imageMap.get("AI_SAVEPATH");
-		String fileName = (String)imageMap.get("AI_FILENAME");
-		byte[] bytes = FileUtils.readFileToByteArray(new File("c:/"+savePath,fileName));
+	public byte[] getAuctionImages(int ai_pk) throws IOException {		//예외발생시 예외 이미지 주기
+		HandusImage image = auctionDao.selectAuctionImagePath(ai_pk);
+		String savePath = image.getImg_savePath();
+		String fileName = image.getImg_fileName();
+		
+		if(fileName == null) {
+			return null;
+		}
+		byte[] bytes = FileUtils.readFileToByteArray(new File(savePath,fileName));
 		
 		return bytes;
 	}

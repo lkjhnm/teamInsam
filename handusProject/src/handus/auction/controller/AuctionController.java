@@ -39,14 +39,15 @@ public class AuctionController {
 	public String auctionDetail(int a_pk,Model model) {
 			
 		model.addAttribute("auction",auctionService.getAuctionDetail(a_pk));
+		model.addAttribute("auctionImg", auctionService.getAuctionImg(a_pk));
 		
 		return "auction/auctionDetail";
 	}
 	
-	@RequestMapping(value="/img", method=RequestMethod.GET)
-	public ResponseEntity<byte[]> auctionImage(int a_pk) throws IOException{
+	@RequestMapping(value="/auctionImg", method=RequestMethod.GET)
+	public ResponseEntity<byte[]> auctionImage(int ai_pk) throws IOException{
 		HttpHeaders headers = new HttpHeaders();
-		byte[] image = auctionService.getAuctionImages(a_pk);
+		byte[] image = auctionService.getAuctionImages(ai_pk);
 		headers.setCacheControl(CacheControl.noCache().getHeaderValue());
 		
 		ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(image,headers,HttpStatus.OK);
@@ -73,11 +74,16 @@ public class AuctionController {
 	}
 	
 	@RequestMapping(value="/alarm", method=RequestMethod.GET)
-	public String auctionAlarm(int a_pk,boolean a_end) {
+	public String auctionAlarm(int a_pk,boolean a_end, boolean a_start) {
+		
+		if(a_start) {
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "{\"type\":1}");
+			return null;
+		}
 		if(a_end) {
-			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "경매종료");
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "{\"type\":2}");
 		}else {
-			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "1시간 남았습니다.");
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "{\"type\":3}");
 		}
 		return null;
 	}

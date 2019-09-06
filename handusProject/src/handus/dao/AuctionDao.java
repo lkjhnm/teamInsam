@@ -6,13 +6,15 @@ import java.util.Map;
 
 import handus.model.Auction;
 import handus.model.AuctionGraph;
+import handus.model.HandusImage;
 
 public interface AuctionDao {
 	
 	public List<Auction> selectAuctionList();
 	public Auction selectAuction(int a_pk);
-	public Map<String,Object> selectAuctionImagePath(int a_pk);
+	public HandusImage selectAuctionImagePath(int ai_pk);
 	public List<Integer> selectAuctionGraphData(int a_pk);
 	public boolean insertBidding(AuctionGraph ag);
 	public Date selectAuctionRegDate(int ag_pk);
+	public List<HandusImage> selectImgListByA_pk(int a_pk);
 }

@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import handus.member.security.CustomUser;
 import handus.member.service.MemberService;
 import handus.model.Member;
 
@@ -78,7 +79,6 @@ public class MemberController {
 	public String handusSignUpCompl() {
 		return "member/signUpComplete";
 	}
-	
 	
 	
 	final String ROLE_MEMBER = "ROLE_MEMBER";		// ROLE_MEMBER_NV --> ROLE_MEMBER 로 변환할때
@@ -127,6 +127,10 @@ public class MemberController {
 		
 		return "member/myPage";
 	}
+	@RequestMapping(value="/subscribe",method=RequestMethod.GET)
+	public String alarm() {
+		return "member/subscribe";
+	}
 	
 	//------------SNS 로그인
 	
@@ -147,9 +151,12 @@ public class MemberController {
 					ssInfo.expireNow();
 				}
 			}
-			
+			CustomUser user = (CustomUser)authentication.getPrincipal();
+			int m_pk = user.getMember().getM_pk();
+			session.setAttribute("m_pk", m_pk);
 			sessionRegistry.registerNewSession(session.getId(), authentication.getPrincipal());
 			SecurityContextHolder.getContext().setAuthentication(authentication);
+			
 			return "<script> window.close(); opener.location.href='/handusProject/auction/list';</script>";
 		}else {
 			session.setAttribute("apiId", token.getName());
