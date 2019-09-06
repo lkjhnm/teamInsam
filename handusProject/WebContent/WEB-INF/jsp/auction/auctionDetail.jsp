@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,17 +39,24 @@
 	}
 	#thumnailContainer{
 		width: 92px;
-		height: 600px;
+		height: 425px;
 		position:absolute;
 		left: 805px;
 		top: 110px;
 		z-index: 103;
+		overflow:hidden;
 	}
 	.thumnail{
 		width: 90px;
 		height: 90px;
 		background-color: #fff;
 		margin-top: 10px;
+		border: 1px solid #e3e2de;
+	}
+	#thumbnail_train{
+		position:relative;
+		top:0;
+		left:0;
 	}
 	#auctionInfo{
 		width: 500px;
@@ -362,6 +370,20 @@
 	#bidButton:hover{
 		cursor:pointer;
 	}
+	#up-arrow{
+		font-size:25px;
+		position: relative;
+		top:90px;
+		left:840px;
+		z-index:103;
+	}
+	#down-arrow{
+		font-size:25px;
+		position: relative;
+		top:510px;
+		left:840px;
+		z-index:103;
+	}
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
@@ -508,8 +530,54 @@
 		})
 		
 		connect();
+		imgSlide();
+		
+		$(".thumnail").first().css("border-color","#191919")
+		$(".thumnail").on("click",function(){
+			$(this).css("border-color","#191919")
+			$(this).siblings().css("border-color","#e3e2de" )
+			$("#auctionImg").attr("src", $(this).attr("src"))
+		})
 	})
 // 	윈도우 온로드 종료  --------------------------------------------------------------
+
+		//이미지 슬라이드 쇼
+		function imgSlide(){
+			var position = 0;
+			var count = $("#thumbnail_train").children().length -4;
+			
+			console.log(count)
+			
+			$("#up-arrow > span").on("click",function(){
+				
+				if(position -1 < 0){
+					return;
+				}
+				position = position <= 0 ? 0 : position - 1;
+				
+				
+				var top = position == 0 ? 0 : (-105)*position;
+
+				$("#thumbnail_train").animate({
+					"top" : top 
+				})
+			})
+			
+			$("#down-arrow >span").on("click",function(){
+				
+				if(position + 1 > count){
+					return;
+				}
+				position = position >= count ? count : position + 1;
+				
+				
+				var top = position == count ? (-105)*count : (-105)*position;
+				
+				$("#thumbnail_train").animate({
+					"top" : top
+				})
+			})
+		}
 	function makeChart(dps){
 		
 		chart = new CanvasJS.Chart("auctionChart",{
@@ -577,6 +645,7 @@
 	    return str +"원";
 	}
 	
+	
 // 	웹소켓
 	
 	var sock;
@@ -615,15 +684,18 @@
 
 		<div id="main">
 			<div id="auctionInfoBox">
-				<img id="auctionImg" src="${pageContext.request.contextPath }/auction/img?a_pk=1">
+				<img id="auctionImg" src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${auctionImg[0].img_pk}">
 				<div id="thumnailContainer">
-					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
-					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
-					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
-					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
-					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
-					<div><img class='thumnail' src="${pageContext.request.contextPath }/auction/img?a_pk=1"></div>
+					<div id="thumbnail_train">
+					<c:forEach items="${auctionImg }" var="img">
+						<img class='thumnail' src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${img.img_pk}">
+					</c:forEach>
+					</div>
 				</div>
+				<c:if test="${fn:length(auctionImg) > 4 }">
+					<div id="up-arrow"><span><i class="fas fa-chevron-up"></i></span></div>
+					<div id="down-arrow"><span><i class="fas fa-chevron-down"></i></span></div>
+				</c:if>
 				<div id="chartContainer">
 					<div id="auctionChart"></div>
 				</div>
@@ -653,6 +725,11 @@
 						<div id="button-boundary"></div>
 						<div class='infoPosition'>
 							<c:choose>
+								<c:when test="${auction.a_start eq false}">
+									<span class="infoBold">
+										<fmt:formatDate value="${auction.a_startTime }" pattern="yyyy/MM/dd 경매 시작"/>
+									</span>
+								</c:when>
 								<c:when test="${auction.a_end }">
 									<span class="infoBold"> 이미 종료된 경매입니다. </span>									
 								</c:when>
@@ -665,6 +742,11 @@
 						<div class='infoPosition infoBold'>
 							
 							<c:choose>
+								<c:when test="${auction.a_start eq false}">
+									<span class="infoBold">
+										시작 가격 
+									</span>
+								</c:when>
 								<c:when test="${auction.a_end }">
 									<span class='smallText' id="bidTime">
 										 &lt; <fmt:formatDate value="${auction.ag_regDate }" pattern="yyyy/MM/dd kk:mm 낙찰" /> &gt; 
@@ -692,9 +774,11 @@
 										</div>
 									</c:when>
 									<c:otherwise>
-										<div class="button" id='buyButton'>
-											입 찰
-										</div>
+										<c:if test="${auction.a_start eq true }">
+											<div class="button" id='buyButton'>
+												입 찰
+											</div>
+										</c:if>
 										<div id='subButton'>
 												<span style='font-size:13px'><i class="far fa-heart"></i></span><span> 구 독 </span>
 										</div>

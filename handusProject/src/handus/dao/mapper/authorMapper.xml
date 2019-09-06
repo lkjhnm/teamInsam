@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="handus.dao.AuthorDao">
+
+	<insert id="insertAuction" parameterType="auction">
+		<selectKey order="BEFORE" keyProperty="a_pk" resultType="int">
+			select AUCTION_SEQ.NEXTVAL from dual
+		</selectKey>
+		insert all
+		
+		 into AUCTION
+			(A_PK, M_PK_WRITER, A_TITLE, A_STARTPRICE, C_PK, A_STARTTIME,A_ENDTIME,A_COMMENT,A_COUNTRY,A_MATERIAL,A_COLOR,A_SIZE,A_DETAILS)
+		values 
+		(#{a_pk} ,#{m_pk_writer} ,#{a_title}, #{a_startPrice}, #{c_pk}, #{a_startTime},#{a_endTime} , 
+			#{a_comment}, #{a_country}, #{a_material}, #{a_color},#{a_size},#{a_details})
+			
+		into AUCTION_GRAPH
+			(AG_PK, A_PK, M_PK_USER, AG_BIDDING, AG_REGDATE)
+		values
+		( AUCTION_GRAPH_SEQ.NEXTVAL,#{a_pk} ,#{m_pk_writer}, #{a_startPrice}, #{a_startTime})
+		
+		select * from dual
+	</insert>
+	
+	<insert id="insertStudio" parameterType="studio">
+		<selectKey order="BEFORE" keyProperty="s_pk" resultType="int">
+			select STUDIO_SEQ.NEXTVAL from dual
+		</selectKey>
+		insert into STUDIO
+			()
+		values ()
+	</insert>
+	
+	<insert id="insertItem" parameterType="item">
+		<selectKey order="BEFORE" keyProperty="i_pk" resultType="int">
+			select ITEM_SEQ.NEXTVAL from dual
+		</selectKey>
+		insert into ITEM
+			()
+		values ()
+	</insert>
+	
+	<insert id="insertImage">
+		insert all
+		<foreach collection="imgList.imgList" item="item">
+		into 
+			<if test="type == 'auction'">
+				AUCTION_IMAGE
+			</if>
+			<if test="type == 'item'">
+				ITEM_IMAGE
+			</if>
+			<if test="type == 'studio'">
+				STUDIO_IMAGE
+			</if>
+			values (get_pk_img, #{item.img_fileName}, #{item.img_savePath}, #{item.img_fk})
+		</foreach>
+		select * from dual
+	</insert>
+</mapper>
