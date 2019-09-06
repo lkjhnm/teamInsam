@@ -371,8 +371,8 @@
 	var isLock = false;				
 	var isReview = true;			// 리뷰 남기기 창 (초기값: false)
 	var modBtn = 0; 				// 수정 버튼 기능 0=수정창보이기, 1=수정로직실행
-	var mapX = 127.02448266126561;
-	var mapY = 37.50312464278207;
+	var mapX ;						// 127.02448266126561
+	var mapY ;						// 37.50312464278207
 	$(function () {
 		// 해당 회원이 게시글에 대해 좋아요를 눌렀는지 확인 후 하트 클래스 추가/삭제
 		heartCheck();
@@ -384,7 +384,7 @@
 		// 지도 - 그리기 
 		var mapBox = document.getElementById("mapBox");
 		var mapOption = {
-			center: new kakao.maps.LatLng(33.450701, 126.570667), 	// 지도의 중심 좌표 설정 
+			center: new kakao.maps.LatLng(0, 0), 	// 지도의 중심 좌표 설정 
 			level: 3 	// 지도의 축소, 확대 정도 
 		};
 		var map = new kakao.maps.Map(mapBox, mapOption); 	// 지도 객체 생성 (지도 그릴곳, 옵션 )파라미터 대입 
@@ -393,6 +393,8 @@
 		geocoder.addressSearch(loc, function (result, status) {
 			if(status == kakao.maps.services.Status.OK){
 				var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+				mapX = result[0].y;
+				mapY = result[0].x;
 				var marker = new kakao.maps.Marker({
 					map: map,
 				    position: coords
@@ -584,6 +586,7 @@
 			url: "${pageContext.request.contextPath}/heart/countHeart",
 			data: {"sNum":${studio.s_pk}},
 			type: "post",
+			dataType: "json",
 			success: function (data) {
 				$("#heartCount").text(data);
 			},
@@ -597,8 +600,9 @@
 			url: "${pageContext.request.contextPath}/review/countReview",
 			data: {"sNum":${studio.s_pk}},
 			type: "post",
-			success: function (data) {
-				$("#reviewCount").text(data);
+			dataType: "json",
+			success: function (count) {
+				$("#reviewCount").text(count);
 			},
 			error: function () {
 				alert("갯수예외");
@@ -762,7 +766,7 @@
 		for(var i = 0; i < num; i++){
 			week = $("<tr></tr>");
 			for(var j = 0; j < 7; j++){
-				if(i==0 && j < firstDayOfWeek || dNum > days[month]){
+				if(i==0 && j < firstDayOfWeek || dNum > days[(month-1)]){
 					// 비어있는 칸 
 					var dayRow = $("<td class='wPx'>&nbsp;</td>");
 					week.append(dayRow);
@@ -775,13 +779,41 @@
 						dayRow.on("click", function () {
 							$("#day"+d).toggleClass("clickDate");
 							today.setDate(d);
-							alert(today);
-// 							var date = today.getDate();
-// 							var hours = today.getHours();
-// 							var minutes = today.getMinutes();
-// 							if(minutes<30){
-// 								hours = hours - 1; 
+							var date = today.getDate();
+							var hours = today.getHours();
+// 							6:00 , 18:00 하루에 두번 발표함 
+// 							if(hours < 6){
+// 								hours = 1800;
+// 								date -= 1;
+// 							}else if(hours >= 6 && hours < 18){
+// 								hours = '0' + 600;
+// 							}else{
+// 								hours = 1800;
 // 							}
+// 							var m = "";
+// 						    if((month+1) < 10) {
+// 						        m = '0'+ (month+1);
+// 						    }    
+// 						    if(date < 10) {
+// 						    	date = '0' + date;
+// 						    }
+// 						    var regID = "11B10101";
+// 						    var weaDate = year.toString() + m.toString() + date.toString() + hours.toString();
+// 						    alert(weaDate);
+						    $.ajax({
+						    	url: "weather",
+						    	data: {"cityName": "Seoul"},
+						    	dataType: "json",
+						    	type: "post",
+						    	success: function (data) {
+									alert(data);
+									var text = JSON.stringify(data);
+									alert(text);
+								},
+								error: function () {
+									alert("날씨API예외");
+								}
+						    });
 						});
 					})(dNum);
 					week.append(dayRow);
@@ -792,6 +824,34 @@
 		}
 		calBox.append(calendar);
 		$("#calendarBox1").append(calBox);
+	};
+	function parseJSON(xml) {
+		var dom = null;
+		 if(window.DOMParser){
+		     try{ 
+		        dom = (new DOMParser()).parseFromString(xml, "text/xml"); 
+		     }catch(e) { dom = null; }
+		   }else if(window.ActiveXObject) {
+		      try {
+		         dom = new ActiveXObject('Microsoft.XMLDOM');
+		         dom.async = false;
+		     	 // parse error ..
+		         if (!dom.loadXML(xml)){
+		            window.alert(dom.parseError.reason + dom.parseError.srcText);
+		         }
+		      }catch(e) { dom = null; }
+		   }else{
+		      alert("cannot parse xml string!");
+		   }
+		   return dom;
+	};
+	function drawTemp(temp) {
+		var minTemp = temp.body.items.item.taMin3;
+		var maxTemp = temp.body.items.item.taMax3;
+		alert("min: "+minTemp);
+		alert("max: "+maxTemp);
+		var weatherBox = $($("<div></div>").append("<span>최저기온: "+minTemp+"</span>").append("<span>최고기온: "+maxTemp+"</span>"));
+		$("#weatherBox1").append(weatherBox);
 	};
 </script>
 </head>
@@ -850,7 +910,7 @@
 			<div id="modalContainer">
 				<div id="modalBox">
 					<div class="calendarBox" id='calendarBox1'></div>
-					<div class="weatherBox"><span> $날씨API </span></div>
+					<div class="weatherBox" id='weatherBox1'></div>
 					<div class="reservation"><span> reservation </span></div>
 					<div class="close"><span> close </span></div>
 				</div>
