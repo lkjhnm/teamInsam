@@ -30,15 +30,14 @@
 		display:flex;
 	}
 	.list > div > div{
-		height:230px;
-		margin-bottom:55px;
-		margin-top:55px;
-		margin-left: 75px;
+		height:200px;
+		margin-top:85px;
+		margin-left: 55px;
 	}
 	.list img{
-		width:230px;
-		height:230px;
-		margin: 45px;
+		width:200px;
+		height:200px;
+		margin: 70px;
 	}
 	.list_container{
 		width:1325px;
@@ -106,7 +105,30 @@
 		$("#alarmBtn").on("click",function(){
 			location.href="subscribe"
 		})
+		$("#auctionBtn").on("click",function(){
+			showMySubsList("${m_pk}",3);
+		})
 	})
+	
+	
+	function showMySubsList(m_pk,type){
+		
+		$.ajax({
+			url: "${pageContext.request.contextPath}/user/subscribeList/"+type,
+			type:"post",
+			data : {"m_pk_user" : m_pk},
+			dataType:"json",
+			success:function(data){
+				console.log(data)
+				$.each (data,function(i, item){
+					console.log(item.AI_PK)
+					$(".list").append($("<img src='${pageContext.request.contextPath }/auction/auctionImg?ai_pk="+item.AI_PK+"'>"))
+					var name = $("<span class='info-title'>TITLE</span><span>"+item.TITLE+"</span>")
+					var div = $("<div class='author_info'>")
+				})
+			}
+		})
+	}
 </script>
 </head>
 <body>
@@ -117,9 +139,9 @@
 			<div id="title">SUBSCRIBE</div>
 			<div class='list_container'>
 				<div id="tab_menu_container">
-					<div class="tab_menu">AUTHOR</div>
-					<div class="tab_menu">STUDIO</div>
-					<div class="tab_menu">AUCTION</div>
+					<div class="tab_menu" id="authorBtn">AUTHOR</div>
+					<div class="tab_menu" id="studioBtn">STUDIO</div>
+					<div class="tab_menu" id="auctionBtn">AUCTION</div>
 				</div>
 				<div class="list">
 					<div>
@@ -127,7 +149,6 @@
 						<div class='author_info'>
 							<div><span class='info-title'>NAME</span><span>자가비</span></div>
 							<div><span class='info-title'>EMAIL</span><span>potato@haetae.com</span></div>
-							<div><span class='info-title'>CAREER</span><span> 2013/12/23 ~ </span></div>
 							<div><span class='info-title'>STUDIO</span><span>맛있는 감자공방</span></div>
 							<div><span class='info-title'>STUDIO-ADDRESS</span><span>서울시 강남구 역삼동 강남대로 어딘가</span></div>
 						</div>
@@ -135,7 +156,7 @@
 							<div class='author_btn'>구독 취소</div>
 							<div class='author_btn'>1:1 문의</div>
 							<div class='author_btn'>SNS</div>
-							<div class='author_btn'>작품 검색</div>
+							<div class='author_btn'>작품 보기</div>
 						</div>
 					</div>
 					<div>

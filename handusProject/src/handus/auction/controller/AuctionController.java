@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +38,6 @@ public class AuctionController {
 		
 		return "auction/auctionList";
 	}
-	
 	@RequestMapping(value="/detail",method=RequestMethod.GET)
 	public String auctionDetail(int a_pk,Model model) {
 			

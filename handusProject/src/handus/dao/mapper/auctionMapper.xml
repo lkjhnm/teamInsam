@@ -80,7 +80,7 @@
 	
 	<select id="selectAuction" parameterType="int" resultType="auction">
 		select a_pk, m_pk_writer, a_title, a_startprice, a_endprice, c_category, a_regDate, a_starttime, a_end, a_start,
-			   a_endTime, a_readcount, a_comment, r_pk, a_subscribe , a_currentprice, ag_regdate
+			   a_endTime, a_readcount, a_comment, r_pk, a_subscribe , a_currentprice, to_char(ag_regdate,'yyyy/MM/dd HH:mm') as ag_regdate
 			   
 		from AUCTION a JOIN CATEGORYNAME c ON (a.c_pk = c.c_pk),
 			   <!-- 최근 입찰 가격 가져오는 서브쿼리 -->
