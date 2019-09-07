@@ -1,5 +1,9 @@
 package handus.studio.controller;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,18 +16,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import handus.member.service.MemberService;
 import handus.heart.service.IHeartService;
 import handus.model.HeartStudio;
 import handus.model.Studio;
-import handus.studio.service.IStudioService;
+import handus.studio.service.StudioService;
 
 @Controller
 @RequestMapping("/studio")
 public class StudioController {
 	@Autowired
-	private IStudioService studioService;
+	private StudioService studioService;
 	@Autowired
 	private MemberService memberService;
 	@Autowired
@@ -57,5 +62,12 @@ public class StudioController {
 			model.addAttribute("studio", studioService.getStudioByNum(num));
 		}
 		return "studio/studioView";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/weather", method = RequestMethod.POST)
+	public String getWeather(String cityName) {
+		System.out.println("컨트롤러>날씨조회");
+		return studioService.getWeather(cityName);
 	}
 }

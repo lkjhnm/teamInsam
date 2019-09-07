@@ -4,13 +4,83 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="handus.dao.AuctionDao">
 	
-	<select id="selectAuctionList" resultType="auction">
-		select * from AUCTION
+	<select id="selectAuctionList" parameterType="int" resultType="auction">
+		<![CDATA[
+		select rn, A_PK, M_PK_WRITER, A_TITLE, A_READCOUNT , 
+        ( select ag_bidding
+          		   from (select /*+ INDEX (ag AG_BIDDING_INDEX)*/
+                			 rownum rn, ag_bidding
+			   					from AUCTION_GRAPH ag
+			   						where ag.a_pk = aa.a_pk)
+                   								where rn = 1 )  as a_currentprice ,
+            ( select  ai_pk
+                    from auction_image ai
+                        where ai.a_pk = aa.a_pk and ai.ai_main = 1
+              )  as ai_pk
+                        
+			from
+				( select  /*+ INDEX_DESC (a AUCTION_PK)*/
+                    rownum rn, A_PK, M_PK_WRITER, A_TITLE, A_READCOUNT 
+		 	 		from AUCTION a where 
+		 ]]>
+		 	<choose>
+		 		<when test="type == 'wood'">
+		 			c_pk = 6 and
+		 		</when>
+		 		<when test="type == 'ceramics'">
+		 			c_pk = 1 and
+		 		</when>
+		 		<when test="type == 'metal'">
+		 			c_pk = 2 and
+		 		</when>
+		  		<when test="type == 'glass'">
+		 			c_pk = 3 and
+		 		</when>
+		 		<when test="type == 'embroidery'">
+		 			c_pk = 4 and
+		 		</when>
+		 		<when test="type == 'leather'">
+		 			c_pk = 5 and
+		 		</when>
+		 	</choose>
+		 <![CDATA[
+		  		
+		 	 		rownum <= #{page} * 6
+		 	 	) aa
+		 	 	where rn > (#{page} -1) * 6
+		]]>
+	</select>
+	
+	<select id="selectAuctionCount" resultType="int">
+		select count(*)
+			from auction
+			<trim prefix="where">
+				<choose>
+			 		<when test="type == 'wood'">
+			 			c_pk = 6 
+			 		</when>
+			 		<when test="type == 'ceramics'">
+			 			c_pk = 1 
+			 		</when>
+			 		<when test="type == 'metal'">
+			 			c_pk = 2 
+			 		</when>
+			  		<when test="type == 'glass'">
+			 			c_pk = 3 
+			 		</when>
+			 		<when test="type == 'embroidery'">
+			 			c_pk = 4 
+			 		</when>
+			 		<when test="type == 'leather'">
+			 			c_pk = 5
+			 		</when>
+			 	</choose>
+		 	</trim>
 	</select>
 	
 	<select id="selectAuction" parameterType="int" resultType="auction">
-		select a_pk, m_pk_writer, a_title, a_startprice, a_endprice, c_category, a_regDate, a_starttime, a_end,
-			   a_endtime, a_readcount, a_comment, r_pk, a_subscribe , a_currentprice, ag_regdate
+		select a_pk, m_pk_writer, a_title, a_startprice, a_endprice, c_category, a_regDate, a_starttime, a_end, a_start,
+			   a_endTime, a_readcount, a_comment, r_pk, a_subscribe , a_currentprice, to_char(ag_regdate,'yyyy/MM/dd HH:mm') as ag_regdate
 			   
 		from AUCTION a JOIN CATEGORYNAME c ON (a.c_pk = c.c_pk),
 			   <!-- 최근 입찰 가격 가져오는 서브쿼리 -->
@@ -24,8 +94,16 @@
 		where a_pk = #{a_pk}
 	</select>
 	
-	<select id="selectAuctionImagePath" parameterType="int" resultType="map">
-		select  AI_SAVEPATH,AI_FILENAME from auction_image where a_pk = #{a_pk}
+	<select id="selectAuctionImagePath" parameterType="int" resultType="handusImage">
+		select  AI_SAVEPATH as img_savePath ,AI_FILENAME as img_fileName 
+			from AUCTION_IMAGE 
+				where ai_pk = #{ai_pk}
+	</select>
+	
+	<select id="selectImgListByA_pk" parameterType="int" resultType="handusImage">
+		select AI_PK as img_pk , AI_FILENAME as img_fileName , AI_SAVEPATH as img_savePath
+			FROM AUCTION_IMAGE
+			where A_PK = #{a_pk} order by ai_main desc
 	</select>
 	
 	<select id="selectAuctionGraphData" parameterType="int" resultType="int">

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="handus.dao.UserDao">
+	
+	<insert id="insertSubscribe" parameterType="map">
+		insert into MEMBER_SUBSCRIBE
+			(MS_PK, M_PK_USER, MS_TYPE, MS_FK)
+		values (MEMBER_SUBSCRIBE_SEQ.NEXTVAL, #{m_pk_user}, #{ms_type}, #{ms_fk})
+	</insert>
+	
+	<select id="selectSubscribe" parameterType="map" resultType="map">
+		select MS_PK, M_PK_USER, MS_TYPE, MS_FK
+			from MEMBER_SUBSCRIBE
+				where m_pk_user = #{m_pk_user} and ms_type = #{ms_type} and ms_fk = #{ms_fk}
+	</select>
+	
+	<delete id="deleteSubscribe" parameterType="map">
+		delete from MEMBER_SUBSCRIBE
+			where m_pk_user = #{m_pk_user} and ms_type = #{ms_type} and ms_fk = #{ms_fk}
+	</delete>
+	
+	<select id="selectSubsListData" resultType="map">
+		select *
+			from
+			<choose>
+				<when test="type == 1">
+					MEMBER 
+				</when>
+				<when test="type == 2">
+					STUDIO
+				</when>
+				<when test="type == 3">
+					AUCTION
+				</when>
+			</choose> 			
+				msa join 
+					( select ms_fk
+						from MEMBER_SUBSCRIBE
+							where m_pk_user = #{m_pk_user} and ms_type = #{type} ) fk on 
+			<choose>
+				<when test="type == 1">
+					(msa.m_pk = fk.ms_fk)
+				</when>
+				<when test="type == 2">
+					(msa.s_pk = fk.ms_fk)
+				</when>
+				<when test="type == 3">
+					(msa.a_pk = fk.ms_fk) join AUCTION_IMAGE ai on (msa.a_pk = ai.a_pk and ai.ai_main = 1)
+				</when>
+			</choose>				
+	</select>
+</mapper>

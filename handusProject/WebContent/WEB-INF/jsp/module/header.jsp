@@ -3,7 +3,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
 <script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
-<sec:authorize access="isAnonymous()" var="isAnon"></sec:authorize>
 <script type="text/javascript">
 	$(function(){
 		
@@ -12,7 +11,6 @@
 		var indexL = url.indexOf('/',indexS+1)
 		var page = url.substring(indexS+1,indexL)
 		var headInter;
-		var isAnon = ${isAnon}
 		
 		switch(page){
 			case 'auction':
@@ -58,15 +56,35 @@
 			location.href="${pageContext.request.contextPath}/main"
 		})
 		
-		$("#loginHeader").on("click",function(){
-			if(isAnon){
-				location.href="${pageContext.request.contextPath}/member/loginForm"
-			}else{
-				location.href="${pageContext.request.contextPath}/member/myPage"
-			}
+		$("#myPageBtn").on("click",function(){
+			location.href="${pageContext.request.contextPath}/member/myPage"
+		})
+		$("#logoutBtn").on("click",function(){
+			location.href="${pageContext.request.contextPath}/logout" 
 		})
 	})
 </script>
+<sec:authorize access="isAuthenticated()" >
+	<script>
+		$(function(){
+			$("#loginHeader").on("mouseenter",function(){
+				$("#menuUser").stop().slideDown();
+			})
+			$("#loginHeader").on("mouseleave",function(){
+				$("#menuUser").stop().slideUp();
+			})
+		})
+	</script>
+</sec:authorize>
+<sec:authorize access="isAnonymous()">
+	<script>
+		$(function(){
+			$("#loginHeader").on("click",function(){
+				location.href="${pageContext.request.contextPath}/member/loginForm"
+			})
+		})
+	</script>
+</sec:authorize>
 <div id="header">
 	<div id="menuContainer">
 		<span class='menuLink' id="menuItem">I T E M</span>
@@ -76,15 +94,20 @@
 	<span id="headerTitle">
 		<i>Handus</i>
 	</span>
-	<div id="iconContainer">
-		<sec:authorize access="isAuthenticated()">
-			<div id="bell"><span><i class="far fa-bell"></i></span><div id="redCircle"></div></div>
-		</sec:authorize>
-		<sec:authorize access="isAnonymous()">
-			<div id="bell"></div>
-		</sec:authorize>
-		<span id="loginHeader"><img src="${pageContext.request.contextPath }/img/header-icon-account.svg"></span>
-		<span id="subscribeHeader"><img src="${pageContext.request.contextPath }/img/header-icon-bookmark.svg"></span>
-		<span id="shoppingCartHeader"><img src="${pageContext.request.contextPath }/img/header-icon-cart.svg"></span>		
-	</div>
+	<ul id="iconContainer">
+<%-- 		<sec:authorize access="isAuthenticated()"> --%>
+<!-- 			<div id="bell"><span><i class="far fa-bell"></i></span><div id="redCircle"></div></div> -->
+<%-- 		</sec:authorize> --%>
+<%-- 		<sec:authorize access="isAnonymous()"> --%>
+<!-- 			<div id="bell"></div> -->
+<%-- 		</sec:authorize> --%>
+		<li id="loginHeader"><img src="${pageContext.request.contextPath }/img/header-icon-account.svg">
+			<ul id='menuUser'>
+				<li id="myPageBtn">MY PAGE</li>
+				<li id="logoutBtn">LOGOUT</li>
+			</ul>
+		</li>
+		<li id="subscribeHeader"><img src="${pageContext.request.contextPath }/img/header-icon-bookmark.svg"></li>
+		<li id="shoppingCartHeader"><img src="${pageContext.request.contextPath }/img/header-icon-cart.svg"></li>		
+	</ul>
 </div>

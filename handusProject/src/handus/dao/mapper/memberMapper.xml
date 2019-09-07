@@ -53,7 +53,9 @@
 	</delete>
 	
 	<select id="selectByID" parameterType="string" resultMap="memberMap">
-		select *
+		select 
+			m.M_PK, m.M_ID, m.M_PASSWORD, m.M_NAME, m.M_EMAIL, m.M_PHONENUM, m.M_ENABLED, m.M_REGDATE, m.M_ADDRESS, m.M_APITYPE, m.M_APIID,
+			mi.c_pk, ma.ma_authority
 			from MEMBER m 
 				LEFT OUTER JOIN MEMBER_INTEREST mi ON (m.m_pk = mi.m_pk ) 
 					LEFT OUTER JOIN MEMBER_AUTHORITY ma ON (m.m_pk = ma.m_pk)	
@@ -61,7 +63,10 @@
 	</select>
 	
 	<select id="selectByNum" parameterType="int" resultType="member">
-		select * from MEMBER
+		select 
+			m.M_PK, m.M_ID, m.M_PASSWORD, m.M_NAME, m.M_EMAIL, m.M_PHONENUM, m.M_ENABLED, m.M_REGDATE, m.M_ADDRESS, m.M_APITYPE, m.M_APIID,
+			mi.c_pk, ma.authority	 
+		 from MEMBER m
 		where M_PK = #{m_pk} 
 	</select>
 	
