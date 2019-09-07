@@ -6,7 +6,9 @@
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:websocket="http://www.springframework.org/schema/websocket"
-	xsi:schemaLocation="http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd
+		http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
@@ -33,4 +35,5 @@
 		<websocket:simple-broker prefix="/subscribe"/>
 	</websocket:message-broker>
 	
+	<security:global-method-security pre-post-annotations="enabled" secured-annotations="enabled" />
 </beans>

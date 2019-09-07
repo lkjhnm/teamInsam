@@ -26,6 +26,7 @@
 		<security:session-management invalid-session-url="/member/loginForm">
 			<security:concurrency-control max-sessions="1" expired-url="/main" />
 		</security:session-management>
+		
 		<security:logout logout-url="/logout" invalidate-session="true" logout-success-url="/member/loginForm"/>
 		<security:csrf disabled="true"/>
 		

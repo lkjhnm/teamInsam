@@ -9,10 +9,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import handus.auction.service.AuctionService;
@@ -29,24 +31,26 @@ public class AuctionController {
 	private SimpMessagingTemplate simpMessagingTemplate;
 	
 	@RequestMapping(value="/list",method= RequestMethod.GET)
-	public String auctionList(Model model) {
-		model.addAttribute("auctionList",auctionService.getAuctionList());
+	public String auctionList(Model model, @RequestParam(defaultValue = "1") int page, 
+											@RequestParam(defaultValue = "all") String type) {
+		model.addAttribute("auctionList",auctionService.getAuctionList(page,type));
+		model.addAllAttributes(auctionService.getPageInfo(page,type));
 		
 		return "auction/auctionList";
 	}
-	
 	@RequestMapping(value="/detail",method=RequestMethod.GET)
 	public String auctionDetail(int a_pk,Model model) {
 			
 		model.addAttribute("auction",auctionService.getAuctionDetail(a_pk));
+		model.addAttribute("auctionImg", auctionService.getAuctionImg(a_pk));
 		
 		return "auction/auctionDetail";
 	}
 	
-	@RequestMapping(value="/img", method=RequestMethod.GET)
-	public ResponseEntity<byte[]> auctionImage(int a_pk) throws IOException{
+	@RequestMapping(value="/auctionImg", method=RequestMethod.GET)
+	public ResponseEntity<byte[]> auctionImage(int ai_pk) throws IOException{
 		HttpHeaders headers = new HttpHeaders();
-		byte[] image = auctionService.getAuctionImages(a_pk);
+		byte[] image = auctionService.getAuctionImages(ai_pk);
 		headers.setCacheControl(CacheControl.noCache().getHeaderValue());
 		
 		ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(image,headers,HttpStatus.OK);
@@ -73,11 +77,16 @@ public class AuctionController {
 	}
 	
 	@RequestMapping(value="/alarm", method=RequestMethod.GET)
-	public String auctionAlarm(int a_pk,boolean a_end) {
+	public String auctionAlarm(int a_pk,boolean a_end, boolean a_start) {
+		
+		if(a_start) {
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "{\"type\":1}");
+			return null;
+		}
 		if(a_end) {
-			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "경매종료");
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "{\"type\":2}");
 		}else {
-			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "1시간 남았습니다.");
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "{\"type\":3}");
 		}
 		return null;
 	}

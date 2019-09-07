@@ -22,7 +22,6 @@
 		<property name="jdbcUrl" value="jdbc:oracle:thin:@teaminsam.cee8wpcnffqv.ap-northeast-2.rds.amazonaws.com:1521:orcl"/>
 		<property name="username" value="insam"/>
 		<property name="password" value="insam123"/>
-		<property name="maximumPoolSize" value="20"></property>
 	</bean>
 	
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
@@ -73,5 +72,13 @@
   	<bean id="reviewDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 		<property name="mapperInterface" value="handus.dao.ReviewDao"></property>
+  	</bean>
+  	<bean id="authorDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+  		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+  		<property name="mapperInterface" value="handus.dao.AuthorDao"></property>
+  	</bean>
+  	<bean id="userDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+  		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+  		<property name="mapperInterface" value="handus.dao.UserDao"></property>
   	</bean>
 </beans>
