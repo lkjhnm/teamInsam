@@ -146,6 +146,7 @@ public class AuthorService {
 		formData.put("ap_savepath",realPath);
 		authorDao.insertAuthorImage(formData);
 		authorDao.updateAuthorImage(formData);
+		authorDao.updateAuthor(formData);
 		
 		return "{\"ap_pk\" : \""+formData.get("ap_pk")+"\" }";
 	}

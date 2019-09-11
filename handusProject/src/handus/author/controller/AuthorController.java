@@ -166,7 +166,7 @@ public class AuthorController {
 	
 	@RequestMapping(value="/updateAuthor", method=RequestMethod.POST)
 	@ResponseBody
-	public String updateAuthorInfo(@RequestParam() HashMap<String,Object> formData) {
+	public String updateAuthorInfo(@RequestParam HashMap<String,Object> formData) {
 		
 		String result = authorService.updateAuthor(formData);
 		
