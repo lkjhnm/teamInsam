@@ -59,4 +59,57 @@
 		</foreach>
 		select * from dual
 	</insert>
+	
+	<select id="getListOfAuthor" resultType="map">
+		select *
+			from 
+				<choose>
+					<when test="type == 1">
+						ITEM
+					</when>
+					<when test="type == 2">
+						AUCTION a join AUCTION_IMAGE ai on (a.a_pk = ai.a_pk and ai.ai_main = 1) 
+					</when>
+					<when test="type == 3">
+						STUDIO
+					</when>
+				</choose>
+			where m_pk_writer = #{m_pk_writer}
+	</select>
+	
+	<insert id="insertAuthor" parameterType="map">
+		insert into AUTHOR
+			(AT_PK, M_PK, AT_NAME, AT_EMAIL, AT_STUDIO, AT_ADDRESS)
+			values	(MEMBER_SEQ.NEXTVAL, #{m_pk}, #{at_name}, #{at_email}, #{at_studio}, #{at_address})
+	</insert>
+	
+	<insert id="insertAuthorImage" parameterType="HashMap">
+		<selectKey order="BEFORE" keyProperty="ap_pk"  resultType="int">
+			select IMAGE_SEQ.NEXTVAL from dual		
+		</selectKey>
+		insert into AUTHOR_PROFILE
+			(AP_PK, AP_FILENAME, AP_SAVEPATH, M_PK, AP_MAIN)
+		values (#{ap_pk}, #{ap_filename}, #{ap_savepath}, #{m_pk}, 1)			
+	</insert>
+	
+	<update id="updateAuthor" parameterType="map">
+		
+	</update>
+	
+	<update id="updateAuthorImage" parameterType="map">
+		update AUTHOR_PROFILE
+			SET AP_MAIN = 0 
+				WHERE M_PK = #{m_pk} and ap_pk != #{ap_pk}
+	</update>
+	
+	<select id="selectAuthorImage" parameterType="int" resultType="map">
+	 	select ap_filename, ap_savepath
+	 		from author_profile
+	 			where ap_pk = #{ap_pk}
+	</select>
+	
+	<select id="selectAuthorInfo" parameterType="int" resultType="map">
+		select at_pk, at_name, at_email, at_studio, at_address , ap_pk, ap_filename, ap_savepath , at.m_pk as m_pk_writer
+			from author at left outer join author_profile ap on (at.m_pk = ap.m_pk and ap.ap_main = 1)
+	</select>
 </mapper>

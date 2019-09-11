@@ -116,6 +116,19 @@
 		width: 225px;
 		height: 30px;
 	}
+	#verifyBtn{
+		width: 100px;
+		height: 30px;
+		position:relative;
+		background-color:#191919;
+		color:#fff;
+		text-align:center;
+		top: -30px;
+		left: 560px;
+	}
+	#verifyBtn:hover{
+		cursor:pointer;
+	}
 </style>
 <script>
 	$(function(){	
@@ -132,7 +145,7 @@
 			var addr = $("#address").val()
 			var addrDetail = $("#address-detail").val()
 			
-			var addrData = $("<input type='hidden' name='m_address'/>").val(addr + " " + addrDetail)
+			var addrData = $("<input type='hidden' name='at_address'/>").val(addr + " " + addrDetail)
 			$(this).append(addrData)
 		})
 	})
@@ -144,57 +157,41 @@
 		
 		<div id="main">
 			<div id="signUpTitle">
-				ADDITIONAL SIGN  UP
+				AUTHOR SIGN  UP
 			</div>
 			<div id="signContainer">
-				<form action="additionalSignUp" method="post" id="signForm"> 	<!-- 사인업 사인업 -->
+				<form action="signUp" method="post" id="signForm"> 	<!-- 사인업 사인업 -->
 					
 					<div class='signUpBox'>
-						<label> NAME
-							<input type="text" name="m_name" autocomplete="off"></label>
+						<label> Author Name
+							<input type="text" name="at_name" autocomplete="off"></label>
 					</div>
 					<div class='signUpBox'>
-						<label> EMAIL
-							<input type="email" name="m_email"></label>
-					</div>
-					<div class='signUpBox'>
-						<label> PHONE
-							<input type="tel" pattern="[0-9]{3}[0-9]{4}[0-9]{4}" placeholder="EX) 01012341234" name="m_phonenum"></label>
+						<label> Author Email
+							<input type="email" name="at_email"></label>
 					</div>
 					
 					<div class='boundary-sign'></div>
 					
+					<div class='signUpBox'>
+						<label> Studio Name
+							<input type="text" name="at_studio"></label>
+					</div>
+					
 					<div id='addressBox'>
-						<div>ADDRESS</div>
+						<div>Studio Address</div>
 							<input id="zipCode" type="text" readonly="readonly" placeholder="Zip-code">					
 						<div>
 							<input id="address" type="text" readonly="readonly" placeholder="Address">		
 							<input id="address-detail" type="text"  placeholder="Detail" autocomplete="off">
 						</div>
-					</div>
-					
-					<div class='boundary-sign'></div>
-					
-					<div id="checkBox">
-						<div>INTEREST</div>
-						<div class='boundary-sign'></div>
-						<div class='checkPosition'>
-							<div><label><input type="checkbox" name="c_pk" value="1" >CERAMICS</label></div>
-							<div><label><input type="checkbox" name="c_pk" value="2">METAL</label></div>
-						</div>
-						<div class='checkPosition'>
-							<div><label><input type="checkbox" name="c_pk" value="3">GLASS</label></div>
-							<div><label><input type="checkbox" name="c_pk" value="4">EMBROIDERY</label></div>
-						</div>
-						<div class='checkPosition'>
-							<div><label><input type="checkbox" name="c_pk" value="5">LEATHER</label></div>
-							<div><label><input type="checkbox" name="c_pk" value="6">WOOD</label></div>
-						</div>
-					</div>
+					</div>			
+		
 					<div class='boundary-sign'></div>
 					<div class="signUpBox">
 						<button type="submit">SIGNUP</button>
 					</div>
+					<input type="hidden" name="m_pk" value="${m_pk }">
 				</form>
 			</div>
 		</div>

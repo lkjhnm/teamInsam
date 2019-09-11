@@ -6,16 +6,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -117,6 +121,66 @@ public class AuthorController {
 			return file.delete();
 		}
 		return false;
+	}
+	
+	@RequestMapping(value="/modify",method=RequestMethod.POST)
+	public boolean modifyAuthorInfo() {
+		return false;
+	}
+	
+	@RequestMapping(value="/signUp", method=RequestMethod.GET)
+	public String authorSignUp() {
+		return "author/signUp";
+	}
+	
+	@RequestMapping(value="/signUp",method=RequestMethod.POST)
+	public String authorSignUpPost(@RequestParam Map<String,Object> formData) {
+		
+		authorService.registerAuthor(formData);
+		
+		return "redirect:/author/privatePage?m_pk="+formData.get("m_pk"); 
+	}
+	
+	@RequestMapping(value="/publicPage", method=RequestMethod.GET)
+	public String showPublicAuthorPage(int m_pk, Model model) {
+		
+		model.addAllAttributes(authorService.getAuthorInfo(m_pk));
+		
+		return "author/publicAuthor";
+	}
+	
+	@RequestMapping(value="/privatePage", method=RequestMethod.GET)
+	public String showPrivateAuthorPage(int m_pk, Model model) {
+		
+		model.addAllAttributes(authorService.getAuthorInfo(m_pk));
+		
+		return "author/privateAuthor";
+	}
+	
+	@RequestMapping(value="/getList/{type}", method=RequestMethod.POST)				// type :  1 - item, 2 - auction, 3 - studio
+	@ResponseBody
+	public List<Map<String,Object>> getAuthorRegistList(@PathVariable(value="type") int type ,int m_pk){
+		
+		return authorService.getRegisterList(type, m_pk);
+	}
+	
+	@RequestMapping(value="/updateAuthor", method=RequestMethod.POST)
+	@ResponseBody
+	public String updateAuthorInfo(@RequestParam() HashMap<String,Object> formData) {
+		
+		String result = authorService.updateAuthor(formData);
+		
+		return result;
+	}
+	
+	@RequestMapping(value="/authorImg", method=RequestMethod.GET)
+	public ResponseEntity<byte[]> auctionImage(int ap_pk) throws IOException{
+		HttpHeaders headers = new HttpHeaders();
+		byte[] image = authorService.getAuthorImages(ap_pk);
+		headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+		
+		ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(image,headers,HttpStatus.OK);
+		return responseEntity;
 	}
 }
 
