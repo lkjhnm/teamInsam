@@ -1,9 +1,14 @@
 package handus.faq.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,33 +38,33 @@ public class FaqController {
 	@RequestMapping(value = "/faqShow")
 	public String FAQShowForm() {
 		System.out.println("123");
-		return "faq/FaqWrite"; //원래는 main
+		return "faq/FaqMain"; //원래는 main
 	}
+	
+//	@RequestMapping(value = "/slist", method = RequestMethod.GET)
+//	public String FAQList(Model model) {
+//		
+//	}
+	
 	
 	//faqList 정보 불러오기
-	@RequestMapping(value = "/faqList", method = RequestMethod.POST)
+	@RequestMapping(value = "/faqList", method = RequestMethod.POST, produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public String FAQListForm(Model model,RedirectAttributes ra) {
+	public String FAQListForm(Model model,RedirectAttributes ra,@DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate) {
 		List<FAQ> faqList = service.getAllFaq();
-		
+//		System.out.println(faqList.toString());
 		Gson gson  = new Gson();
-		gson.toJson(faqList);
-		return gson.toString();
+		String json = gson.toJson(faqList);
+		System.out.println(faqList);
+		return json;
 	}
-	
-	//faq 리스트 목록 요청 : category에 해당하는 글 목록 가져오기
-	@RequestMapping(value = "/all/{category}", method = RequestMethod.GET)
-	public List<FAQ> getFAQList(@RequestParam("category")int category){
-			System.out.println("456");
-			return service.getListByFaq(category);
-		}
-	
+		
 	
 	//등록(입력)요청
 	@RequestMapping(value = "/faqWrite", method = RequestMethod.POST)
 	public String FAQWriteForm(FAQ faq) {
 		service.writeFaq(faq);
-		return "redirect:faq/FaqWr"; //
+		return "redirect:faq/FaqWrite"; //
 	}
 	
 	//수정 요청

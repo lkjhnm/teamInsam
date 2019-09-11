@@ -33,9 +33,9 @@ public class FaqServiceImp implements FaqService{
 	}
 
 	@Override
-	public boolean removeFaq(int idNum) {
+	public boolean removeFaq(int faq_idNum) {
 		//삭제
-		int rowCount = dao.deleteFaq(idNum);
+		int rowCount = dao.deleteFaq(faq_idNum);
 		if(rowCount>0) {
 			return true;
 		}
@@ -43,9 +43,9 @@ public class FaqServiceImp implements FaqService{
 	}
 
 	@Override
-	public FAQ getFaq(int idNum) {
+	public FAQ getFaq(int faq_idNum) {
 		//조회
-		return dao.selectFaq(idNum);
+		return dao.selectFaq(faq_idNum);
 	}
 
 	@Override
@@ -53,13 +53,6 @@ public class FaqServiceImp implements FaqService{
 		//전체 조회
 		return dao.selectAll();
 	}
-
-	@Override
-	public List<FAQ> getListByFaq(int category) {
-		// TODO Auto-generated method stub
-		return dao.selectListByFaq(category);
-	}
-	
 	
 	
 }

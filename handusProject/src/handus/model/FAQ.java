@@ -8,9 +8,8 @@ public class FAQ {
 	public String faq_title;
 	public String faq_content;
 	public Date faq_regDate;
-	public int faq_catagory;
-	
-	
+	public String faq_category;
+	public int faq_code;
 	public int getFaq_idNum() {
 		return faq_idNum;
 	}
@@ -35,19 +34,30 @@ public class FAQ {
 	public void setFaq_regDate(Date faq_regDate) {
 		this.faq_regDate = faq_regDate;
 	}
-	
-	public int getFaq_catagory() {
-		return faq_catagory;
+	public String getFaq_category() {
+		return faq_category;
 	}
-	public void setFaq_catagory(int faq_catagory) {
-		this.faq_catagory = faq_catagory;
+	public void setFaq_category(String faq_category) {
+		this.faq_category = faq_category;
 	}
-	
+	public int getFaq_code() {
+		return faq_code;
+	}
+	public void setFaq_code(int faq_code) {
+		this.faq_code = faq_code;
+	}
 	@Override
 	public String toString() {
 		return "FAQ [faq_idNum=" + faq_idNum + ", faq_title=" + faq_title + ", faq_content=" + faq_content
-				+ ", faq_regDate=" + faq_regDate + ", faq_catagory=" + faq_catagory + "]";
+				+ ", faq_regDate=" + faq_regDate + ", faq_category=" + faq_category + ", faq_code=" + faq_code + "]";
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
