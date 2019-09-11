@@ -93,7 +93,9 @@
 	</insert>
 	
 	<update id="updateAuthor" parameterType="map">
-		
+		update AUTHOR
+			set at_name = #{at_name}, at_email = #{at_email}, at_studio = #{at_studio}, at_address = #{at_address}
+				where m_pk = #{m_pk}
 	</update>
 	
 	<update id="updateAuthorImage" parameterType="map">

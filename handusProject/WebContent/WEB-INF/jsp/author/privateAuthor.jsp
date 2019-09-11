@@ -85,6 +85,17 @@
 		top: 50%;
 		left: 50%;
 	}
+	.modify-input{
+		display:none;
+		font-weight:550;
+		background-color: inherit;
+		border:none;
+		width: 225px;
+		color:#191919;
+	}
+	.modify-input:focus{
+		outline:none;
+	}
 </style>
 <script>
 	$(function(){
@@ -99,36 +110,65 @@
 			$("#profile_image").css("border","1px solid #ff1d43").addClass("hover")
 			origin_src = $("#profile_image").attr("src")
 			isMod = true;
+			
+			$(".hover").on("click",function(){
+				$(this).children("input").css("display","block").focus();
+				$(this).children(".info_value").css("display","none")
+			})
 		})
 		
 		$("#cancel").on("click",function(){
+			$(".hover").find("input").css("display","none")
+			$(".info_value").css("display","block")
+			
 			$("#menu").css("display","block")
 			$("#modify").css("display","none")
 			$("#profile_info_container").children().css("border","none").css("border-bottom","1px solid #191919").removeClass("hover")
 			$("#profile_image").css("border","none").removeClass("hover")
 			$("#profile_image").attr("src",origin_src)
 			isMod = false;
+			
 		})
 		
 		$("#confirm").on("click",function(){
-			var name = $("#profile_image").attr("data-name");
+			var formData = new FormData();
+			formData.append("ap_filename", $("#profile_image").attr("data-name"))
+			formData.append("m_pk","${m_pk}");
+			var name = $("#at_name").val() == "" ? $("#at_name").prev().text() : $("#at_name").val()
+			var email = $("#at_email").val() == "" ? $("#at_email").prev().text() : $("#at_email").val()
+			var studio = $("#at_studio").val() == "" ? $("#at_studio").prev().text() : $("#at_studio").val()
+			var address = $("#at_address").val() == "" ? $("#at_address").prev().text() : $("#at_address").val()
 			
+			formData.append("at_name",name)
+			formData.append("at_email",email)
+			formData.append("at_studio",studio)
+			formData.append("at_address",address)
+			var str = "";
+			str += "ap_filename="+$("#profile_image").attr("data-name")
+			str += "m_pk=${m_pk}"
+			str += "at_name"
+
 			$.ajax({
 				url:"${pageContext.request.contextPath}/author/updateAuthor",
 				type:"post",
-				data: {"ap_filename":name , "m_pk":"${m_pk}"},
+				data: formData,
 				dataType:"json",
 				success: function(data){
-					alert(data)
-					$("#menu").css("display","block")
-					$("#modify").css("display","none")
-					$("#profile_info_container").children().css("border","none").css("border-bottom","1px solid #191919").removeClass("hover")
+					alert(data);
+					$("#menu").css("display","block");
+					$("#modify").css("display","none");
+					$("#profile_info_container").children().css("border","none").css("border-bottom","1px solid #191919").removeClass("hover");
 					$("#profile_image").css("border","none").removeClass("hover")
-					$("#profile_image").attr("src","${pageContext.request.contextPath}/author/authorImg?ap_pk="+ data.ap_pk)
+					$("#profile_image").attr("src","${pageContext.request.contextPath}/author/authorImg?ap_pk="+ data.ap_pk);
 					isMod = false;
-					origin_src = $("#profile_image").attr("src")
+					origin_src = $("#profile_image").attr("src");
 				}
-			})
+			});
+			
+			$("#at_name").prev().text(name)
+			$("#at_email").prev().text(email)
+			$("#at_studio").prev().text(studio)
+			$("#at_address").prev().text(address)
 		})
 		
 		//---드래그 앤 드랍 이미지 업로드
@@ -176,6 +216,7 @@
 				type:"post",
 				data:data,
 				dataType:"json",
+				
 				processData:false,
 				contentType:false,
 				success:function(data){
@@ -183,10 +224,6 @@
 					.attr("data-name",data[0])
 				}
 			})
-		})
-		
-		$(".hover").on("click",function(){
-			
 		})
 	})
 </script>
@@ -199,12 +236,22 @@
 			<div id="profile_container">
 				<fieldset>
 					<legend>PROFILE</legend>
-					<div><img id="profile_image" src="${pageContext.request.contextPath }/author/authorImg?ap_pk=${AP_PK}"></div>
+					<div><img id="profile_image" src="${pageContext.request.contextPath }/author/authorImg?ap_pk=${AP_PK}"
+								data-name="${AP_FILENAME }">
+					</div>
 					<div id="profile_info_container">
-						<div><span class="info_title">NAME</span><span class='info_value'> ${AT_NAME }</span></div>
-						<div><span class="info_title">EMAIL</span><span class='info_value'> ${AT_EMAIL }</span></div>
-						<div><span class="info_title">STUDIO</span><span class='info_value'> ${AT_STUDIO }</span></div>
-						<div><span class="info_title">ADDRESS</span><span class='info_value'> ${AT_ADDRESS }</span></div>
+						<div><span class="info_title">NAME</span><span class='info_value'> ${AT_NAME }</span>
+							 <input class='modify-input' type="text" name="at_name" id="at_name">
+						</div>
+						<div><span class="info_title">EMAIL</span><span class='info_value'> ${AT_EMAIL }</span>
+							 <input class='modify-input' type="text" name="at_email" id="at_email">
+						</div>
+						<div><span class="info_title">STUDIO</span><span class='info_value'> ${AT_STUDIO }</span>
+							 <input class='modify-input' type="text" name="at_studio" id="at_studio">
+						</div>
+						<div><span class="info_title">ADDRESS</span><span class='info_value'> ${AT_ADDRESS }</span>
+							 <input class='modify-input' type="text" name="at_address" id="at_address">
+						</div>
 					</div>
 					<div class="profile_button_container" id="menu">
 						<div class='profile_button' id="regBtn">작품 등록</div>
