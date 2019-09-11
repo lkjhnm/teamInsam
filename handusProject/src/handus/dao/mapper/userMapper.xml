@@ -47,7 +47,9 @@
 					(msa.s_pk = fk.ms_fk)
 				</when>
 				<when test="type == 3">
-					(msa.a_pk = fk.ms_fk) join AUCTION_IMAGE ai on (msa.a_pk = ai.a_pk and ai.ai_main = 1)
+					(msa.a_pk = fk.ms_fk) join AUCTION_IMAGE ai on (msa.a_pk = ai.a_pk and ai.ai_main = 1) 
+						join CATEGORYNAME c on (msa.c_pk = c.c_pk) join auction_graph ag on (msa.a_pk = ag.a_pk)
+						where ag.ag_bidding = ( select max(ag.ag_bidding) from auction_graph ag where msa.a_pk = ag.a_pk )
 				</when>
 			</choose>				
 	</select>

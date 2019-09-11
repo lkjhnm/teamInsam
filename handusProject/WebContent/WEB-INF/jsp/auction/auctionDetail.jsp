@@ -541,7 +541,7 @@
 			$("#auctionImg").attr("src", $(this).attr("src"))
 		})
 		
-		var isSubs = isSubscribe()
+		var isSubs = isAnony == false ? isSubscribe() : false;
 		
 		$("#subButton").on("click",function(){
 
@@ -581,6 +581,10 @@
 					})
 				}
 			}
+		})
+		
+		$("#writerBtn").on("click",function(){
+			location.href="${pageContext.request.contextPath}/author/publicPage?m_pk="+${auction.m_pk_writer};
 		})
 	})
 // 	윈도우 온로드 종료  --------------------------------------------------------------
@@ -708,7 +712,7 @@
 	}
 	
 	
-// 	웹소켓
+//----------------- 	웹소켓
 	
 	var sock;
 	var stompClient;
@@ -717,7 +721,7 @@
 		sock = new SockJS("${pageContext.request.contextPath}/connect");
 		stompClient = Stomp.over(sock);
 		stompClient.connect({},function(){
-			stompClient.subscribe("/subscribe/bidding/${auction.a_pk}",function(webSocketData){
+			stompClient.subscribe("/subscribe/bidding/auction/${auction.a_pk}",function(webSocketData){
 				var data = JSON.parse(webSocketData.body);
 				
 				if(data[0].result){
@@ -768,7 +772,7 @@
 						<div class='infoPosition infoBold'><span> ${auction.a_title } </span></div>
 						<div class='infoPosition'><span> 작가 이름 </span></div>				
 						<div class='infoPosition'>
-							<div class='infoButton'><span> 작가 페이지 </span></div> <div class='infoButton'><span>메시지 문의</span></div>
+							<div class='infoButton' id="writerBtn"><span> 작가 페이지 </span></div> <div class='infoButton'><span>메시지 문의</span></div>
 						</div>
 						<div id="button-boundary"></div>
 						
@@ -813,7 +817,7 @@
 								</c:when>
 								<c:when test="${auction.a_end }">
 									<span class='smallText' id="bidTime">
-										 &lt; <fmt:formatDate value="${auction.ag_regDate }" pattern="yyyy/MM/dd HH:mm 낙찰" /> &gt; 
+										 &lt; ${auction.ag_regDate } 낙찰 &gt; 
 									</span>									
 								</c:when>
 								<c:otherwise>
