@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import com.google.gson.JsonObject;
 import handus.dao.AuctionDao;
 import handus.model.Auction;
 import handus.model.AuctionGraph;
+import handus.model.HandusImage;
 
 @Service
 public class AuctionService {
@@ -26,8 +28,44 @@ public class AuctionService {
 	private AuctionDao auctionDao;
 	
 		
-	public List<Auction> getAuctionList(){
-		return auctionDao.selectAuctionList();
+	public List<Auction> getAuctionList(int page,String type){
+		return auctionDao.selectAuctionList(page,type);
+	}
+	
+	public Map<String,Object> getPageInfo(int page,String type){
+		int count = auctionDao.selectAuctionCount(type);
+		return calPageInfo(count, page,type);
+	}
+	
+	private Map<String,Object> calPageInfo(int count, int page,String type){
+		int totalPage = (int)Math.ceil(count/6.0);
+		int startPage = 0;
+		int endPage = 0;
+		Map<String,Object> pageInfo = new HashMap<>();
+		
+		
+		if(page < 4) {
+			startPage = 1;
+			if(totalPage < 6) {
+				endPage = totalPage;
+			}else {
+				endPage = 5;
+			}
+		}else if(page >= 4 && page < totalPage - 2) {
+			startPage = page - 2;
+			endPage = page + 2;
+		}else {
+			startPage = totalPage-4;
+			endPage = totalPage;
+		}
+		
+		pageInfo.put("startPage",startPage);
+		pageInfo.put("endPage",endPage);
+		pageInfo.put("total",totalPage);
+		pageInfo.put("curPage",page);
+		pageInfo.put("type",type);
+		
+		return pageInfo;
 	}
 	
 	public Auction getAuctionDetail(int a_pk) {
@@ -36,6 +74,10 @@ public class AuctionService {
 		auction.setA_remainText(getRemainTime(auction.getA_remain()));
 		
 		return auction;
+	}
+	
+	public List<HandusImage> getAuctionImg(int a_pk) {
+		return auctionDao.selectImgListByA_pk(a_pk);
 	}
 	
 	private String getRemainTime(long remain){	
@@ -52,11 +94,15 @@ public class AuctionService {
 		return day + hours + ":" + minutes + ":" + seconds;
 	}
 	
-	public byte[] getAuctionImages(int a_pk) throws IOException {		//예외발생시 예외 이미지 주기
-		Map<String, Object> imageMap = auctionDao.selectAuctionImagePath(1);
-		String savePath = (String)imageMap.get("AI_SAVEPATH");
-		String fileName = (String)imageMap.get("AI_FILENAME");
-		byte[] bytes = FileUtils.readFileToByteArray(new File("c:/"+savePath,fileName));
+	public byte[] getAuctionImages(int ai_pk) throws IOException {		//예외발생시 예외 이미지 주기
+		HandusImage image = auctionDao.selectAuctionImagePath(ai_pk);
+		String savePath = image.getImg_savePath();
+		String fileName = image.getImg_fileName();
+		
+		if(fileName == null) {
+			return null;
+		}
+		byte[] bytes = FileUtils.readFileToByteArray(new File(savePath,fileName));
 		
 		return bytes;
 	}

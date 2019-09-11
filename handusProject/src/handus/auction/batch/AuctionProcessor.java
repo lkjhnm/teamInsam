@@ -27,19 +27,30 @@ public class AuctionProcessor implements ItemProcessor<Auction, Auction>{
 	public Auction process(Auction item) throws Exception{		//알람 여부를 확인하여 알려줌, 옥션 번호와 경매종료 여부
 		HttpClient  httpClient = HttpClients.createDefault();
 		
-		long remainTime = item.getA_endTime().getTime() - new Date().getTime();
+		long remainTimeE = item.getA_endTime().getTime() - new Date().getTime();
+		long remainTimeS = item.getA_startTime().getTime()  - new Date().getTime();
 		
-		if(remainTime < 0 && !item.isA_end()) {
+		if(remainTimeS < 0 && !item.isA_start()) {
+			item.setA_start(true);
+			HttpGet get = new HttpGet("http://localhost:8081/handusProject/auction/alarm?a_pk=" + item.getA_pk()+"&a_end="+item.isA_end()
+										+"&a_start="+item.isA_start());
+			httpClient.execute(get);
+			return item;
+		}
+		
+		if(remainTimeE < 0 && !item.isA_end()) {
 			item.setA_end(true);
-			HttpGet get = new HttpGet("http://localhost:8081/handusProject/auction/alarm?a_pk=" + item.getA_pk()+"&a_end="+item.isA_end());
+			HttpGet get = new HttpGet("http://localhost:8081/handusProject/auction/alarm?a_pk=" + item.getA_pk()+"&a_end="+item.isA_end()
+										+"&a_start="+item.isA_start());
 			httpClient.execute(get);
 			int endprice = auctionService.getAuctionEndPrice(item.getA_pk());
 			item.setA_endPrice(endprice);
 			
 			return item;
-		}else if((remainTime > 0 && remainTime < anHour) && !item.isA_alarm()) {
+		}else if((remainTimeE > 0 && remainTimeE < anHour) && !item.isA_alarm()) {
 			item.setA_alarm(true);
-			HttpGet get = new HttpGet("http://localhost:8081/handusProject/auction/alarm?a_pk="+item.getA_pk()+"&a_end="+item.isA_end());
+			HttpGet get = new HttpGet("http://localhost:8081/handusProject/auction/alarm?a_pk="+item.getA_pk()+"&a_end="+item.isA_end()
+										+"&a_start="+item.isA_start());
 			httpClient.execute(get);
 			return item;
 		}

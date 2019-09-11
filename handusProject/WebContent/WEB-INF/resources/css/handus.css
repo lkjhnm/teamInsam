@@ -16,6 +16,8 @@ html,body{
 }
 
 /* 	사이드 css 설정 */
+
+/*
 #sideMenu{
 	width: 300px;
 	height: 100%;
@@ -129,7 +131,8 @@ html,body{
 .menu:hover{
 	cursor:pointer;
 }
-	
+*/
+
 /* 	헤더 css 설정 */
 #header{
 	width: 1920px;
@@ -166,14 +169,33 @@ html,body{
 #iconContainer{
 	position:absolute;
 	right: 6%;
-	bottom: 7%;
+	bottom: -10%;
 	width: 180px;
 	display:flex;
 	justify-content: space-between;
+	list-style: none;
 }
-#iconContainer span:hover{
+#iconContainer li:hover{
 	cursor:pointer;
 }
+#menuUser{
+	display:none;
+	padding:0;
+	list-style: none;
+	position:absolute;
+	left:-20px;
+	top:30px;
+}
+#menuUser li{
+	border-top:1px solid #fff;
+	padding:10px;
+	background-color: #191919;
+	text-align: center;
+	color:#fff;
+	font-size:15px;
+	width: 80px;
+}
+
 #bell{
 	display:inline-block;
 	position:relative;

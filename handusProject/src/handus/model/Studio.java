@@ -22,7 +22,14 @@ public class Studio {
 	private String c_category;
 	private int rs_count;
 	private int hs_count;
+	private String s_name;
 	
+	public String getS_name() {
+		return s_name;
+	}
+	public void setS_name(String s_name) {
+		this.s_name = s_name;
+	}
 	public String getM_name() {
 		return m_name;
 	}
@@ -144,9 +151,10 @@ public class Studio {
 				+ ", s_updatedate=" + s_updatedate + ", s_maximum=" + s_maximum + ", s_current=" + s_current
 				+ ", s_classstart=" + s_classstart + ", s_classend=" + s_classend + ", s_read_count=" + s_read_count
 				+ ", s_content=" + s_content + ", s_comment=" + s_comment + ", m_name=" + m_name + ", c_category="
-				+ c_category + ", rs_count=" + rs_count + ", hs_count=" + hs_count + ", getM_name()=" + getM_name()
-				+ ", getC_category()=" + getC_category() + ", getRs_count()=" + getRs_count() + ", getHs_count()="
-				+ getHs_count() + ", getS_pk()=" + getS_pk() + ", getS_title()=" + getS_title() + ", getM_pk_writer()="
+				+ c_category + ", rs_count=" + rs_count + ", hs_count=" + hs_count + ", s_name=" + s_name
+				+ ", getS_name()=" + getS_name() + ", getM_name()=" + getM_name() + ", getC_category()="
+				+ getC_category() + ", getRs_count()=" + getRs_count() + ", getHs_count()=" + getHs_count()
+				+ ", getS_pk()=" + getS_pk() + ", getS_title()=" + getS_title() + ", getM_pk_writer()="
 				+ getM_pk_writer() + ", getS_price()=" + getS_price() + ", getS_location()=" + getS_location()
 				+ ", getS_category()=" + getS_category() + ", getS_regdate()=" + getS_regdate() + ", getS_updatedate()="
 				+ getS_updatedate() + ", getS_maximum()=" + getS_maximum() + ", getS_current()=" + getS_current()
@@ -154,4 +162,5 @@ public class Studio {
 				+ ", getS_read_count()=" + getS_read_count() + ", getS_content()=" + getS_content()
 				+ ", getS_comment()=" + getS_comment() + "]";
 	}
+	
 }
