@@ -163,8 +163,8 @@ public class MemberService {
 		return memberDao.selectByID(id);
 	}
 	
-	public Member getMemberByApiId(String apiId){
-		return memberDao.selectByApiId(apiId);
+	public Member getMemberByApiId(String apiId, int apitype){
+		return memberDao.selectByApiId(apiId,apitype);
 	}
 
 	public List<Member> getMemberList() {
@@ -186,7 +186,7 @@ public class MemberService {
 		JsonNode accessNode = getAccessToken(authorize_code);
 		JsonNode userNode = getUserInfo(accessNode.findValue("access_token").toString());
 		String apiId = userNode.findValue("id").toString();
-		Member mem = memberDao.selectByApiId(apiId);
+		Member mem = memberDao.selectByApiId(apiId,1);
 		
 		if(mem == null) {
 			return new UsernamePasswordAuthenticationToken(apiId, null);

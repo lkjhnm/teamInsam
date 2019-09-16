@@ -20,8 +20,7 @@ import org.springframework.stereotype.Service;
 @EnableAsync
 public class MailUtilService {
 	
-	final String PATH ="C:\\Users\\bitcamp03\\Desktop\\workspace-spring\\.metadata\\.plugins"
-			+ "\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\handusProject\\WEB-INF\\resources\\mail\\mail.html";
+	final String PATH ="C:\\handus\\resource\\mail.html";
 	
 	@Autowired
 	private JavaMailSenderImpl mailSender;

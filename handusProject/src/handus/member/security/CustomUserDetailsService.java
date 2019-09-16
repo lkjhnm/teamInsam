@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 		
 		Member mem;
 		if(username.contains("Kakao")) {
-			mem = memberDao.selectByApiId(username.substring(6));
+			mem = memberDao.selectByApiId(username.substring(6),1);
 			mem.setM_id(username);
 			mem.setM_password(encoder.encode(username));
 		}else {
