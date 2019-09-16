@@ -38,8 +38,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.github.scribejava.core.model.OAuth2AccessToken;
+
 import handus.member.security.CustomUser;
 import handus.member.service.MemberService;
+import handus.member.service.NaverLoginService;
 import handus.model.Member;
 
 @Controller
@@ -55,9 +58,15 @@ public class MemberController {
 	@Autowired
 	private SessionRegistry sessionRegistry;
 	
+	@Autowired
+	private NaverLoginService naverService;
+	
 	
 	@RequestMapping(value="/loginForm", method=RequestMethod.GET)
-	public String handusLogin() {
+	public String handusLogin(Model model, HttpSession session) {
+		// 네아로 인증 url 얻어오기 
+		String naverAuthUrl = naverService.getNaverLoginURL(session);
+		model.addAttribute("naverUrl", naverAuthUrl);
 		return "member/login";
 	}
 	
@@ -98,12 +107,15 @@ public class MemberController {
 	@RequestMapping(value="/reSendMail",method=RequestMethod.POST)
 	public String remailValidate(@RequestParam(value="m_pk",required=false) Integer m_pk,
 								 @RequestParam(value="m_id",required=false) String m_id){
-		
+		System.out.println("m_id: "+m_id+"m_pk: "+m_pk);
 		if(m_id != null) {
 			Member mem;
 			if(m_id.contains("kakao_")) {
 				mem = memberService.getMemberById(m_id.substring(6));
-			}else {
+			}else if(m_id.contains("Naver_")) {
+				mem = memberService.getMemberById(m_id.substring(6));
+			}
+			else {
 				mem = memberService.getMemberById(m_id);				
 			}
 			m_pk = mem.getM_pk();
@@ -197,4 +209,66 @@ public class MemberController {
 		
 		return "redirect:signUpComplete";
 	}
+	
+	// callback : 네이버 로그인 성공시 URL 
+	@RequestMapping("/naver_callback")
+	public String naverCallback(Model model, String code, String state, HttpSession session) {
+		System.out.println("callback--");
+		OAuth2AccessToken authToken;
+		String userProfile;
+		try {
+			authToken = naverService.getAccessToken(session, state, code);
+			userProfile = naverService.getUserProfile(authToken);
+			System.out.println(userProfile);
+			// 결과값이 json형태임 
+			model.addAttribute("userProfile", userProfile);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "member/naverLogin";
+	}
+	
+	@RequestMapping("/setProfile")
+	@ResponseBody
+	public boolean setProfile(String id, HttpSession session) {
+		int apiType = 2;
+		Member member = memberService.getMemberByApiId(id, apiType);
+		// 해당 id가 DB에 있는지 검사 
+		if(member!=null) {
+			// 있으면 id로 로그인, 권한주기 ㄱ
+			return true;
+		}else {
+			// 없으면 id를 가지고 회원가입 ㄱ
+			session.setAttribute("apiId", id);
+			session.setAttribute("apiType", apiType);
+			return false;
+		}
+	}
+	
+	@RequestMapping("/naverAuth")
+	@ResponseBody
+	public void naverLogin(String id, HttpSession session,HttpServletRequest req) {
+		UsernamePasswordAuthenticationToken token = memberService.naverLogin(id, memberService.getMemberByApiId(id, 2));
+//		if(token.getCredentials() != null) 
+		token.setDetails(new WebAuthenticationDetails(req));
+		Authentication authentication = manager.authenticate(token);
+		
+		List<SessionInformation> sessionInfo = sessionRegistry.getAllSessions(authentication.getPrincipal(), false);	
+		
+		for(SessionInformation ssInfo : sessionInfo) {
+			Object p = authentication.getPrincipal();
+			if(p.equals(ssInfo.getPrincipal())) {
+				ssInfo.expireNow();
+			}
+		}
+		CustomUser user = (CustomUser)authentication.getPrincipal();
+		int m_pk = user.getMember().getM_pk();
+		session.setAttribute("m_pk", m_pk);
+		sessionRegistry.registerNewSession(session.getId(), authentication.getPrincipal());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
+	}
+	
+	
 }

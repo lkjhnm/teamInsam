@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 @EnableAsync
 public class MailUtilService {
-	
-	final String PATH ="C:\\handus\\resource\\mail.html";
+
+	private final String PATH = "C:\\handus\\resource\\mail.html";
 	
 	@Autowired
 	private JavaMailSenderImpl mailSender;

@@ -50,7 +50,6 @@ public class MemberService {
 	@Autowired
 	private PasswordEncoder encoder;
 	
-	
 	/*
 	 * signUp 과정
 	 * 권한 및 관심카테고리를 Member 모델에 묶어서  오라클 다중 insert 및 마이바티스 foreach문을 활용해서 한번에 데이터 insert
@@ -93,6 +92,8 @@ public class MemberService {
 		member.setAuthList(authList);
 		member.setMiList(miList);
 	}
+	
+	// 권한주기 (리스트 반환) 
 	private List<Auth> makeAuth(int type){
 		List<Auth> authList = new ArrayList<>();
 		
@@ -163,15 +164,16 @@ public class MemberService {
 		return memberDao.selectByID(id);
 	}
 	
-	public Member getMemberByApiId(String apiId, int apitype){
-		return memberDao.selectByApiId(apiId,apitype);
+
+	public Member getMemberByApiId(String apiId, int apiType){
+		return memberDao.selectByApiId(apiId, apiType);
 	}
 
 	public List<Member> getMemberList() {
 		return memberDao.selectAllMember();
 	}
 
-
+	
 	public boolean checkDuplicatedId(String m_id) {
 		
 		Member mem = memberDao.selectByID(m_id);
@@ -186,13 +188,16 @@ public class MemberService {
 		JsonNode accessNode = getAccessToken(authorize_code);
 		JsonNode userNode = getUserInfo(accessNode.findValue("access_token").toString());
 		String apiId = userNode.findValue("id").toString();
-		Member mem = memberDao.selectByApiId(apiId,1);
+
+		int apiType = 1;
+		Member mem = memberDao.selectByApiId(apiId, apiType);
 		
 		if(mem == null) {
+			
 			return new UsernamePasswordAuthenticationToken(apiId, null);
 		}
 		return new UsernamePasswordAuthenticationToken("Kakao_"+apiId, "Kakao_"+apiId ,
-					mem.getAuthList().stream().map( auth -> new SimpleGrantedAuthority(auth.getMa_authority())).collect(Collectors.toList()));
+				mem.getAuthList().stream().map( auth -> new SimpleGrantedAuthority(auth.getMa_authority())).collect(Collectors.toList()));
 	}
 	
 	private JsonNode getAccessToken(String authorize_code){
@@ -260,5 +265,11 @@ public class MemberService {
 			}
 		}
 		return false;
+	}
+	
+	// 네아로 권한주기 
+	public UsernamePasswordAuthenticationToken naverLogin(String apiId, Member member) {
+		return new UsernamePasswordAuthenticationToken("Naver_"+apiId, "Naver_"+apiId ,
+				member.getAuthList().stream().map( auth -> new SimpleGrantedAuthority(auth.getMa_authority())).collect(Collectors.toList()));
 	}
 }

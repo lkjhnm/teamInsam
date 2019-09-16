@@ -115,12 +115,12 @@
 		update member set m_eval = #{m_eval} where m_pk = #{m_pk}
 	</update>
 	
-	<select id="selectByApiId" parameterType="string" resultMap="memberMap">
+	<select id="selectByApiId" resultMap="memberMap">
 		select * 
 			from MEMBER m 
 				LEFT OUTER JOIN MEMBER_INTEREST mi ON (m.m_pk = mi.m_pk ) 
 					LEFT OUTER JOIN MEMBER_AUTHORITY ma ON (m.m_pk = ma.m_pk)	
-		where m_apiid = #{m_apiId} 
+		where m_apiid = #{param1} and M_APITYPE = #{param2}
 	</select>
 	
 	<resultMap type="member" id="memberMap">
