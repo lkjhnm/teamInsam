@@ -15,7 +15,7 @@ public interface MemberDao {
 	public int insertMemberVerify(MemberVerify mv);
 	
 	public Member selectByID(String id);
-	public Member selectByApiId(String m_apiid);
+	public Member selectByApiId(String m_apiid, int apiType);
 	public Member selectByNum(int m_pk);
 	public MemberVerify selectMemberVerify(int m_pk);
 	public List<Member> selectAllMember();

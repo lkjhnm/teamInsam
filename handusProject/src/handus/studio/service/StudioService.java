@@ -100,7 +100,7 @@ public class StudioService {
 //		weatherURL += "id=" + this.cityID;
 //		weatherURL += "q=" + cityName;
 //		weatherURL += "&appid=" + APIKEY;
-		weatherURL = "http://api.openweathermap.org/data/2.5/weather?q=Seoul&appid=7e26974c4a4c512ba8e98faf7b1be665";
+		weatherURL = "http://api.openweathermap.org/data/2.5/forecast/daily?q=Seoul&mode=json&units=metric&cnt=16&APPID=7e26974c4a4c512ba8e98faf7b1be665";
 		System.out.println("요청 url: "+weatherURL);
 		String jsonData = null;
 		try {

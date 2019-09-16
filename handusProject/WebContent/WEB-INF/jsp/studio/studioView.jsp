@@ -800,20 +800,20 @@
 // 						    var regID = "11B10101";
 // 						    var weaDate = year.toString() + m.toString() + date.toString() + hours.toString();
 // 						    alert(weaDate);
-						    $.ajax({
-						    	url: "weather",
-						    	data: {"cityName": "Seoul"},
-						    	dataType: "json",
-						    	type: "post",
-						    	success: function (data) {
-									alert(data);
-									var text = JSON.stringify(data);
-									alert(text);
-								},
-								error: function () {
-									alert("날씨API예외");
-								}
-						    });
+// 						    $.ajax({
+// 						    	url: "weather",
+// 						    	data: {"cityName": "Seoul"},
+// 						    	dataType: "json",
+// 						    	type: "post",
+// 						    	success: function (data) {
+// 									alert(data);
+// 									var text = JSON.stringify(data);
+// 									alert(text);
+// 								},
+// 								error: function () {
+// 									alert("날씨API예외");
+// 								}
+// 						    });
 						});
 					})(dNum);
 					week.append(dayRow);
