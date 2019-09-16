@@ -64,10 +64,9 @@
 	
 	<select id="selectByNum" parameterType="int" resultType="member">
 		select 
-			m.M_PK, m.M_ID, m.M_PASSWORD, m.M_NAME, m.M_EMAIL, m.M_PHONENUM, m.M_ENABLED, m.M_REGDATE, m.M_ADDRESS, m.M_APITYPE, m.M_APIID,
-			mi.c_pk, ma.authority	 
-		 from MEMBER m
-		where M_PK = #{m_pk} 
+			m.M_PK, m.M_ID, m.M_NAME, m.M_EMAIL, m.M_PHONENUM, m.M_ADDRESS
+			from MEMBER m
+		where m.M_PK = #{m_pk} 
 	</select>
 	
 	<select id="selectAllMember" resultType="member">
@@ -92,9 +91,14 @@
 	<update id="updateMemberAuth" parameterType="auth">
 		update MEMBER_AUTHORITY set ma_authority = #{ma_authority}
 			where m_pk = #{m_pk} and ma_authority =
-				<if test="ma_authority == 'ROLE_MEMBER' ">
-					'ROLE_MEMBER_NV'
-				</if>
+				<choose>
+					<when test="ma_authority == 'ROLE_MEMBER' ">
+						'ROLE_MEMBER_NV'
+					</when>
+					<when test="ma_authority == 'ROLE_AUTHOR' ">
+						'ROLE_AUTHOR_NV'
+					</when>
+				</choose>
 	</update>
 	
 	<select id="selectMemberVerify" parameterType="int" resultType="memberVerify">

@@ -6,7 +6,15 @@ public class HandusImage {
 	private String img_fileName;
 	private String img_savePath;
 	private int img_fk;
+	private boolean img_main;
 	
+	
+	public boolean isImg_main() {
+		return img_main;
+	}
+	public void setImg_main(boolean img_main) {
+		this.img_main = img_main;
+	}
 	public int getImg_pk() {
 		return img_pk;
 	}
@@ -34,7 +42,6 @@ public class HandusImage {
 	@Override
 	public String toString() {
 		return "HandusImage [img_pk=" + img_pk + ", img_fileName=" + img_fileName + ", img_savePath=" + img_savePath
-				+ ", img_fk=" + img_fk + "]";
+				+ ", img_fk=" + img_fk + ", img_main=" + img_main + "]";
 	}
-
 }

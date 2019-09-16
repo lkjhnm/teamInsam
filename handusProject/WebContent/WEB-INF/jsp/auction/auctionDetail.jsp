@@ -393,6 +393,8 @@
 <script>
 	var dps;
 	var chart;
+	//구독 버튼 
+	
 	$(function(){
 		var chartShow = false;
 		var modalShow = false;
@@ -538,46 +540,110 @@
 			$(this).siblings().css("border-color","#e3e2de" )
 			$("#auctionImg").attr("src", $(this).attr("src"))
 		})
+		
+		var isSubs = isAnony == false ? isSubscribe() : false;
+		
+		$("#subButton").on("click",function(){
+
+			if(isAnony){
+				location.href='${pageContext.request.contextPath}/member/loginForm'
+				return;
+			}
+			
+			if(!isSubs){
+				var result = confirm("구독 목록에 추가하시겠습니까?")
+				
+				if(result){
+					$.ajax({
+						url: "${pageContext.request.contextPath}/user/subscribe/3",		// auction 은 3번
+						type:"post",
+						data :  {"m_pk_user":"${m_pk}", "ms_fk":"${auction.a_pk}"},
+						dataType: "json",
+						success: function(data){
+							isSubs = data;
+							$("#subButton").find("i").removeClass("far").addClass("fas")
+						}
+					})
+				}
+			}else{
+				var result = confirm("구독을 취소하시겠습니까?")
+				
+				if(result){
+					$.ajax({
+						url : "${pageContext.request.contextPath}/user/subscribeCancel/3",
+						type:"post",
+						data : {"m_pk_user": "${m_pk}","ms_fk":"${auction.a_pk}"},
+						dataType:"json",
+						success: function(data){
+							isSubs = !data;		//성공적으로 지우면 false로
+							$("#subButton").find("i").removeClass("fas").addClass("far")
+						}
+					})
+				}
+			}
+		})
+		
+		$("#writerBtn").on("click",function(){
+			location.href="${pageContext.request.contextPath}/author/publicPage?m_pk="+${auction.m_pk_writer};
+		})
 	})
 // 	윈도우 온로드 종료  --------------------------------------------------------------
-
-		//이미지 슬라이드 쇼
-		function imgSlide(){
-			var position = 0;
-			var count = $("#thumbnail_train").children().length -4;
-			
-			console.log(count)
-			
-			$("#up-arrow > span").on("click",function(){
-				
-				if(position -1 < 0){
-					return;
+		
+	// 구독 여부 조회
+	function isSubscribe(){
+		var result;
+		
+		$.ajax({
+			url:"${pageContext.request.contextPath}/user/subscribeCheck/3",
+			data : {"m_pk_user":"${m_pk}", "ms_fk":"${auction.a_pk}"},
+			type:"post",
+			dataType :"json",
+			async:false,
+			success: function(data){
+				result  = data
+				if(result){
+					$("#subButton").find("i").removeClass("far").addClass("fas")
 				}
-				position = position <= 0 ? 0 : position - 1;
-				
-				
-				var top = position == 0 ? 0 : (-105)*position;
-
-				$("#thumbnail_train").animate({
-					"top" : top 
-				})
-			})
+			}
+		})	
+		return result;
+	}
+		
+	//이미지 슬라이드 쇼
+	function imgSlide(){
+		var position = 0;
+		var count = $("#thumbnail_train").children().length -4;
+		
+		$("#up-arrow > span").on("click",function(){
 			
-			$("#down-arrow >span").on("click",function(){
-				
-				if(position + 1 > count){
-					return;
-				}
-				position = position >= count ? count : position + 1;
-				
-				
-				var top = position == count ? (-105)*count : (-105)*position;
-				
-				$("#thumbnail_train").animate({
-					"top" : top
-				})
+			if(position -1 < 0){
+				return;
+			}
+			position = position <= 0 ? 0 : position - 1;
+			
+			
+			var top = position == 0 ? 0 : (-105)*position;
+
+			$("#thumbnail_train").animate({
+				"top" : top 
 			})
-		}
+		})
+		
+		$("#down-arrow >span").on("click",function(){
+			
+			if(position + 1 > count){
+				return;
+			}
+			position = position >= count ? count : position + 1;
+			
+			
+			var top = position == count ? (-105)*count : (-105)*position;
+			
+			$("#thumbnail_train").animate({
+				"top" : top
+			})
+		})
+	}
 	function makeChart(dps){
 		
 		chart = new CanvasJS.Chart("auctionChart",{
@@ -646,7 +712,7 @@
 	}
 	
 	
-// 	웹소켓
+//----------------- 	웹소켓
 	
 	var sock;
 	var stompClient;
@@ -655,7 +721,7 @@
 		sock = new SockJS("${pageContext.request.contextPath}/connect");
 		stompClient = Stomp.over(sock);
 		stompClient.connect({},function(){
-			stompClient.subscribe("/subscribe/bidding/${auction.a_pk}",function(webSocketData){
+			stompClient.subscribe("/subscribe/bidding/auction/${auction.a_pk}",function(webSocketData){
 				var data = JSON.parse(webSocketData.body);
 				
 				if(data[0].result){
@@ -688,7 +754,9 @@
 				<div id="thumnailContainer">
 					<div id="thumbnail_train">
 					<c:forEach items="${auctionImg }" var="img">
-						<img class='thumnail' src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${img.img_pk}">
+						<c:if test="${fn:length(auctionImg) > 1 }">
+							<img class='thumnail' src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${img.img_pk}">			
+						</c:if>
 					</c:forEach>
 					</div>
 				</div>
@@ -704,7 +772,7 @@
 						<div class='infoPosition infoBold'><span> ${auction.a_title } </span></div>
 						<div class='infoPosition'><span> 작가 이름 </span></div>				
 						<div class='infoPosition'>
-							<div class='infoButton'><span> 작가 페이지 </span></div> <div class='infoButton'><span>메시지 문의</span></div>
+							<div class='infoButton' id="writerBtn"><span> 작가 페이지 </span></div> <div class='infoButton'><span>메시지 문의</span></div>
 						</div>
 						<div id="button-boundary"></div>
 						
@@ -749,12 +817,12 @@
 								</c:when>
 								<c:when test="${auction.a_end }">
 									<span class='smallText' id="bidTime">
-										 &lt; <fmt:formatDate value="${auction.ag_regDate }" pattern="yyyy/MM/dd kk:mm 낙찰" /> &gt; 
+										 &lt; ${auction.ag_regDate } 낙찰 &gt; 
 									</span>									
 								</c:when>
 								<c:otherwise>
 									<span class='smallText' id="bidTime">
-										 &lt; <fmt:formatDate value="${auction.ag_regDate }" pattern="yyyy/MM/dd kk:mm 입찰" /> &gt; 
+										 &lt; ${auction.ag_regDate } 입찰 &gt; 
 									</span>
 								</c:otherwise>			
 							</c:choose>
@@ -779,8 +847,9 @@
 												입 찰
 											</div>
 										</c:if>
+
 										<div id='subButton'>
-												<span style='font-size:13px'><i class="far fa-heart"></i></span><span> 구 독 </span>
+											<span style='font-size:13px'><i class="far fa-heart"></i></span><span> 구 독 </span>
 										</div>
 									</c:otherwise>
 								</c:choose>

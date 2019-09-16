@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
 <script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
 <script type="text/javascript">
@@ -62,16 +63,20 @@
 		$("#logoutBtn").on("click",function(){
 			location.href="${pageContext.request.contextPath}/logout" 
 		})
+		
+		$("#myPageAuthor").on("click",function(){
+			location.href="${pageContext.request.contextPath}/author/privatePage?m_pk=${m_pk}";
+		})
 	})
 </script>
 <sec:authorize access="isAuthenticated()" >
 	<script>
 		$(function(){
 			$("#loginHeader").on("mouseenter",function(){
-				$("#menuUser").stop().slideDown(500);
+				$("#menuUser").stop().slideDown();
 			})
 			$("#loginHeader").on("mouseleave",function(){
-				$("#menuUser").stop().slideUp(300);
+				$("#menuUser").stop().slideUp();
 			})
 		})
 	</script>
@@ -103,8 +108,19 @@
 <%-- 		</sec:authorize> --%>
 		<li id="loginHeader"><img src="${pageContext.request.contextPath }/img/header-icon-account.svg">
 			<ul id='menuUser'>
-				<li id="myPageBtn">MY PAGE</li>
-				<li id="logoutBtn">LOGOUT</li>
+				<sec:authorize access="hasRole('ROLE_MEMBER')" />
+				<sec:authorize access="hasRole('ROLE_AUTHOR')" var="author" />
+				<c:choose>
+					<c:when test="${author }">
+						<li id="myPageBtn">MY PAGE</li>
+						<li id="myPageAuthor">AUTHOR</li>
+						<li id="logoutBtn">LOGOUT</li>
+					</c:when>
+					<c:otherwise>
+						<li id="myPageBtn">MY PAGE</li>
+						<li id="logoutBtn">LOGOUT</li>
+					</c:otherwise>
+				</c:choose>
 			</ul>
 		</li>
 		<li id="subscribeHeader"><img src="${pageContext.request.contextPath }/img/header-icon-bookmark.svg"></li>

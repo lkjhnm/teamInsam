@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -126,9 +127,28 @@
 		cursor:pointer;
 	}
 	#tab_title{
-		width: 150px;
+		width: 220px;
 		display:inline-block;
 		font-size: 30px;
+	}
+	#mypage_title{
+		text-align: center;
+		font-size: 35px;
+		font-weight: 500;
+		margin-bottom: 130px;
+	}
+	#regAuthor{
+		width: 100px;
+		height: 35px;
+		line-height: 35px;
+		background-color: #191919;
+		color: #fff;
+		text-align: center;
+		position:relative;
+		left: 550px;
+	}
+	#regAuthor:hover{
+		cursor:pointer;
 	}
 </style>
 <script>
@@ -168,6 +188,10 @@
 		$("#alarmBtn").on("click",function(){
 			location.href="subscribe"
 		})
+		
+		$("#regAuthor").on("click",function(){
+			location.href="${pageContext.request.contextPath}/author/signUp";
+		})
 	})	
 </script>
 </head>
@@ -176,8 +200,12 @@
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp"/>
 		
 		<div id="main">
+			<div id="mypage_title">MY PAGE</div>
 			<div id="top-container">
 				
+				<sec:authorize access="hasRole('ROLE_AUTHOR_NV')">
+					<div id="regAuthor">작가 등록</div>
+				</sec:authorize>
 				<fieldset>
 					<legend class="myPage-title">PROFILE</legend>
 					<div class="myPage_container">
@@ -199,15 +227,16 @@
 <!-- 									<span class="info-value hide"> Studio </span> -->
 <!-- 									<span class="info-value hide"> Auction </span> -->
 <!-- 							</div> -->
-							<div><span class="info-title">SUBSCRIBE</span><span class="info-value count" id="alarmBtn"> [ 6 ]</span></div>
-							<div><span class="info-title">MESSAGE</span><span class="info-value count"> [ 0 ] </span></div>
+							<div><span class="info-title">SUBSCRIBE</span><span class="info-value count" id="alarmBtn"> [ ? ]</span></div>
+							<div><span class="info-title">MESSAGE</span><span class="info-value count"> [ ? ] </span></div>
 						</div>
+						
 					</div>
 				</fieldset>
 			</div>
 			<div class='list_container'>
 				<div id="tab_menu_container">
-					<div id="tab_title">CATEGORY</div>
+					<div id="tab_title">SHOPPING LIST</div>
 					<div class="tab_menu">ITEM</div>
 					<div class="tab_menu">AUCTION</div>
 					<div class="tab_menu">STUDIO</div>

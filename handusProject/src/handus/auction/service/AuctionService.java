@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +28,44 @@ public class AuctionService {
 	private AuctionDao auctionDao;
 	
 		
-	public List<Auction> getAuctionList(){
-		return auctionDao.selectAuctionList();
+	public List<Auction> getAuctionList(int page,String type){
+		return auctionDao.selectAuctionList(page,type);
+	}
+	
+	public Map<String,Object> getPageInfo(int page,String type){
+		int count = auctionDao.selectAuctionCount(type);
+		return calPageInfo(count, page,type);
+	}
+	
+	private Map<String,Object> calPageInfo(int count, int page,String type){
+		int totalPage = (int)Math.ceil(count/6.0);
+		int startPage = 0;
+		int endPage = 0;
+		Map<String,Object> pageInfo = new HashMap<>();
+		
+		
+		if(page < 4) {
+			startPage = 1;
+			if(totalPage < 6) {
+				endPage = totalPage;
+			}else {
+				endPage = 5;
+			}
+		}else if(page >= 4 && page < totalPage - 2) {
+			startPage = page - 2;
+			endPage = page + 2;
+		}else {
+			startPage = totalPage-4;
+			endPage = totalPage;
+		}
+		
+		pageInfo.put("startPage",startPage);
+		pageInfo.put("endPage",endPage);
+		pageInfo.put("total",totalPage);
+		pageInfo.put("curPage",page);
+		pageInfo.put("type",type);
+		
+		return pageInfo;
 	}
 	
 	public Auction getAuctionDetail(int a_pk) {

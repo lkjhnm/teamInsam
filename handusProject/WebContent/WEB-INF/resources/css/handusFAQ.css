@@ -1,0 +1,339 @@
+@charset "UTF-8";
+
+form {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.faq_wrap {
+	margin: 10px 17% 0px 17%;
+	
+}
+
+.faq_wrap .inSub h3 span {
+	display: inline-block;
+	color : #707070;
+	font-size: 15px;
+	font-weight: bold;
+	margin-left: 15px;
+}
+
+.faq_wrap .title_top h4 {
+	margin-top: 180px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 40pt;
+}
+
+.faq_wrap .title_top h4:after {
+	content: " ";
+	display: block;
+	width: 120px;
+	border-bottom: 1px solid #191919;
+	margin: 20px auto;
+}
+
+/* faq 메뉴 탭*/
+#faq-wrap {
+	width: 1250px;
+	min-height: 800px;
+	margin: 0 auto;
+	line-height: 0;
+}
+
+.faq-title-wrap {
+	height: 94px;
+	text-align: center;
+	margin-top: 50px;
+}
+
+.faq-title {
+	line-height: 50px;
+	font-weight: 900;
+	font-size: 25pt;
+	font-family: 'NanumSquare';
+}
+
+.faq-sub-title {
+	line-height: 18pt;
+	font-size: 11pt;
+	font-weight: 100;
+	color: #333333;
+	height: 120px;
+}
+
+.faq-content-wrap .faq-title-table {
+	width: 105%;
+	text-align: center;
+	font-weight: 400;
+	font-size: 12pt;
+	margin-left: -20px;
+	margin-right: 50px;
+}
+
+.faq-content-wrap .faq-title-table tr td {
+	background: white;
+	color: #000000;
+	border: none;
+	position: relative;
+	height: 60px;
+	font-size: 13pt;
+	padding: 5px;
+	cursor: pointer;
+	transition: 800ms ease all;
+	outline: none;
+}
+
+.faq-content-wrap .faq-title-table tr td:hover {
+	
+	
+	}
+
+.faq-content-wrap .faq-title-table tr td:before, .faq-content-wrap .faq-title-table tr td:after
+	{
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 2px;
+	width: 0;
+	background: #98ab12;
+	transition: 400ms ease all;
+}
+
+.faq-content-wrap .faq-title-table tr td:after {
+	right: inherit;
+	top: inherit;
+	left: 0;
+	bottom: 0;
+}
+
+.faq-content-wrap .faq-title-table tr td:hover:before, .faq-content-wrap .faq-title-table tr td:hover:after
+	{
+	
+	width: 100%;
+	transition: 800ms ease all;
+}
+
+.faq-sub-title ul li {
+	list-style: none;
+	font-size: 15px;
+	line-height: 28px;
+	
+}
+
+/* NO */
+.faq-content-wrap .faq-title-table tr td:last-child {
+	border: 0;
+}
+
+
+/* 고객센터 > FAQ 검색 */
+.faq_search {
+	overflow: hidden;
+	width: 63.6%;
+	height: 95px;
+	margin: 35px 0 0;
+	margin-left: 385px;
+	padding: 30px 0 0;
+	background: #e6d3bf;
+	text-align: center;
+}
+
+.faq_search label {
+	display: inline-block;
+	margin: 0 20px 0 0;
+	color: #222;
+	font-size: 20px;
+	line-height: 38px;
+	vertical-align: middle
+}
+
+.faq_search .input {
+	display: inline-block;
+	overflow: hidden;
+	width: 420px;
+	height: 48px;
+	border-radius: 30px;
+	border: 1px solid #ccc;
+	background: #fff;
+	vertical-align: middle;
+}
+
+.faq_search .input input[type="text"] {
+	float: left;
+	width: 75%;
+	height: 44px;
+	padding: 3px 10px 8px 18px;
+	border: 0;
+	font-size: 14px;
+	line-height: 22px;
+}
+
+.faq_search .input input[type="text"]:focus {
+	outline: none;
+}
+
+.faq_search .input input[type="submit"] {
+	float: right;
+	width: 25px;
+	height: 27px;
+	margin: 10px 19px 0 0;
+	background:
+		url("http://image.oliveyoung.co.kr/pc-static-root/image/comm/ico_search25x27.png")
+		no-repeat 0 0;
+	font-size: 0;
+	text-indent: -99999px;
+	line-height: 0;
+}
+
+input[type="submit"], button {
+	border: 0;
+	padding: 0;
+	box-shadow: none;
+	cursor: pointer;
+}
+
+/* 고객센터 > 공통 게시판 */
+
+.list-customer {
+	width: 1020px;
+	height: 300px;
+	margin: 0 auto;
+}
+
+.faq-content-wrap {
+	width: 80%;
+	height: 300px;
+	margin: 0 auto;
+	margin-top: 10px;
+}
+
+
+#faq_load {
+	width: 100%;
+	height: auto;
+}
+
+.faq-content-wrap .faq-title-table tr {
+	height: 50px;
+	margin: auto;
+}
+
+
+/* NO */
+
+.faq-content-wrap .faq-title-table tr td:hover, .selected {
+	font-weight: 900;
+	color: #000;
+}
+
+.faq-content-table img {
+	width: 100%;
+}
+
+.faq-content-table pre {
+	width: 0;
+	font-family: 'nanumgothic';
+}
+
+.faq-content-table {
+	width: 100%;
+}
+
+.faq-content-table tr {
+	height: 50px;
+}
+
+/*.faq-content-table tr td:nth-child(1) {width: 100px; text-align: center;}*/
+.faq-content-table tr td:nth-child(2) {
+	word-break: normal;
+	font-size: 14px;
+	padding: 8px;
+	cursor: pointer;
+}
+
+.inSub {
+/* 	border-bottom: 1px solid #191919; */
+    padding-bottom: 18px;
+    margin-bottom: 30px;
+}
+
+.inSub h3 {
+	text-align: center;
+	font-size: 24px;
+	font-weight: bold;
+	color : #98ab12;
+	margin-top: -50px;
+	line-height: 1.0;
+	position: relative;	
+}
+
+.faq-detail {
+	display: none;
+}
+
+.faq-detail td {
+	font-weight: 500;
+	color: #333333;
+	white-space: pre-line;
+	font-family: 'nanumgothic';
+}
+
+p {
+	font-size: 13pt;
+}
+
+.font_Nanum {
+	font-family: 'Nanum Barun Gothic', sans-serif;
+}
+
+.pageing {
+	padding : 30px 0 0;
+	font-size: 0;
+	text-align: center;
+	line-height: 0;
+}
+
+.common1s-text {
+	margin: 0;
+	padding: 58px 0 0;
+	color: #333;
+	font-size: 18px;
+	text-align: center;
+	line-height: 22px;
+}
+
+.area1sButton {
+	padding : 10px 0 0;
+	text-align: center;
+}
+
+.area1sButton a {
+	padding: 9px 0 0;
+}
+
+.area1sButton a .btnGreen {
+	color : white;
+	font-weight: 700;
+}
+
+.btnGreen, a.btnGreen {
+	width: 100%;
+	height: 50px;
+	background-color: #969937;
+	padding: 11px 0 9px;
+	font-size: 16.9px;
+	line-height: 30px;
+	border-radius: 5px;
+	color: white;
+	font-weight: 550;
+}
+
+.area1sButton a.btnGreen {
+	display: inline-block;
+	width: 150px;
+	margin:  0 2px;
+	box-sizing: border-box;
+}
