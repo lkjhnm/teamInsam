@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 @EnableAsync
 public class MailUtilService {
+
 	private final String PATH = "C:\\handus\\resource\\mail.html";
 	
 	@Autowired

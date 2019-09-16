@@ -164,6 +164,7 @@ public class MemberService {
 		return memberDao.selectByID(id);
 	}
 	
+
 	public Member getMemberByApiId(String apiId, int apiType){
 		return memberDao.selectByApiId(apiId, apiType);
 	}
@@ -187,6 +188,7 @@ public class MemberService {
 		JsonNode accessNode = getAccessToken(authorize_code);
 		JsonNode userNode = getUserInfo(accessNode.findValue("access_token").toString());
 		String apiId = userNode.findValue("id").toString();
+
 		int apiType = 1;
 		Member mem = memberDao.selectByApiId(apiId, apiType);
 		
