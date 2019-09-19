@@ -4,9 +4,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Handus Studio:Detail</title>
+<title>Handus Item:Detail</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/handus.css" />
-<link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothsc|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&display=swap" rel="stylesheet">
 <style>
 	body{
@@ -96,7 +96,7 @@
 		font-size: 24px;
 		letter-spacing: 10px;
 	}
-	#reservButton, #cartButton {
+	#buyButton, #cartButton {
 		width: 300px;
 		height: 45px;
 		border : 1px solid #707070;
@@ -160,93 +160,11 @@
 		display:inline-block;
 		width: 150px;
 	}
-	.locPosition{
-		width:100%;
-		margin-top:15px;
-	}
-	.locType{
-		display:inline-block;
-		width: 150px;
-	}
-
-/* 		모달 		*/
-	#modalContainer{
-		display: none;
-		width: 400px;
-		height: 700px;
-		border: 1px solid black;
-		position: fixed;
-		background-color: #ffff;
-		padding: 20px;
-	}
-	.calendarBox, .weatherBox{
-		width: 390px;
-		height: 300px;
-		border: 1px solid black;
-		margin: 0 auto;
-		margin-bottom: 20px;
-	}
-	.calendarBox table{
-		margin: 20px auto; 
-		width: 350px;
-		padding: 20px;
-	}
-	.calendarBox tr{
-		margin-top: 15px;
-	}
-	.calendarBox tr:first-child{
-		font-size: 20px;
-	}
-	.calendarBox tr:nth-child(2){
-		font-size: 12px;
-	}
-	.calendarBox td{
-		display: table-cell; 
-		width: 10%;
-		padding: 5px 0;
-		text-align: center;
-	}
-	.calMove:hover{
-		color: #FF1D43;
-		cursor: pointer;
-	}
-	.onDate:hover, .clickDate{
-		color: #FBF9F6;
-		background-color: #FF1D43;
-		cursor: pointer;
-	}
-	.close, .reservation{
-		width: 200px;
-		height: 45px;
-		border : 1px solid #707070;
-		text-align: center;
-/* 		background-color : #191919; */
-		color:#191919;
-		display: table-cell;
-		vertical-align: middle;
-		margin: 20px auto;
-	}
-	.reservation{
-		background-color: #191919;
-		color: #ffff;
-/* 		margin-right: 40px; */
-	}
-	.close:hover, .reservation:hover{
-		cursor: pointer;
-	}
-	#mapBox{
-		display: inline-block;
-		width: 500px;
-		height: 350px;
-		background-color: #ffff;
-		margin-top: 10px;
-		margin-bottom: 30px;
-		border: none;
-	}
 	
 /* 		리뷰 		*/
 	#reviewContiner{
 		margin: 200px auto;
+		margin-top: 0;
 		margin-bottom: 100px;
 		width: 1300px;
 	}
@@ -368,47 +286,17 @@
   crossorigin="anonymous"></script>
  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=486df4f7ba9d0fcd564c18d5601724f6&libraries=services,clusterer"></script>
 <script type="text/javascript">
-	var memberNum = 1;				// 회원 번호 
-	var studioNum = ${studio.s_pk};	// 게시글 번호
+	var memberNum = 3;				// 회원 번호 
+	var itemNum = ${item.i_pk};		// 게시글 번호
 	var isHeart = false;			// 구독중인지 판별
 	var isLock = false;				
 	var isReview = true;			// 리뷰 남기기 창 (초기값: false)
 	var modBtn = 0; 				// 수정 버튼 기능 0=수정창보이기, 1=수정로직실행
-	var mapX ;						// 127.02448266126561
-	var mapY ;						// 37.50312464278207
 	$(function () {
 		// 해당 회원이 게시글에 대해 좋아요를 눌렀는지 확인 후 하트 클래스 추가/삭제
 		heartCheck();
 		// 리뷰 그리기
 		drawReview();
-		// 달력그리기 
-		drawCalendar(new Date());
-		// 지도 API 
-		// 지도 - 그리기 
-		var mapBox = document.getElementById("mapBox");
-		var mapOption = {
-			center: new kakao.maps.LatLng(0, 0), 	// 지도의 중심 좌표 설정 
-			level: 3 	// 지도의 축소, 확대 정도 
-		};
-		var map = new kakao.maps.Map(mapBox, mapOption); 	// 지도 객체 생성 (지도 그릴곳, 옵션 )파라미터 대입 
-		var loc = "${studio.s_location }";
-		var geocoder = new kakao.maps.services.Geocoder();
-		geocoder.addressSearch(loc, function (result, status) {
-			if(status == kakao.maps.services.Status.OK){
-				var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-				mapX = result[0].y;
-				mapY = result[0].x;
-				var marker = new kakao.maps.Marker({
-					map: map,
-				    position: coords
-				});
-				var infowindow = new kakao.maps.InfoWindow({
-		            content: '<div style="width:150px;text-align:center;padding:6px 0;">${studio.s_name }</div>'
-		        });
-		        infowindow.open(map, marker);
-		        map.setCenter(coords);
-			}
-		});
 		
 		// 작가 페이지, 메세지 문의 이동 
 		$("#autherPage").on("click", function () {
@@ -422,8 +310,8 @@
 			if(isHeart){
 				// 까만하트 -> 구독 취소 후 빈 하트
 				$.ajax({
-					url: "${pageContext.request.contextPath}/heart/offHeartS",
-					data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
+					url: "${pageContext.request.contextPath}/heart/offHeartI",
+					data: {"hi_m_pk":memberNum, "hi_i_pk":itemNum},
 					type: "post",
 					success: function (result) {
 						if(result){
@@ -441,8 +329,8 @@
 			}else{
 				// 빈하트 -> 구독 후 까만 하트 
 				$.ajax({
-					url: "${pageContext.request.contextPath}/heart/onHeartS",
-					data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
+					url: "${pageContext.request.contextPath}/heart/onHeartI",
+					data: {"hi_m_pk":memberNum, "hi_i_pk":itemNum},
 					type: "post",
 					success: function (result) {
 						if(result){
@@ -459,14 +347,25 @@
 				});
 			}
 		});
-		// 예약 클릭시 모달 띄우기 
-		$("#reservButton").on("click", function () {
-			$("#modalContainer").css("top","18%");
-			$("#modalContainer").css("left","74%");
-			$("#modalContainer").show("slow");
+		// 장바구니 클릭 > 장바구니 에 담기
+		$("#cartButton").on("click", function () {
+			alert("장바구니에 담기");
+			// 장바구니에 추가하는 요청 
+			if(confirm("계속 둘러보시겠습니까?")==true){
+				return;
+			}else{
+				alert("장바구니로 이동");
+				// location.href="";	// 장바구니 페이지 
+			}
 		});
-		$(".close").on("click", function () {
-			$("#modalContainer").hide("slow");
+		// 구매 클릭 > 바로 결제 페이지 
+		$("#buyButton").on("click", function () {
+			if(confirm("바로 구매하시겠습니까?")==true){
+				alert("결제창으로 이동");
+				// location.href="";	// 결제창 페이지 
+			}else{
+				return;
+			}
 		});
 		// 리뷰 남기기 버튼 
 		$(".reviewWrite").on("click", function () {
@@ -517,11 +416,11 @@
 			var score = $("i[grade='here']").attr("data-value");
 			var content = $("#writeContent").val();
 			$.ajax({
-				url: "${pageContext.request.contextPath}/review/writeReviewS",
+				url: "${pageContext.request.contextPath}/review/writeReviewI",
 				data: {"mNum": memberNum,
 					"grade": score,
 					"content": content,
-					"sNum": studioNum
+					"iNum": itemNum
 				},
 				type: "post",
 				success: function (result) {
@@ -538,30 +437,13 @@
 				}
 			});
 		});
-		var today;
-		// 달력 < 버튼  
-		$(document).on("click", "#beforeMonth", function () {
-			if(today==null){
-				today = new Date();
-			}
-			today = new Date((today.getFullYear()), (today.getMonth()-1), (today.getDate()), (today.getHours()), (today.getMinutes()));
-			drawCalendar(today);
-		});
-		// 달력 > 버튼 
-		$(document).on("click", "#afterMonth", function () {
-			if(today==null){
-				today = new Date();
-			}
-			today = new Date((today.getFullYear()), (today.getMonth()+1), (today.getDate()), (today.getHours()), (today.getMinutes()));
-			drawCalendar(today);
-		});
-		
 	});  // ----------------------------------------------------------------------------- onload 끝 
 	function heartCheck() {
 		$.ajax({
-			url: "${pageContext.request.contextPath}/heart/chekHeartS",
-			data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
+			url: "${pageContext.request.contextPath}/heart/chekHeartI",
+			data: {"hi_m_pk":memberNum, "hi_i_pk":itemNum},
 			type: "post",
+			dataType: "json",
 			success: function (result) {
 				if(result){
 					// 까만 하트 
@@ -586,8 +468,8 @@
 	};
 	function drawHeartCount() {
 		$.ajax({
-			url: "${pageContext.request.contextPath}/heart/countHeartS",
-			data: {"sNum":${studio.s_pk}},
+			url: "${pageContext.request.contextPath}/heart/countHeartI",
+			data: {"iNum":${item.i_pk}},
 			type: "post",
 			dataType: "json",
 			success: function (data) {
@@ -600,8 +482,8 @@
 	};
 	function drawReviewCount() {
 		$.ajax({
-			url: "${pageContext.request.contextPath}/review/countReviewS",
-			data: {"sNum":${studio.s_pk}},
+			url: "${pageContext.request.contextPath}/review/countReviewI",
+			data: {"iNum":${item.i_pk}},
 			type: "post",
 			dataType: "json",
 			success: function (count) {
@@ -616,8 +498,8 @@
 	function drawReview() {
 		$("#reviewBox div:gt(5)").remove();
 		$.ajax({
-			url: "${pageContext.request.contextPath}/review/drawReviewS",
-			data: {"sNum":"${studio.s_pk}"},
+			url: "${pageContext.request.contextPath}/review/drawReviewI",
+			data: {"iNum":"${item.i_pk}"},
 			type: "post",
 			dataType: "json", 
 			success: function (data) {
@@ -626,13 +508,13 @@
 				for(var i = 0; i < list.length; i++){
 					var div1 = $("<div class='reviewPosition'></div>");
 					var div11 = $("<div class='reviewType'></div>");
-					div11.append($("<span class='letterSpacing'></span>").text(list[i].rs_m_name));
-					var date = new Date(list[i].rs_reg_date);
+					div11.append($("<span class='letterSpacing'></span>").text(list[i].ri_m_name));
+					var date = new Date(list[i].ri_reg_date);
 					div11.append($("<div class='reviewDate'></div>")
 							.append($("<span></span>").text(getFormatDate(date))));
 					var divStar = $("<div class='starBox'></div>");
 					// 별그리기 = 별갯수만큼 반복문 돌면서 fas = list[i].rs_grade
-					var sGrade = list[i].rs_grade;
+					var sGrade = list[i].ri_grade;
 					for(var j = 1; j <= 5; j ++){
 						if(j <= sGrade){
 							var starSpan = $("<span style='font-size:12px'></span>");
@@ -646,16 +528,16 @@
 					}
 					div11.append(divStar);
 					var div22 = $("<div class='reviewContent'></div>");
-					var textArea = $("<textarea rows='4' cols='105' class='reviewArea2' id='modifyCon"+list[i].rs_pk+"' readonly='readonly'></textarea>").val(list[i].rs_content);
+					var textArea = $("<textarea rows='4' cols='105' class='reviewArea2' id='modifyCon"+list[i].ri_pk+"' readonly='readonly'></textarea>").val(list[i].ri_content);
 					div22.append($("<span></span>").append(textArea));
 					// 게시글 쓴 사람 번호 = 회원 번호 확인
-					if(memberNum==list[i].rs_m_pk){
+					if(memberNum==list[i].ri_m_pk){
 						// 삭제 버튼
 						btnSpan1 = $("<span class='delModButton'></span>").text("삭제");
 						(function (n) {
 							btnSpan1.on("click", function () {
 								if(confirm("리뷰를 삭제하시겠습니까?")){
-									removeReview(list[n].rs_pk);
+									removeReview(list[n].ri_pk);
 								}
 							});
 						})(i);
@@ -664,7 +546,7 @@
 						(function (n) {
 							btnSpan2.on("click", function () {
 								// redBorder클래스 추가, readonly 속성 지우기 
-								var modifyArea = $("textArea[id=modifyCon"+list[n].rs_pk+"]");
+								var modifyArea = $("textArea[id=modifyCon"+list[n].ri_pk+"]");
 								// 0일땐 입력 가능하도록 
 								if(modBtn == 0){
 									modifyArea.removeAttr("readonly").addClass("redBorder");
@@ -672,7 +554,7 @@
 									modBtn = 1;
 								// 1일땐 수정로직 실행하도록, 입력하고 다시 입력 불가능하게 만들기 
 								}else{
-									modifyReview(list[n].rs_pk, modifyArea.val());
+									modifyReview(list[n].ri_pk, modifyArea.val());
 									modifyArea.attr("readonly", "readonly").removeClass("redBorder");
 									modBtn = 0; 
 								}
@@ -685,7 +567,7 @@
 						btnSpan = $("<span class='reviewButton'></span>").text("신고");
 						(function (n) {
 							btnSpan.on("click", function () {
-								alert(list[n].rs_pk+" 신고");
+								alert(list[n].ri_pk+" 신고");
 							});
 						})(i);
 						div1.append(div11).append(div22).append(btnSpan);
@@ -707,10 +589,10 @@
 		day = day >= 10 ? day : '0' + day;		//day 두자리로 저장 
 		return year + '-' + month + '-' + day; 
 	}
-	function removeReview(rsNum) {
+	function removeReview(riNum) {
 		$.ajax({
-			url: "${pageContext.request.contextPath}/review/removeReviewS",
-			data: {"rsNum":rsNum},
+			url: "${pageContext.request.contextPath}/review/removeReviewI",
+			data: {"riNum":riNum},
 			success: function (result) {
 				if(result){
 					drawReview();
@@ -723,10 +605,10 @@
 			}
 		});
 	};
-	function modifyReview(rsNum, content) {
+	function modifyReview(riNum, content) {
 		$.ajax({
-			url: "${pageContext.request.contextPath}/review/modifyReviewS",
-			data: {"rs_pk":rsNum, "rs_content":content},
+			url: "${pageContext.request.contextPath}/review/modifyReviewI",
+			data: {"ri_pk":riNum, "ri_content":content},
 			success: function (result) {
 				if(result){
 					alert("수정됐습니다");
@@ -744,118 +626,7 @@
 		$("#writeContent").val(" ");
 		$("#reviewInput").css("display", "none");
 	};
-	function drawCalendar(today) {
-// 		$("#calendarBox1 div:gt(0)").remove();
-		$("#calBox1").remove();
-		var year = today.getFullYear();
-		var days;
-		if(year%4!=0){
-			days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-		}else{
-			days = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-		}
-		var month = today.getMonth();
-		var firstDay = new Date(year, month, 1);
-		var firstDayOfWeek = firstDay.getDay();
-		var num = Math.ceil((days[month]+firstDayOfWeek)/7); 
-		var calBox = $("<div id='calBox1'></div>");
-		var calendar = $("<table></table>");
-		var calInfo = $("<tr></tr>").append($("<td class='calMove' id='beforeMonth'><span>&lt;</span></td>")).append($("<th colspan='5' class='calTitle'>"+year+"년&nbsp;"+(month+1)+"월</td>")).append($("<td class='calMove' id='afterMonth'><span>&gt;</span></td>"));
-		calendar.append(calInfo);
-		var calWeek = $("<tr></tr>").append($("<td>SUN</td>")).append($("<td>MON</td>")).append($("<td>TUE</td>")).append($("<td>WED</td>")).append($("<td>THU</td>")).append($("<td>FRI</td>")).append($("<td>SAT</td>"));
-		calendar.append(calWeek);
-		var dNum = 1; 
-		var week; 
-		for(var i = 0; i < num; i++){
-			week = $("<tr></tr>");
-			for(var j = 0; j < 7; j++){
-				if(i==0 && j < firstDayOfWeek || dNum > days[month]){
-					// 비어있는 칸 
-					var dayRow = $("<td class='wPx'>&nbsp;</td>");
-					week.append(dayRow);
-				}else{
-					var dayRow = $("<td id='day"+dNum+"' class='wPx'>"+dNum+"</td>");
-					(function (d) {
-						dayRow.on("mouseover", function () {
-							$("#day"+d).addClass("onDate");
-						});
-						dayRow.on("click", function () {
-							$("#day"+d).toggleClass("clickDate");
-							today.setDate(d);
-							var date = today.getDate();
-							var hours = today.getHours();
-// 							6:00 , 18:00 하루에 두번 발표함 
-// 							if(hours < 6){
-// 								hours = 1800;
-// 								date -= 1;
-// 							}else if(hours >= 6 && hours < 18){
-// 								hours = '0' + 600;
-// 							}else{
-// 								hours = 1800;
-// 							}
-// 							var m = "";
-// 						    if((month+1) < 10) {
-// 						        m = '0'+ (month+1);
-// 						    }    
-// 						    if(date < 10) {
-// 						    	date = '0' + date;
-// 						    }
-// 						    var regID = "11B10101";
-// 						    var weaDate = year.toString() + m.toString() + date.toString() + hours.toString();
-// 						    alert(weaDate);
-// 						    $.ajax({
-// 						    	url: "weather",
-// 						    	data: {"cityName": "Seoul"},
-// 						    	dataType: "json",
-// 						    	type: "post",
-// 						    	success: function (data) {
-// 									alert(data);
-// 									var text = JSON.stringify(data);
-// 									alert(text);
-// 								},
-// 								error: function () {
-// 									alert("날씨API예외");
-// 								}
-// 						    });
-						});
-					})(dNum);
-					week.append(dayRow);
-					dNum++;
-				} // if-else END
-			}
-			calendar.append(week);
-		}
-		calBox.append(calendar);
-		$("#calendarBox1").append(calBox);
-	};
-	function parseJSON(xml) {
-		var dom = null;
-		 if(window.DOMParser){
-		     try{ 
-		        dom = (new DOMParser()).parseFromString(xml, "text/xml"); 
-		     }catch(e) { dom = null; }
-		   }else if(window.ActiveXObject) {
-		      try {
-		         dom = new ActiveXObject('Microsoft.XMLDOM');
-		         dom.async = false;
-		     	 // parse error ..
-		         if (!dom.loadXML(xml)){
-		            window.alert(dom.parseError.reason + dom.parseError.srcText);
-		         }
-		      }catch(e) { dom = null; }
-		   }else{
-		      alert("cannot parse xml string!");
-		   }
-		   return dom;
-	};
-	function drawTemp(temp) {
-		var minTemp = temp.body.items.item.taMin3;
-		var maxTemp = temp.body.items.item.taMax3;
-		alert("min: "+minTemp);
-		alert("max: "+maxTemp);
-		var weatherBox = $($("<div></div>").append("<span>최저기온: "+minTemp+"</span>").append("<span>최고기온: "+maxTemp+"</span>"));
-		$("#weatherBox1").append(weatherBox);
-	};
+	
 </script>
 </head>
 <body>
@@ -866,40 +637,40 @@
 			<div id="studioInfoBox">
 				<img id="studioImg">
 				<div id="studioInfo">
-					<div class='infoPosition infoBold'><span>${studio.s_title }</span></div>
-					<div class='infoPosition'><span>${studio.m_name }</span></div>				
+					<div class='infoPosition infoBold'><span>${item.i_title }</span></div>
+					<div class='infoPosition'><span>${item.m_name }</span></div>				
 					<div class='infoPosition'>
 						<div class='infoButton' id="autherPage"><span> 작가 페이지 </span></div> <div class='infoButton' id="messagePage"><span>메시지 문의</span></div>
 					</div>
 <!-- 					<div id="button-boundary"></div> -->
 					
 					<div class='infoPosition'>
-						<div class='personnel'><span> ${studio.s_current }명 /  ${studio.s_maximum }명 </span></div>
+						<div class='personnel'><span> ${item.i_stock }개 </span></div>
 					</div>
 					
 					<div id="button-boundary"></div>
-					<div class='infoPosition'><span>${studio.c_category }</span></div>
-					<div class='infoPosition'><span>${studio.s_comment } </span></div>
+					<div class='infoPosition'><span>${item.c_category }</span></div>
+					<div class='infoPosition'><span>${item.i_comment } </span></div>
 					<div class='infoPosition iconContainer'>
 						<div><img id='icon' src='${pageContext.request.contextPath }/img/hand-right.svg'>
-						<span> 조회수 ${studio.s_read_count } 회 </span></div>
+						<span> 조회수 ${item.i_read_count } 회 </span></div>
 						<div><img id='icon' src='${pageContext.request.contextPath }/img/brush.svg'>
-						<span> 리뷰수 <span id="reviewCount">${studio.rs_count }</span> 개 </span></div>
+						<span> 리뷰수 <span id="reviewCount">${item.ri_count }</span> 개 </span></div>
 						<div><img id='icon' src='${pageContext.request.contextPath }/img/like.svg'>
-						<span> 좋아요 <span id="heartCount">${studio.hs_count }</span> 명 </span></div>
+						<span> 좋아요 <span id="heartCount">${item.hi_count }</span> 명 </span></div>
 					</div>
 					<div id="button-boundary"></div>
 					<div class='infoPosition infoBold'>
-						<span id='price'> &nbsp;&nbsp;${studio.s_price }원</span>
+						<span id='price'> &nbsp;&nbsp;${item.i_price }원</span>
 					</div>
 					
 					<div class='infoPosition' id="buy_sub_container">
 						<div id='buttonContainer'>
-<!-- 							<div id='cartButton'> -->
-<!-- 								<span><a> My Cart </a></span> -->
-<!-- 							</div> -->
-							<div id='reservButton'>
-								<span><a> Reservation </a></span>
+							<div id='cartButton'>
+								<span><a> My Cart </a></span>
+							</div>
+							<div id='buyButton'>
+								<span><a> Buy </a></span>
 							</div>
 							<div id='subButton'>
 								<span style='font-size:13px'><i class="far fa-heart" data-what="heart"></i></span><span> subscribe </span>
@@ -908,28 +679,19 @@
 					</div>
 				</div>
 			</div>
-			<!-- 예약 페이지 모달창 -->
-			<div id="modalContainer">
-				<div id="modalBox">
-					<div class="calendarBox" id='calendarBox1'></div>
-					<div class="weatherBox" id='weatherBox1'></div>
-					<div class="reservation"><span> reservation </span></div>
-					<div class="close"><span> close </span></div>
-				</div>
-			</div>
+			
 			<!-- 설명, 규격 -->
 			<div id="detailContainer">
 				<div id="detailBox">
 					<div class='infoBold'><span>ITEM DETAIL</span></div>
-						<p>${studio.s_content }</p>
+						<p>${item.i_content }</p>
 				</div>
 				<div id="specBox">
-					<div class='infoBold'><span>STUDIO LOCATION</span></div>
-					<div class='specPosition'><div class='specType'><span> s t u d i o </span></div><span> ${studio.s_name } </span></div>
-					<div class='specPosition'><div class='specType'><span> a d d r e s s </span></div><span> ${studio.s_location } </span></div>
-					<div class='locPosition'><div class='locType'><span> l o c a t i o n </span></div>
-						<div id="mapBox"><span> </span></div>
-					</div>
+					<div class='infoBold'><span>ITEM SPEC</span></div>
+					<div class='specPosition'><div class='specType'><span> c o u n t r y </span></div><span> ${item.i_country } </span></div>
+					<div class='specPosition'><div class='specType'><span> m e t a r i a l </span></div><span> ${item.i_meterial } </span></div>
+					<div class='specPosition'><div class='specType'><span> c o l o r </span></div><span> ${item.i_color } </span></div>
+					<div class='specPosition'><div class='specType'><span> s i z e </span></div><span> ${item.i_size } </span></div>
 				</div>
 			</div>
 			<!-- 리뷰 -->

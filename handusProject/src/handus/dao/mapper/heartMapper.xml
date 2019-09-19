@@ -33,4 +33,27 @@
 		<result column="HS_M_PK" property="hs_m_pk"/>
 		<result column="HS_S_PK" property="hs_s_pk"/>
 	</resultMap>
+
+	<insert id="insertHI" parameterType="heartItem">
+		insert into HEART_ITEM
+		( HI_PK, HI_M_PK, HI_I_PK )
+		values (HI_SEQ.NEXTVAL, #{hi_m_pk}, #{hi_i_pk})
+	</insert>
+	<delete id="deleteHI" parameterType="heartItem">
+		delete from HEART_ITEM 
+		where HI_M_PK = #{hi_m_pk} AND HI_I_PK = #{hi_i_pk}
+	</delete>
+	<select id="selectHICount" parameterType="int" resultType="int">
+		select count(*) from HEART_ITEM
+		where HI_I_PK = #{hi_i_pk} 
+	</select>
+	<select id="isHeartItem" parameterType="heartItem" resultType="int">
+		select count(HI_PK) as isHeart from HEART_ITEM
+		where HI_M_PK = #{hi_m_pk} AND HI_I_PK = #{hi_i_pk}
+	</select>
+	<resultMap type="heartItem" id="hiMap">
+		<result column="HI_PK" property="hi_pk"/>
+		<result column="HI_M_PK" property="hi_m_pk"/>
+		<result column="HI_I_PK" property="hi_i_pk"/>
+	</resultMap>
 </mapper>

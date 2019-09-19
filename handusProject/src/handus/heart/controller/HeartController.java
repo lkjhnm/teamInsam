@@ -8,46 +8,67 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import handus.heart.service.IHeartService;
+import handus.heart.service.HeartService;
+import handus.model.HeartItem;
 import handus.model.HeartStudio;
 
 @Controller
 @RequestMapping("/heart")
 public class HeartController {
 	@Autowired
-	private IHeartService heartService;
+	private HeartService heartService;
 	
 	@ResponseBody
-	@RequestMapping(value = "/onHeart", method = RequestMethod.POST)
+	@RequestMapping(value = "/onHeartS", method = RequestMethod.POST)
 	public boolean onHeart(HeartStudio hs) {
-//		System.out.println("구독하기"+hs);
 		if(heartService.onHeartStudio(hs)) {
 			return true;
 		}
 		return false;
 	}
-	
 	@ResponseBody
-	@RequestMapping(value = "/offHeart", method = RequestMethod.POST)
+	@RequestMapping(value = "/offHeartS", method = RequestMethod.POST)
 	public boolean offHeart(HeartStudio hs) {
-//		System.out.println("구독취소"+hs);
 		if(heartService.offHeartStudio(hs)) {
 			return true;
 		}
 		return false;
 	}
-	
 	@ResponseBody
-	@RequestMapping(value = "/chekHeart", method = RequestMethod.POST)
+	@RequestMapping(value = "/chekHeartS", method = RequestMethod.POST)
 	public boolean checkHeart(HeartStudio hs) {
-		// 회원번호 받아와서 해당 회원의 HS 리스트 반환 
 		return heartService.isHeartStudio(hs);
 	}
-	
 	@ResponseBody
-	@RequestMapping("/countHeart")
+	@RequestMapping("/countHeartS")
 	public int heartCount(int sNum) {
 		return heartService.getCountHS(sNum);
 	}
-	
+	// --------------------------------------------------------
+	@ResponseBody
+	@RequestMapping(value = "/onHeartI", method = RequestMethod.POST)
+	public boolean onHeart(HeartItem hi) {
+		if(heartService.onHeartItem(hi)) {
+			return true;
+		}
+		return false;
+	}
+	@ResponseBody
+	@RequestMapping(value = "/offHeartI", method = RequestMethod.POST)
+	public boolean offHeart(HeartItem hi) {
+		if(heartService.offHeartItem(hi)) {
+			return true;
+		}
+		return false;
+	}
+	@ResponseBody
+	@RequestMapping(value = "/chekHeartI", method = RequestMethod.POST)
+	public boolean checkHeart(HeartItem hi) {
+		return heartService.isHeartItem(hi);
+	}
+	@ResponseBody
+	@RequestMapping("/countHeartI")
+	public int heartCountI(int iNum) {
+		return heartService.getCountHI(iNum);
+	}
 }
