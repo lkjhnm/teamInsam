@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import handus.member.service.MemberService;
-import handus.heart.service.IHeartService;
+import handus.heart.service.HeartService;
 import handus.model.HeartStudio;
 import handus.model.Studio;
 import handus.studio.service.StudioService;
@@ -32,7 +32,7 @@ public class StudioController {
 	@Autowired
 	private MemberService memberService;
 	@Autowired
-	private IHeartService heartService;
+	private HeartService heartService;
 	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String studioList(Model model, HttpSession session) {
@@ -45,7 +45,8 @@ public class StudioController {
 			studioInfo.put("title", list.get(i).getS_title());
 			studioInfo.put("num", list.get(i).getS_pk());
 			HeartStudio heart = new HeartStudio();
-			heart.setHs_m_pk(1);	// 세션에서 로그인 회원 번호 받아오기 
+			// 세션에서 로그인 회원 번호 받아오기 
+			heart.setHs_m_pk(1);
 			heart.setHs_s_pk(list.get(i).getS_pk());
 			studioInfo.put("isHeart", heartService.isHeartStudio(heart));
 			studioList.add(studioInfo);

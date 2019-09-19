@@ -23,8 +23,8 @@ import handus.model.Studio;
 
 @Service
 public class StudioService {
-	public static int NUM_OF_STUDIO_PER_PAGE = 6;
-	public static int NUM_OF_NAV_PAGE =5;
+	private static int NUM_OF_STUDIO_PER_PAGE = 6;
+	private static int NUM_OF_NAV_PAGE =5;
 	private final String APIKEY = "7e26974c4a4c512ba8e98faf7b1be665";
 	private String cityID; 
 	private String weatherURL;

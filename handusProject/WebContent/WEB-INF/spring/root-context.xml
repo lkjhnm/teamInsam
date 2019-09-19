@@ -81,4 +81,12 @@
   		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
   		<property name="mapperInterface" value="handus.dao.UserDao"></property>
   	</bean>
+  	<bean id="itemDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+  		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+  		<property name="mapperInterface" value="handus.dao.ItemDao"></property>
+  	</bean>
+  		<bean id="purchaseDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+  		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+  		<property name="mapperInterface" value="handus.dao.PurchaseDao"></property>
+  	</bean>
 </beans>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="handus.dao.ItemDao">
+	<insert id="insertItem" parameterType="item">
+		insert into ITEM 
+    	(I_PK, M_PK_WRITER, I_TITLE, I_PRICE, I_CATEGORY, I_STOCK, I_COMMENT, 
+    		I_CONTENT, I_COUNTRY, I_METERIAL, I_COLOR, I_SIZE )
+    	values (ITEM_SEQ.NEXTVAL, #{m_pk_writer}, #{i_title}, #{i_price}, #{i_category}, #{i_stock}, #{i_comment}, 
+    		#{i_content}, #{i_country}, #{i_meterial}, #{i_color}, #{i_size})
+	</insert>
+	<update id="updateItem" parameterType="item">
+		update ITEM 
+		set I_TITLE = #{i_title}, I_PRICE = #{i_price}, I_UPDATEDATE = SYSDATE, I_STOCK = #{i_stock}, 
+			I_CONTENT = #{i_content}, I_COMMENT = #{i_comment}, I_COUNTRY = #{i_country}, I_COLOR = #{i_color}, I_SIZE = #{i_size} 
+		where I_PK = #{i_pk} 
+	</update>
+	<update id="updateReadCount" parameterType="int">
+		update ITEM 
+		set I_READ_COUNT = I_READ_COUNT + 1
+		where I_PK = #{i_pk} 
+	</update>
+	<update id="updateStock">
+		update ITEM 
+		set I_STOCK = #{param1}
+		where I_PK = #{param2} 
+	</update>
+	<delete id="deleteItem" parameterType="int">
+		delete from ITEM where I_PK = #{i_pk} 
+	</delete>
+	<select id="selectItemByNum" parameterType="int" resultMap="itemMap">
+		select I.I_PK, 
+	       I.M_PK_WRITER, 
+	       I.I_TITLE, 
+	       I.I_PRICE, 
+	       I.I_CATEGORY, 
+	       I.I_REGDATE, 
+	       I.I_UPDATEDATE, 
+	       I.I_STOCK, 
+	       I.I_COMMENT, 
+	       I.I_READ_COUNT, 
+	       I.I_CONTENT, 
+	       I.I_COUNTRY, 
+	       I.I_METERIAL, 
+	       I.I_COLOR, 
+	       I.I_SIZE, 
+	       M.M_NAME, 
+	       C.C_CATEGORY, 
+	       (select count(*) from REVIEW_ITEM where I.I_PK = #{i_pk} ) as RI_COUNT, 
+	       (select count(*) from HEART_ITEM where HI_I_PK = #{i_pk} ) as HI_COUNT 
+		from ITEM I 
+		  JOIN MEMBER M 
+		  ON I.M_PK_WRITER = M.M_PK  
+		  JOIN CATEGORYNAME C 
+		  ON C.C_PK = I.I_CATEGORY 
+		where I.I_PK = #{i_pk}
+	</select>
+	<select id="selectItemList" resultMap="itemMap">
+		select *  
+		from(select rownum as rnum, I_PK, I_TITLE, M_PK_WRITER, I_PRICE 
+			from (select I_PK, I_TITLE, M_PK_WRITER, I_PRICE 
+				from STUDIO
+				order by  desc))
+		where rnum between #{param1} and #{param2}
+	</select>
+	<select id="selectAllItems" resultMap="itemMap">
+		select * from ITEM
+	</select>
+	<select id="selectCount" resultType="int">
+		select count(*) from ITEM
+	</select>
+	
+	<resultMap type="item" id="itemMap">
+		<result column="I_PK" property="i_pk"/>
+		<result column="M_PK_WRITER" property="m_pk_writer"/>
+		<result column="I_TITLE" property="i_title"/>
+		<result column="I_PRICE" property="i_price"/>
+		<result column="I_CATEGORY" property="i_category"/>
+		<result column="I_REGDATE" property="i_regdate"/>
+		<result column="I_UPDATEDATE" property="i_updatedate"/>
+		<result column="I_STOCK" property="i_stock"/>
+		<result column="I_COMMENT" property="i_comment"/>
+		<result column="I_READ_COUNT" property="i_read_count"/>
+		<result column="I_CONTENT" property="i_content"/>
+		<result column="I_COUNTRY" property="i_country"/>
+		<result column="I_METERIAL" property="i_meterial"/>
+		<result column="I_COLOR" property="i_color"/>
+		<result column="I_SIZE" property="i_size"/>
+		<result column="M_NAME" property="m_name"/>
+		<result column="C_CATEGORY" property="c_category"/>
+		<result column="RI_COUNT" property="ri_count"/>
+		<result column="HI_COUNT" property="hi_count"/>
+	</resultMap>
+</mapper>

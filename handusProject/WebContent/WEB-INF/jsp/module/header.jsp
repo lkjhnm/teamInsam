@@ -52,6 +52,9 @@
 		$("#menuStudio").on("click",function(){
 			location.href='${pageContext.request.contextPath}/studio/list'
 		})
+		$("#menuItem").on("click",function(){
+			location.href='${pageContext.request.contextPath}/item/list'
+		})
 		
 		$("#headerTitle").on("click",function(){
 			location.href="${pageContext.request.contextPath}/main"
