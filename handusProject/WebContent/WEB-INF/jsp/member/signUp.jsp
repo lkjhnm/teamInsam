@@ -166,15 +166,6 @@
 		$("#address").on("click",function(){
 			daumPostcode()
 		})
-		
-		$("#signForm").on("submit",function(e){
-			console.log(123)
-			var addr = $("#address").val()
-			var addrDetail = $("#address-detail").val()
-			
-			var addrData = $("<input type='hidden' name='m_address'/>").val(addr + " " + addrDetail)
-			$(this).append(addrData)
-		})
 	})
 	
 
@@ -222,10 +213,10 @@
 					
 					<div id='addressBox'>
 						<div>ADDRESS</div>
-							<input id="zipCode" type="text" readonly="readonly" placeholder="Zip-code">					
+							<input id="zipCode" type="text" readonly="readonly" placeholder="Zip-code" name="m_zipcode">					
 						<div>
-							<input id="address" type="text" readonly="readonly" placeholder="Address">		
-							<input id="address-detail" type="text"  placeholder="Detail" autocomplete="off">
+							<input id="address" type="text" readonly="readonly" placeholder="Address" name="m_address">		
+							<input id="address-detail" type="text"  placeholder="Detail" autocomplete="off" name="m_address_detail">
 						</div>
 					</div>
 					

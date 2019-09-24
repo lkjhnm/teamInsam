@@ -134,16 +134,6 @@ public class MemberController {
 		return result;
 	}
 	
-	@RequestMapping(value="/myPage", method=RequestMethod.GET)
-	public String myPage() {
-		
-		return "member/myPage";
-	}
-	@RequestMapping(value="/subscribe",method=RequestMethod.GET)
-	public String alarm() {
-		return "member/subscribe";
-	}
-	
 	//------------SNS 로그인
 	
 	@RequestMapping(value="/oauth")

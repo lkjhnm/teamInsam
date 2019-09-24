@@ -16,6 +16,7 @@
 	<context:component-scan base-package="handus.member.security"/>
 	
 	<security:http  use-expressions="true">
+		<security:intercept-url pattern="/*" access="permitAll"/>
 		<security:form-login 
 			login-page="/member/loginForm" 
 			login-processing-url="/member/login" 
@@ -23,8 +24,8 @@
 			authentication-failure-url="/member/loginForm"
 			authentication-success-handler-ref="customLoginSuccessHandler"
 		/>
-		<security:session-management invalid-session-url="/member/loginForm">
-			<security:concurrency-control max-sessions="1" expired-url="/main" />
+		<security:session-management invalid-session-url="/member/loginForm">	<!-- security:http로 요청이 들어와야지만 세션검사를 한다. -->
+			<security:concurrency-control max-sessions="1" expired-url="/member/loginForm" />
 		</security:session-management>
 		
 		<security:logout logout-url="/logout" invalidate-session="true" logout-success-url="/member/loginForm"/>

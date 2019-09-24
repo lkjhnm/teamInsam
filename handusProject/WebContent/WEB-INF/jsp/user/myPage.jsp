@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,11 +33,12 @@
 		height:150px;
 		margin:0 auto;
 	}
-	.information div{
+	.information>div{
 		border-bottom: 1px solid #191919;
-		margin-bottom: 20px;
+		margin-bottom: 10px;
 		display:flex;
 		justify-content: space-between;
+		padding: 5px;
 	}
 	.info-title{
 		font-weight:600;
@@ -137,45 +139,43 @@
 		font-weight: 500;
 		margin-bottom: 130px;
 	}
-	#regAuthor{
+	#userBtnContainer>div{
 		width: 100px;
 		height: 35px;
 		line-height: 35px;
 		background-color: #191919;
 		color: #fff;
 		text-align: center;
-		position:relative;
-		left: 550px;
+		float:right;
+		margin-right: 2px;
 	}
-	#regAuthor:hover{
+	#userBtnContainer>div:hover{
+		cursor:pointer;
+	}
+	.modifyMode{
+		display:none;
+	}
+	#userBtnContainer{
+		width: 210px;
+		height:35px;
+		position:relative;
+		left: 445px;
+	}
+	.modify-input{
+		display:none;
+		font-weight:550;
+		background-color: inherit;
+		border:none;
+		width: 225px;
+		color:#191919;
+		outline: none;
+	}
+	.hover{
 		cursor:pointer;
 	}
 </style>
 <script>
 	$(function(){
-		
-// 		$("#category-value").on("click",function(){
-// 			$("#category-menu").css({
-// 				"background-color":"#191919",
-// 				"color":"#fff"
-// 			})
-// 			$(".hide").css({
-// 				"display":"inline"
-// 			})
-// 			$('#category-value').css("display","none")		
-// 		})
-		
-// 		$("#category-menu").children(".info-value").not("#category-value").on("click",function(){
-// 			var value = $(this).text()
-// 			$("#category-value").text(value)
-// 			$("#category-value").css("display","inline")
-// 			$(".hide").css("display","none")
-// 			$("#category-menu").css({
-// 				"background-color":"inherit",
-// 				"color":"#191919"
-// 			})
-// 			isClick = false;
-// 		})
 		
 		$("#tab_title").next().css("color","#ff1d43");
 		$("#tab_title").next().siblings().not("#tab_title").css("opacity","0.5")
@@ -192,6 +192,69 @@
 		$("#regAuthor").on("click",function(){
 			location.href="${pageContext.request.contextPath}/author/signUp";
 		})
+		
+		var isMod = false;
+		$("#modifyInfoBtn").on("click",function(){
+			$(".Nmodify").css("display","none");
+			$(".modifyMode").css("display","block");
+			$("#userInfo_container").children().css("border","1px solid #ff1d43").addClass("hover");
+			
+			isMod =true;
+			
+			$(".hover").on("click",function(){
+				if(!isMod){
+					return;
+				}
+				$(this).children("input").css("display","block").focus().val("");
+				$(this).children(".info-value").css("display","none");
+			})
+		})
+		
+		$("#modifyCancel").on("click",function(){
+			$(".Nmodify").css("display","block");
+			$(".modifyMode").css("display","none");
+			$(".info-value").css("display","block");
+			$(".modify-input").css("display","none");
+			$("#userInfo_container").children().css("border","none").css("border-bottom","1px solid #191919").removeClass("hover");
+			isMod=false;
+		})
+		
+		//정보 수정하기 코딩...
+		$("#modifyConfirm").on("click",function(){
+			
+			var tmp = $("#m_name").val();
+			var m_name = tmp == "" ? $("#m_name").prev().text() : tmp;
+			tmp = $("#m_phonenum").val();
+			var m_phonenum = tmp == "" ? $("#m_phonenum").prev().text() : tmp;
+			tmp = $("#m_email").val();
+			var m_email = tmp == "" ? $("#m_email").prev().text() : tmp;
+			tmp = $("#m_address").val();
+			var m_address = tmp == "" ? $("#m_address").prev().text() : tmp;
+			
+			$.ajax({
+				url:'${pageContext.request.contextPath}/user/modify',
+				type:"post",
+				dataType:"json",
+				data :{"m_name":m_name, "m_phonenum":m_phonenum, "m_email":m_email, "m_address":m_address, "m_pk":"${m_pk}"},
+				success: function(data){
+					if(data){
+						$("#m_name").prev().text(m_name)
+						$("#m_phonenum").prev().text(m_phonenum)
+						$("#m_email").prev().text(m_email)
+						$("#m_address").prev().text(m_address)
+						
+						$("#userInfo_container").children().css("border","none").css("border-bottom","1px solid #191919")
+						.removeClass("hover");
+						
+						$(".info-value").css("display","block");
+						$(".modify-input").css("display","none");
+						$(".Nmodify").css("display","block");
+						$(".modifyMode").css("display","none");
+						isMod = false;
+					}
+				}
+			})			
+		})
 	})	
 </script>
 </head>
@@ -203,17 +266,47 @@
 			<div id="mypage_title">MY PAGE</div>
 			<div id="top-container">
 				
-				<sec:authorize access="hasRole('ROLE_AUTHOR_NV')">
-					<div id="regAuthor">작가 등록</div>
-				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_AUTHOR_NV')" var="justMember"></sec:authorize>
+				<div id="userBtnContainer">
+					<c:choose>
+						<c:when test="${justMember }">
+								<div class='Nmodify' id="modifyInfoBtn">수정 하기</div>
+								<div class='Nmodify' id="regAuthor">작가 등록</div>
+								<div class='modifyMode' id="modifyCancel">취 소</div>
+								<div class='modifyMode' id="modifyConfirm">확 인</div>
+						</c:when>
+						<c:otherwise>
+							<div class='Nmodify' id="modifyInfoBtn">수정 하기</div>	
+							<div class='modifyMode' id="modifyCancel">취 소</div>
+							<div class='modifyMode' id="modifyConfirm">확 인</div>
+						</c:otherwise>
+					</c:choose>
+				</div>
+								
 				<fieldset>
 					<legend class="myPage-title">PROFILE</legend>
 					<div class="myPage_container">
-						<div class="information">
-							<div><span class="info-title">NAME </span><span class="info-value"> 최대철 </span></div>
-							<div><span class="info-title">PHONE</span><span class="info-value">010-9023-8852</span></div>
-							<div><span class="info-title">EMAIL </span> <span class="info-value">cdc9308@naver.com </span> </div>
-							<div><span class="info-title">ADDRESS </span><span class="info-value">서울시 동대문구 답십리2동 대림아파트</span></div>
+						<div class="information" id="userInfo_container">
+							<div>
+								<span class="info-title">NAME </span>
+								<span class="info-value"> ${M_NAME } </span>
+								<input class='modify-input' type="text" id="m_name">
+							</div>
+							<div>
+								<span class="info-title">PHONE</span>
+								<span class="info-value">${M_PHONENUM }</span>
+								<input class='modify-input' type="text" id="m_phonenum">
+							</div>
+							<div>
+								<span class="info-title">EMAIL </span> 
+								<span class="info-value">${M_EMAIL } </span> 
+								<input class='modify-input' type="text" id="m_email">
+							</div>
+							<div>
+								<span class="info-title">ADDRESS </span>
+								<span class="info-value">${M_ADDRESS }</span>
+								<input class='modify-input' type="text" id="m_address">
+							</div>
 						</div>
 					</div>
 				</fieldset>
@@ -221,13 +314,7 @@
 					<legend class="myPage-title">ALARM</legend>
 					<div class="myPage_container">
 						<div class="information">
-<!-- 							<div id="category-menu"><span class="info-title">CATEGORY</span> -->
-<!-- 									<span class='info-value' id="category-value">Author</span> -->
-<!-- 									<span class="info-value hide"> Author </span> -->
-<!-- 									<span class="info-value hide"> Studio </span> -->
-<!-- 									<span class="info-value hide"> Auction </span> -->
-<!-- 							</div> -->
-							<div><span class="info-title">SUBSCRIBE</span><span class="info-value count" id="alarmBtn"> [ ? ]</span></div>
+							<div><span class="info-title">SUBSCRIBE</span><span class="info-value count" id="alarmBtn"> [ ${M_SUB_COUNT } ]</span></div>
 							<div><span class="info-title">MESSAGE</span><span class="info-value count"> [ ? ] </span></div>
 						</div>
 						

@@ -113,5 +113,6 @@
 	<select id="selectAuthorInfo" parameterType="int" resultType="map">
 		select at_pk, at_name, at_email, at_studio, at_address , ap_pk, ap_filename, ap_savepath , at.m_pk as m_pk_writer
 			from author at left outer join author_profile ap on (at.m_pk = ap.m_pk and ap.ap_main = 1)
+				where at.m_pk = #{m_pk}
 	</select>
 </mapper>

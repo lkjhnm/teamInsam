@@ -8,8 +8,8 @@
 		insert all 
 		
 		into MEMBER 
-    	( M_PK, M_ID, M_PASSWORD, M_NAME, M_EMAIL, M_PHONENUM, M_ADDRESS )
-    	values ( #{m_pk}, #{m_id}, #{m_password}, #{m_name}, #{m_email}, #{m_phonenum}, #{m_address} )
+    	( M_PK, M_ID, M_PASSWORD, M_NAME, M_EMAIL, M_PHONENUM, M_ADDRESS ,M_ZIPCODE,M_ADDRESS_DETAIL)
+    	values ( #{m_pk}, #{m_id}, #{m_password}, #{m_name}, #{m_email}, #{m_phonenum}, #{m_address},#{m_zipcode},#{m_address_detail} )
     	<foreach collection="miList" item="mi">
     		into MEMBER_INTEREST (MI_PK, M_PK, C_PK)
     			VALUES	(GET_PK_MI, #{m_pk}, #{mi.c_pk})
@@ -28,8 +28,8 @@
 		insert all 
 		
 		into MEMBER
-			( M_PK, M_NAME, M_EMAIL, M_PHONENUM, M_ADDRESS , M_APITYPE, M_APIID)  <!-- APITYPE 1번 카카오, 2번 네이버 -->
-		values (#{m_pk}, #{m_name}, #{m_email}, #{m_phonenum}, #{m_address}, #{m_apiType}, #{m_apiId})
+			( M_PK, M_NAME, M_EMAIL, M_PHONENUM,M_ZIPCODE, M_ADDRESS,M_ADDRESS_DETAIL , M_APITYPE, M_APIID)  <!-- APITYPE 1번 카카오, 2번 네이버 -->
+		values (#{m_pk}, #{m_name}, #{m_email} ,#{m_phonenum},#{m_zipcode}, #{m_address},#{m_address_detail}, #{m_apiType}, #{m_apiId})
 		<foreach collection="miList" item="mi">
     		into MEMBER_INTEREST (MI_PK, M_PK, C_PK)
     			VALUES	(GET_PK_MI, #{m_pk}, #{mi.c_pk})
@@ -133,6 +133,8 @@
 		<result property="m_enabled" column="m_enabled"/>
 		<result property="m_regdate" column="m_regdate"/>
 		<result property="m_address" column="m_address"/>
+		<result property="m_zipcode" column="m_zipcode"/>
+		<result property="m_address_detail" column="m_address_detail"/>
 		<result property="m_eval" column="m_eval"/>
 		<result property="m_pval" column="m_pval"/>
 		<result property="m_apiType" column="m_apitype"/>

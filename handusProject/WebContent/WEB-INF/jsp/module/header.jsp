@@ -58,7 +58,7 @@
 		})
 		
 		$("#myPageBtn").on("click",function(){
-			location.href="${pageContext.request.contextPath}/member/myPage"
+			location.href="${pageContext.request.contextPath}/user/myPage?m_pk=${m_pk}"
 		})
 		$("#logoutBtn").on("click",function(){
 			location.href="${pageContext.request.contextPath}/logout" 

@@ -63,7 +63,7 @@
 		font-size: 30px;
 	}
 	.author_info>div{
-		width: 500px;
+		width: 575px;
 		border-bottom:1px solid #191919;
 		display:flex;
 		justify-content: space-between;
@@ -96,13 +96,13 @@
 		
 		showMySubsList("${m_pk}",1,function(data){
 			$.each(data,function(i,item){
-				var parent = $("<div>").append($("<img>"))
+				var parent = $("<div>").append($("<img src='${pageContext.request.contextPath}/author/authorImg?ap_pk="+item.AP_PK+"'>"))
 				var div = $("<div class='author_info'>")
 				
-				var name = $("<div><span class='info-title'>NAME</span><span>"+item.M_NAME+"</span></div>")
-				var email = $("<div><span class='info-title'>EMAIL</span><span>"+item.M_EMAIL+"</span></div>")
-				var studio = $("<div><span class='info-title'>STUDIO</span><span>"+"찰리와 초콜릿 공장"+"</span></div>")
-				var studio_addr = $("<div><span class='info-title'>ADDRESS</span><span>"+"움파룸파족이 살고 있는 공장"+"</span></div>")
+				var name = $("<div><span class='info-title'>NAME</span><span>"+item.AT_NAME+"</span></div>")
+				var email = $("<div><span class='info-title'>EMAIL</span><span>"+item.AT_EMAIL+"</span></div>")
+				var studio = $("<div><span class='info-title'>STUDIO</span><span>"+item.AT_STUDIO+"</span></div>")
+				var studio_addr = $("<div><span class='info-title'>ADDRESS</span><span>"+item.AT_ADDRESS+"</span></div>")
 				
 				var div2 = $("<div class='author_btn_container'>")
 				var btn1 = $("<div class='author_btn' onclick='cancelSubscribe(1,${m_pk},"+item.M_PK+",this)'>구독 취소</div>")
@@ -136,13 +136,14 @@
 		$("#authorBtn").on("click",function(){			
 			showMySubsList("${m_pk}",1,function(data){
 				$.each(data,function(i,item){
-					var parent = $("<div>").append($("<img>"))
+					console.log(data);
+					var parent = $("<div>").append($("<img src='${pageContext.request.contextPath}/author/authorImg?ap_pk="+item.AP_PK+"'>"))
 					var div = $("<div class='author_info'>")
 					
-					var name = $("<div><span class='info-title'>NAME</span><span>"+item.M_NAME+"</span></div>")
-					var email = $("<div><span class='info-title'>EMAIL</span><span>"+item.M_EMAIL+"</span></div>")
-					var studio = $("<div><span class='info-title'>STUDIO</span><span>"+"찰리와 초콜릿 공장"+"</span></div>")
-					var studio_addr = $("<div><span class='info-title'>ADDRESS</span><span>"+"움파룸파족이 살고 있는 공장"+"</span></div>")
+					var name = $("<div><span class='info-title'>NAME</span><span>"+item.AT_NAME+"</span></div>")
+					var email = $("<div><span class='info-title'>EMAIL</span><span>"+item.AT_EMAIL+"</span></div>")
+					var studio = $("<div><span class='info-title'>STUDIO</span><span>"+item.AT_STUDIO+"</span></div>")
+					var studio_addr = $("<div><span class='info-title'>ADDRESS</span><span>"+item.AT_ADDRESS+"</span></div>")
 					
 					var div2 = $("<div class='author_btn_container'>")
 					var btn1 = $("<div class='author_btn' onclick='cancelSubscribe(1,${m_pk},"+item.M_PK+",this)'>구독 취소</div>")
@@ -231,7 +232,7 @@
 		
 		switch(type){
 		case 1:
-			alert("작가페이지 이동")
+			location.href="${pageContext.request.contextPath}/author/publicPage?m_pk=" + ms_fk
 			break;
 		case 2:
 			alert("스튜디오 페이지 이동")
