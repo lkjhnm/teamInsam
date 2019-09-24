@@ -41,7 +41,8 @@
 							where m_pk_user = #{m_pk_user} and ms_type = #{type} ) fk on 
 			<choose>
 				<when test="type == 1">
-					(msa.m_pk = fk.ms_fk)
+					(msa.m_pk = fk.ms_fk) join AUTHOR ah on (ah.m_pk = msa.m_pk) 
+						left outer join AUTHOR_PROFILE ap on (ap.m_pk = msa.m_pk AND ap_main = 1)
 				</when>
 				<when test="type == 2">
 					(msa.s_pk = fk.ms_fk)
@@ -53,4 +54,16 @@
 				</when>
 			</choose>				
 	</select>
+	
+	<select id="selectUserByPk" parameterType="int" resultType="map">
+		select M_NAME, M_EMAIL, M_PHONENUM ,M_ADDRESS ,
+				(select count(*) from MEMBER_SUBSCRIBE where m_pk_user = #{m_pk}) as M_SUB_COUNT
+			from MEMBER m 
+				where m_pk = #{m_pk}
+	</select>
+	
+	<update id="updateUserInfo" parameterType="map">
+		update MEMBER set m_name =#{m_name} , m_phonenum = #{m_phonenum} , m_email = #{m_email} , m_address = #{m_address}
+			where m_pk = #{m_pk}
+	</update>
 </mapper>

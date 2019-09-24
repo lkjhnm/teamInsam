@@ -16,7 +16,7 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
-	<!-- connection pull : 속도를 빠르게 함 -->
+	<!-- connection pool : 속도를 빠르게 함 -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>	
 		<property name="jdbcUrl" value="jdbc:oracle:thin:@teaminsam.cee8wpcnffqv.ap-northeast-2.rds.amazonaws.com:1521:orcl"/>

@@ -111,8 +111,11 @@
 			origin_src = $("#profile_image").attr("src")
 			isMod = true;
 			
-			$(".hover").on("click",function(){
-				$(this).children("input").css("display","block").focus();
+			$(".hover").off("click").on("click",function(){
+				if(!isMod){
+					return;
+				}
+				$(this).children("input").css("display","block").focus().val("");
 				$(this).children(".info_value").css("display","none")
 			})
 		})
@@ -126,8 +129,7 @@
 			$("#profile_info_container").children().css("border","none").css("border-bottom","1px solid #191919").removeClass("hover")
 			$("#profile_image").css("border","none").removeClass("hover")
 			$("#profile_image").attr("src",origin_src)
-			isMod = false;
-			
+			isMod = false;		
 		})
 		
 		$("#confirm").on("click",function(){
@@ -138,25 +140,19 @@
 			var email = $("#at_email").val() == "" ? $("#at_email").prev().text() : $("#at_email").val()
 			var studio = $("#at_studio").val() == "" ? $("#at_studio").prev().text() : $("#at_studio").val()
 			var address = $("#at_address").val() == "" ? $("#at_address").prev().text() : $("#at_address").val()
-			
-			formData.append("at_name",name)
-			formData.append("at_email",email)
-			formData.append("at_studio",studio)
-			formData.append("at_address",address)
-			var str = "";
-			str += "ap_filename="+$("#profile_image").attr("data-name")
-			str += "m_pk=${m_pk}"
-			str += "at_name"
+			var filename = $("#profile_image").attr("data-name")
 
 			$.ajax({
 				url:"${pageContext.request.contextPath}/author/updateAuthor",
 				type:"post",
-				data: formData,
+				data: {"at_name":name, "at_email":email, "at_studio":studio, "at_address":address,
+						"ap_filename":filename, "m_pk":"${m_pk}"},
 				dataType:"json",
 				success: function(data){
-					alert(data);
 					$("#menu").css("display","block");
 					$("#modify").css("display","none");
+					$(".info_value").css("display","block");
+					$(".modify-input").css("display","none");
 					$("#profile_info_container").children().css("border","none").css("border-bottom","1px solid #191919").removeClass("hover");
 					$("#profile_image").css("border","none").removeClass("hover")
 					$("#profile_image").attr("src","${pageContext.request.contextPath}/author/authorImg?ap_pk="+ data.ap_pk);
