@@ -196,8 +196,13 @@
 	
 </style>
 <script>
+var memberNum = 144 // 회원번호 : 세션에서 얻어옴 
+var totalPrice; 
+var totalCount; 
+
 $(function(){
 	drawTotalPay();
+	counts();
 	
 	$("#zipCode").on("click",function(){
 		daumPostcode()
@@ -209,6 +214,24 @@ $(function(){
 	// 결제버튼 > 결제하기 
 	$("#paymentBtn").on("click", function () {
 		alert("결제!");
+		$.ajax({
+			url: "kakaopay",
+			dataType: "text",
+			data: {
+				"m_pk":memberNum ,
+				"p_name":"핸더스 주문",
+				"p_count": totalCount,
+				"p_totalPrice":totalPrice
+			},
+			type: "post",
+			success: function (data) {
+				alert(data);
+				window.open(data, "카카오페이" ,"width=480px, height=600px");
+			},
+			error: function () {
+				alert("카카오페이에러");
+			}
+		});
 	});
 	
 // 	$("#signForm").on("submit",function(e){
@@ -246,15 +269,12 @@ function insertInfo() {
 	
 };
 function drawTotalPay() {
-	$.ajax({
-		url: "sum",
-		dataType: "json",
-		type: "post",
-		success: function (data) {
-			$("#totalPay").text(data);
-			$("#totalTD").addClass("redColor");
-		}
-	});
+	totalPrice = ${totalPay };
+	$("#totalPay").text(totalPrice);
+	$("#totalTD").addClass("redColor");
+};
+function counts() {
+	totalCount = ${totalCount };
 };
 
 </script>
@@ -344,8 +364,6 @@ function drawTotalPay() {
 					<tr>
 						<td class="little-bold">상품이름</td>
 						<td colspan="3"></td>
-<!-- 						<td></td> -->
-<!-- 						<td></td> -->
 						<td class="little-bold">수량</td>
 						<td class="little-bold">금액</td>
 					</tr>
@@ -355,8 +373,6 @@ function drawTotalPay() {
 								<span class='imageBox'><img src=""></span>
 							</td>
 							<td colspan="3"></td>
-<!-- 							<td></td> -->
-<!-- 							<td></td> -->
 							<td>${product.p_count } 개</td>
 							<td>${product.p_price } 원</td>
 						</tr>
@@ -364,9 +380,6 @@ function drawTotalPay() {
 					<tr>
 						<td class="bold">총금액</td>
 						<td colspan="4"></td>
-<!-- 						<td></td> -->
-<!-- 						<td></td> -->
-<!-- 						<td></td> -->
 						<td class="bold" id='totalTD'><span id='totalPay'>${product.p_price }</span> 원</td>
 					</tr>
 				</table>
