@@ -23,7 +23,15 @@ public class Studio {
 	private int rs_count;
 	private int hs_count;
 	private String s_name;
+	private int hi_pk;
 	
+	
+	public int getHi_pk() {
+		return hi_pk;
+	}
+	public void setHi_pk(int hi_pk) {
+		this.hi_pk = hi_pk;
+	}
 	public String getS_name() {
 		return s_name;
 	}

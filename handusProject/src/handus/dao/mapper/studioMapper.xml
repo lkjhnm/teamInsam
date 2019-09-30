@@ -34,7 +34,7 @@
 	       S.S_COMMENT, 
 	       S.S_NAME,
 	       M.M_NAME, 
-	       C.C_CATEGORY, 
+	       C.C_CATEGORY,
 	       (select count(*) from REVIEW_STUDIO where S.S_PK = #{S_PK} ) as RS_COUNT, 
 	       (select count(*) from HEART_STUDIO where HS_S_PK = #{S_PK} )as HS_COUNT 
 	from STUDIO S 
@@ -46,9 +46,9 @@
 	</select>
 	<select id="selectStudioList" resultMap="studioMap">
 		select *  
-		from(select rownum as rnum, S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_REGDATE, S_UPDATEDATE, S_MAXIMUM, S_CURRENT, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT
-			from (select S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_REGDATE, S_UPDATEDATE, S_MAXIMUM, S_CURRENT, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT 
-				from STUDIO
+		from(select rownum as rnum, S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_REGDATE, S_UPDATEDATE, S_MAXIMUM, S_CURRENT, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT, HI_PK
+			from (select S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_REGDATE, S_UPDATEDATE, S_MAXIMUM, S_CURRENT, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT,HI_PK
+				from STUDIO S JOIN HANDUS_IMAGE hi on s.s_pk = hi.hi_fk and hi_main = 1 and hi_type = 3
 				order by  desc))
 		where rnum between #{param1} and #{param2}
 	</select>
@@ -62,6 +62,13 @@
 	</update>
 	<select id="selectCount" resultType="int">
 		select count(*) from STUDIO
+	</select>
+	
+	<select id="selectStudioImage" parameterType="int" resultType="map">
+		select hi_pk
+			from HANDUS_IMAGE
+				where hi_fk = #{s_pk} and hi_type = 3
+					order by hi_main desc
 	</select>
 <!-- 	<update id="minusHeart"> -->
 <!-- 		update STUDIO -->

@@ -1,6 +1,7 @@
 package handus.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import handus.model.Item;
 
@@ -15,4 +16,5 @@ public interface ItemDao {
 	public List<Item> selectItemList(int startRow, int endRow);
 	public List<Item> selectAllItems();
 	public int selectCount();	// 총 갯수 구하는 메소드 
+	public List<Map<String,Object>>	selectItemImage(int i_pk);
 }

@@ -53,6 +53,10 @@ public class StudioService {
 //		System.out.println(studioDao.selectStudioByNum(stuNum).getC_category());
 		return studioDao.selectStudioByNum(stuNum);
 	}
+	public List<Map<String,Object>> getStudioImage(int s_pk){
+		return studioDao.selectStudioImage(s_pk);
+	}
+	
 	public List<Studio> getStudioList(int pageNum) {
 		List<Studio> studioList = new ArrayList<Studio>();
 		studioList = studioDao.selectStudioList(getStartRow(pageNum), getEndRow(pageNum));		

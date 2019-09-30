@@ -15,14 +15,22 @@ public class Item {
 	private int i_read_count;
 	private String i_content;
 	private String i_country;
-	private String i_meterial;
 	private String i_color;
 	private String i_size;
 	private String m_name;
 	private String c_category;
 	private int ri_count;
 	private int hi_count;
+	private String i_material;
 	
+	
+	
+	public String getI_material() {
+		return i_material;
+	}
+	public void setI_material(String i_material) {
+		this.i_material = i_material;
+	}
 	public int getI_pk() {
 		return i_pk;
 	}
@@ -95,12 +103,6 @@ public class Item {
 	public void setI_country(String i_country) {
 		this.i_country = i_country;
 	}
-	public String getI_meterial() {
-		return i_meterial;
-	}
-	public void setI_meterial(String i_meterial) {
-		this.i_meterial = i_meterial;
-	}
 	public String getI_color() {
 		return i_color;
 	}
@@ -142,14 +144,14 @@ public class Item {
 		return "Item [i_pk=" + i_pk + ", m_pk_writer=" + m_pk_writer + ", i_title=" + i_title + ", i_price=" + i_price
 				+ ", i_category=" + i_category + ", i_regdate=" + i_regdate + ", i_updatedate=" + i_updatedate
 				+ ", i_stock=" + i_stock + ", i_comment=" + i_comment + ", i_read_count=" + i_read_count
-				+ ", i_content=" + i_content + ", i_country=" + i_country + ", i_meterial=" + i_meterial + ", i_color="
+				+ ", i_content=" + i_content + ", i_country=" + i_country + ", i_meterial=" + i_material + ", i_color="
 				+ i_color + ", i_size=" + i_size + ", m_name=" + m_name + ", c_category=" + c_category + ", ri_count="
 				+ ri_count + ", hi_count=" + hi_count + ", getI_pk()=" + getI_pk() + ", getM_pk_writer()="
 				+ getM_pk_writer() + ", getI_title()=" + getI_title() + ", getI_price()=" + getI_price()
 				+ ", getI_category()=" + getI_category() + ", getI_regdate()=" + getI_regdate() + ", getI_updatedate()="
 				+ getI_updatedate() + ", getI_stock()=" + getI_stock() + ", getI_comment()=" + getI_comment()
 				+ ", getI_read_count()=" + getI_read_count() + ", getI_content()=" + getI_content()
-				+ ", getI_country()=" + getI_country() + ", getI_meterial()=" + getI_meterial() + ", getI_color()="
+				+ ", getI_country()=" + getI_country() + ", getI_meterial()=" + getI_material() + ", getI_color()="
 				+ getI_color() + ", getI_size()=" + getI_size() + ", getM_name()=" + getM_name() + ", getC_category()="
 				+ getC_category() + ", getRi_count()=" + getRi_count() + ", getHi_count()=" + getHi_count() + "]";
 	}

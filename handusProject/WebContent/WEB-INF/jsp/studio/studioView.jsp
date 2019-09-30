@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -360,13 +363,50 @@
 		border-radius: 5px;
 		background-color: #ffff;
 	}
-}
+	#thumnailContainer{
+		width: 92px;
+		height: 425px;
+		position:absolute;
+		left: 805px;
+		top: 110px;
+		z-index: 103;
+		overflow:hidden;
+	}
+	.thumnail{
+		width: 90px;
+		height: 90px;
+		background-color: #fff;
+		margin-top: 10px;
+		border: 1px solid #e3e2de;
+	}
+	#thumbnail_train{
+		position:relative;
+		top:0;
+		left:0;
+	}
+	#up-arrow{
+		font-size:25px;
+		position: relative;
+		top:90px;
+		left:840px;
+		z-index:103;
+		color:#ff1d43;
+	}
+	#down-arrow{
+		font-size:25px;
+		position: relative;
+		top:510px;
+		left:840px;
+		z-index:103;
+		color:#ff1d43;
+	}
 </style>
 <script
   src="https://code.jquery.com/jquery-3.4.1.js"
   integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
   crossorigin="anonymous"></script>
  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=486df4f7ba9d0fcd564c18d5601724f6&libraries=services,clusterer"></script>
+<sec:authorize access="isAuthenticated()" var="isLogin"></sec:authorize>
 <script type="text/javascript">
 	var memberNum = 1;				// 회원 번호 
 	var studioNum = ${studio.s_pk};	// 게시글 번호
@@ -376,9 +416,12 @@
 	var modBtn = 0; 				// 수정 버튼 기능 0=수정창보이기, 1=수정로직실행
 	var mapX ;						// 127.02448266126561
 	var mapY ;						// 37.50312464278207
+	var isAuthenticated =${isLogin}
 	$(function () {
 		// 해당 회원이 게시글에 대해 좋아요를 눌렀는지 확인 후 하트 클래스 추가/삭제
-		heartCheck();
+		if(isAuthenticated){
+			heartCheck();			
+		}
 		// 리뷰 그리기
 		drawReview();
 		// 달력그리기 
@@ -419,17 +462,20 @@
 		});
 		// 구독(하트) 버튼 누르기
 		$("#subButton").on("click", function () {
+			if(!isAuthenticated){
+				location.href="${pageContext.request.contextPath}/member/loginForm";
+				return;
+			}
 			if(isHeart){
 				// 까만하트 -> 구독 취소 후 빈 하트
 				$.ajax({
-					url: "${pageContext.request.contextPath}/heart/offHeartS",
-					data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
+					url: "${pageContext.request.contextPath}/user/subscribeCancel/2",
+					data: {"m_pk_user":"${m_pk}", "ms_fk":studioNum},
 					type: "post",
 					success: function (result) {
 						if(result){
 							drawFarHeart();
 							isHeart = false;
-							drawHeartCount();
 						}else{
 							alert("구독취소 불가");
 						}
@@ -441,14 +487,13 @@
 			}else{
 				// 빈하트 -> 구독 후 까만 하트 
 				$.ajax({
-					url: "${pageContext.request.contextPath}/heart/onHeartS",
-					data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
+					url: "${pageContext.request.contextPath}/user/subscribe/2",
+					data: {"m_pk_user":"${m_pk}", "ms_fk":studioNum},
 					type: "post",
 					success: function (result) {
 						if(result){
 							drawFasHeart();
 							isHeart = true;
-							drawHeartCount();
 						}else{
 							alert("구독 불가");
 						}
@@ -556,12 +601,22 @@
 			drawCalendar(today);
 		});
 		
+		imgSlide();
+		
+		$(".thumnail").first().css("border-color","#191919")
+		$(".thumnail").on("click",function(){
+			$(this).css("border-color","#191919")
+			$(this).siblings().css("border-color","#e3e2de" )
+			$("#studioImg").attr("src", $(this).attr("src"))
+		})
+		
 	});  // ----------------------------------------------------------------------------- onload 끝 
 	function heartCheck() {
 		$.ajax({
-			url: "${pageContext.request.contextPath}/heart/chekHeartS",
-			data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
+			url: "${pageContext.request.contextPath}/user/subscribeCheck/2",
+			data: {"m_pk_user":"${m_pk}", "ms_fk":studioNum},
 			type: "post",
+			dataType:"json",
 			success: function (result) {
 				if(result){
 					// 까만 하트 
@@ -569,6 +624,7 @@
 					isHeart = true;
 				}else{
 					// 빈 하트 
+					
 				}
 			},
 			error: function () {
@@ -856,6 +912,42 @@
 		var weatherBox = $($("<div></div>").append("<span>최저기온: "+minTemp+"</span>").append("<span>최고기온: "+maxTemp+"</span>"));
 		$("#weatherBox1").append(weatherBox);
 	};
+	
+	//이미지 슬라이드 쇼
+	function imgSlide(){
+		var position = 0;
+		var count = $("#thumbnail_train").children().length -4;
+		
+		$("#up-arrow > span").on("click",function(){
+			
+			if(position -1 < 0){
+				return;
+			}
+			position = position <= 0 ? 0 : position - 1;
+			
+			
+			var top = position == 0 ? 0 : (-105)*position;
+
+			$("#thumbnail_train").animate({
+				"top" : top 
+			})
+		})
+		
+		$("#down-arrow >span").on("click",function(){
+			
+			if(position + 1 > count){
+				return;
+			}
+			position = position >= count ? count : position + 1;
+			
+			
+			var top = position == count ? (-105)*count : (-105)*position;
+			
+			$("#thumbnail_train").animate({
+				"top" : top
+			})
+		})
+	}
 </script>
 </head>
 <body>
@@ -864,7 +956,20 @@
 		
 		<div id="main">
 			<div id="studioInfoBox">
-				<img id="studioImg">
+				<img id="studioImg" src="${pageContext.request.contextPath }/image/${studioImg[0].HI_PK}">
+				<div id="thumnailContainer">
+					<div id="thumbnail_train">
+					<c:forEach items="${studioImg }" var="img">
+						<c:if test="${fn:length(studioImg) > 1 }">
+							<img class='thumnail' src="${pageContext.request.contextPath }/image/${img.HI_PK}">			
+						</c:if>
+					</c:forEach>
+					</div>
+				</div>
+				<c:if test="${fn:length(studioImg) > 4 }">
+					<div id="up-arrow"><span><i class="fas fa-chevron-up"></i></span></div>
+					<div id="down-arrow"><span><i class="fas fa-chevron-down"></i></span></div>
+				</c:if>
 				<div id="studioInfo">
 					<div class='infoPosition infoBold'><span>${studio.s_title }</span></div>
 					<div class='infoPosition'><span>${studio.m_name }</span></div>				
@@ -886,7 +991,7 @@
 						<div><img id='icon' src='${pageContext.request.contextPath }/img/brush.svg'>
 						<span> 리뷰수 <span id="reviewCount">${studio.rs_count }</span> 개 </span></div>
 						<div><img id='icon' src='${pageContext.request.contextPath }/img/like.svg'>
-						<span> 좋아요 <span id="heartCount">${studio.hs_count }</span> 명 </span></div>
+						<span> 구독자 <span id="heartCount">${studio.hs_count }</span> 명 </span></div>
 					</div>
 					<div id="button-boundary"></div>
 					<div class='infoPosition infoBold'>

@@ -2,6 +2,8 @@ package handus.author.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,8 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.s3.AmazonS3;
+
 import handus.dao.AuthorDao;
 import handus.dao.MemberDao;
+import handus.image.service.S3App;
 import handus.model.Auction;
 import handus.model.Auth;
 import handus.model.HandusImage;
@@ -40,55 +45,75 @@ public class AuthorService {
 	private MemberDao memberDao;
 	
 	@Transactional
-	public boolean registerAuction(Auction auction, HandusImgList imgList){
+	public boolean registerAuction(Map<String,Object> auction, HandusImgList imgList){
 		
 		Calendar cal = Calendar.getInstance();
-		Date date = auction.getA_startTime();
-		cal.setTime(date);
+		System.out.println(auction.get("a_startTime"));
+		Date date;
+		try {
+			date = new SimpleDateFormat("MM/dd/yyyy").parse((String)auction.get("a_startTime"));
+			cal.setTime(date);
+			auction.put("a_startTime",date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		cal.add(Calendar.DATE, 7);
-		auction.setA_endTime(cal.getTime());
+		auction.put("a_endTime", cal.getTime());
+		auction.put("a_pk",0);
 		
-		authorDao.insertAuction(auction);
-		setImgInfo(auction.getA_pk(),AUCTION, imgList);
-		authorDao.insertImage(AUCTION ,imgList);
+		boolean result = authorDao.insertAuction(auction);
+		setImgInfo((int)auction.get("a_pk"),AUCTION, imgList);
+		result = authorDao.insertImage(AUCTION,(int)auction.get("a_pk"),imgList);
 		moveFile(AUCTION,imgList);
-		return true;
+		return result;
 	}
 	
 	@Transactional
-	public boolean registerItem(Item item, HandusImgList imgList) {
-		authorDao.insertImage(ITEM,imgList);
-//		setImgInfo(item.getI_pk(),ITEM,imgList);
-		return authorDao.insertItem(item);
+	public boolean registerItem(Map<String,Object> item, HandusImgList imgList) {
+		item.put("i_pk",0);
+		boolean result = authorDao.insertItem(item);
+		setImgInfo((int)item.get("i_pk"),ITEM,imgList);
+		result = authorDao.insertImage(ITEM, (int)item.get("i_pk"), imgList);
+		moveFile(ITEM,imgList);
+		return result;
 	}
 	
 	@Transactional
-	public boolean registerStudio(Studio studio, HandusImgList imgList) {
-		authorDao.insertImage(STUDIO ,imgList);
-		setImgInfo(studio.getS_pk(),STUDIO,imgList);
-		return authorDao.insertStudio(studio);
+	public boolean registerStudio(Map<String,Object> studio, HandusImgList imgList) {
+		System.out.println(studio + "////" + imgList);
+		studio.put("s_pk",0);
+		try {
+			Date start = new SimpleDateFormat("MM/dd/yyyy").parse((String)studio.get("s_classstart"));
+			Date end = new SimpleDateFormat("MM/dd/yyyy").parse((String)studio.get("s_classend"));
+			studio.put("s_classstart",start);
+			studio.put("s_classend",end);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		boolean result = authorDao.insertStudio(studio);
+		setImgInfo((int)studio.get("s_pk"),STUDIO,imgList);
+		result = authorDao.insertImage(STUDIO,(int)studio.get("s_pk") ,imgList);
+		moveFile(STUDIO,imgList);
+		return result;
 	}
 	
 	private void setImgInfo(int fk,String type, HandusImgList imgList) {
 		for(HandusImage img : imgList.getImgList()) {
 			img.setImg_fk(fk);
-			img.setImg_savePath("c://handus/"+type+"/"+fk);
+			img.setImg_savePath(type+"/"+fk);
 		}
 	}
 	
 	private void moveFile(String type, HandusImgList imgList) {
 		String tempPath = "c://handus/temp";
 		int fk =imgList.getImgList().get(0).getImg_fk();
-		String path = "c://handus/"+type+"/"+fk;
-		File dir = new File(path);
+		String path = type+"/"+fk;
 		
-		if(!dir.exists()) {
-			dir.mkdirs();
-		}
+		AmazonS3 s3client = S3App.createConnectionWithCredentials(S3App.credentials);
 		
 		for(HandusImage img : imgList.getImgList()) {
 			File file = new File(tempPath, img.getImg_fileName());
-			file.renameTo(new File(path,img.getImg_fileName()));
+			s3client.putObject("handusbucket",path+"/"+img.getImg_fileName(), file);
 		}
 	}
 	
@@ -133,22 +158,20 @@ public class AuthorService {
 	
 	@Transactional
 	public String updateAuthor(HashMap<String,Object> formData) {
-		final String tempPath = "c://handus/temp";
-		final String realPath = "c://handus/member/"+formData.get("m_pk");
-		File dir = new File(realPath);
-		if(!dir.exists()) {
-			dir.mkdirs();
-		}
-		File img = new File(tempPath,(String)formData.get("ap_filename"));
-		img.renameTo(new File(realPath,(String)formData.get("ap_filename")));
+		final String tempPath = "c://handus/temp/";
+		final String realPath = "member/"+formData.get("m_pk");
 		
-		formData.put("ap_pk",null);
-		formData.put("ap_savepath",realPath);
+		AmazonS3 s3client = S3App.createConnectionWithCredentials(S3App.credentials);
+		
+		s3client.putObject("handusbucket",realPath+"/"+formData.get("hi_filename"), new File(tempPath+formData.get("hi_filename")));
+		
+		formData.put("hi_pk",null);
+		formData.put("hi_savepath",realPath);
 		authorDao.insertAuthorImage(formData);
 		authorDao.updateAuthorImage(formData);
 		authorDao.updateAuthor(formData);
 		
-		return "{\"ap_pk\" : \""+formData.get("ap_pk")+"\" }";
+		return "{\"hi_pk\" : \""+formData.get("hi_pk")+"\" }";
 	}
 	
 	public byte[] getAuthorImages(int ap_pk) throws IOException {	

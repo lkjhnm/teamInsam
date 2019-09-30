@@ -18,12 +18,12 @@ import handus.user.service.UserService;
 
 @Controller
 @RequestMapping("user")
+@PreAuthorize("hasRole('ROLE_MEMBER')")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 	
-	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(value="/subscribe/{type}",method = RequestMethod.POST)
 	@ResponseBody
 	public boolean subscribeAuction(@PathVariable(value="type") int type, int ms_fk, int m_pk_user){
@@ -33,17 +33,15 @@ public class UserController {
 		return result;
 	}
 	
-	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(value="/subscribeCheck/{type}",method = RequestMethod.POST)
 	@ResponseBody
 	public boolean subscribeCheck(@PathVariable(value="type") int type,int ms_fk, int m_pk_user) {
 		
 		boolean result = userService.userSubscribeCheck(type, ms_fk, m_pk_user);
-		
+
 		return result;
 	}
 	
-	@PreAuthorize("isAuthenticated()")
 	@ResponseBody
 	@RequestMapping(value="/subscribeCancel/{type}",method = RequestMethod.POST)
 	public boolean subscribeCancel(@PathVariable(value="type")int type,int ms_fk, int m_pk_user) {
@@ -66,6 +64,7 @@ public class UserController {
 		
 		return "user/myPage";
 	}
+	
 	@RequestMapping(value="/subscribe",method=RequestMethod.GET)
 	public String alarm() {
 		return "user/subscribe";
