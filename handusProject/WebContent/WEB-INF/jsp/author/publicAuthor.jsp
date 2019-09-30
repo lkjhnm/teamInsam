@@ -91,12 +91,6 @@
 		display:inline-block;
 		font-size: 30px;
 	}
-	#insta_container{
-		width: 80%;
-		height: 500px;
-		margin: 150px auto;
-		background-color: blue;
-	}
 	.slide_button{
 		position:relative;
 		font-size: 80px;
@@ -138,12 +132,40 @@
 	}
 </style>
 <script>
+	function isSubscribe(){
+		var result;
+		
+		$.ajax({
+			url:"${pageContext.request.contextPath}/user/subscribeCheck/1",
+			data : {"m_pk_user":"${m_pk}", "ms_fk":"${M_PK_WRITER}"},
+			type:"post",
+			dataType:"json",
+			async:false,
+			success:function(data){
+				result = data;
+			}
+		})
+		return result;
+	}
+	
 	$(function(){
+		var subCheck = isSubscribe();
+		
+		if(!subCheck){
+			$("#subBtn").text("구독 하기")
+		}else{
+			$("#subBtn").text("구독 취소")
+		}
 		
 		getListOfType(1,function(data){		// ITEM 데이터 가져오기	
 			$("#item_container").css("width",302*data.length)
 			$.each(data,function(i,item){
-				
+				console.log(item)
+				var img = $("<img src='${pageContext.request.contextPath}/image/"+item.HI_PK+"'>")
+				$(img).on("click",function(){
+					location.href='${pageContext.request.contextPath}/item/detail?num='+item.I_PK;
+				});
+				$("#item_container").append(img)
 			})
 			imgSlide("item_container")
 		})
@@ -151,7 +173,8 @@
 		getListOfType(2,function(data){		// AUCTION 데이터 가져오기
 			$("#auction_container").css("width", 302*data.length)
 			$.each(data,function(i,item){
-				var img = $("<img src='${pageContext.request.contextPath }/auction/auctionImg?ai_pk="+item.AI_PK+"'>")
+				console.log(item)
+				var img = $("<img src='${pageContext.request.contextPath }/image/"+item.HI_PK+"'>")
 				$(img).on("click",function(){
 					location.href="${pageContext.request.contextPath}/auction/detail?a_pk="+item.A_PK;
 				})
@@ -163,7 +186,11 @@
 		getListOfType(3,function(data){		// STUDIO 데이터 가져오기
 			$("#studio_container").css("width", 302*data.length)
 			$.each(data,function(i,item){
-				
+				var img = $("<img src='${pageContext.request.contextPath}/image/"+item.HI_PK+"'>")
+				$(img).on("click",function(){
+					location.href="${pageContext.request.contextPath}/studio/detail?num="+item.S_PK;
+				})
+				$("#studio_container").append(img)
 			})
 			imgSlide("studio_container")
 		})
@@ -171,18 +198,38 @@
 		
 		$("#subBtn").on("click",function(){
 			
-			var result = confirm("구독 하시겠습니까?")
-			
-			if(result){
-				$.ajax({
-					url:"${pageContext.request.contextPath}/user/subscribe/1",
-					type:"post",
-					data:{"ms_fk": "${M_PK_WRITER}","m_pk_user": "${m_pk}"},
-					dataType:"json",
-					success:function(data){
-						alert(data)
-					}
-				})
+			if(!subCheck){
+				var result = confirm("구독 하시겠습니까?")
+				
+				if(result){				
+					$.ajax({
+						url:"${pageContext.request.contextPath}/user/subscribe/1",
+						type:"post",
+						data:{"ms_fk": "${M_PK_WRITER}","m_pk_user": "${m_pk}"},
+						dataType:"json",
+						success:function(data){
+							if(data){
+								$("#subBtn").text("구독 취소")
+							}
+						}
+					})			
+				}
+			}else{
+				var result = confirm("구독 취소 하시겠습니까?")
+				
+				if(result){
+					$.ajax({
+						url:"${pageContext.request.contextPath}/user/subscribeCancel/1",
+						type:"post",
+						data:{"ms_fk": "${M_PK_WRITER}","m_pk_user": "${m_pk}"},
+						dataType:"json",
+						success:function(data){
+							if(data){
+								$("#subBtn").text("구독 하기")
+							}
+						}
+					})
+				}
 			}
 		})	
 		
@@ -253,7 +300,7 @@
 			<div id="profile_container">
 				<fieldset>
 					<legend>PROFILE</legend>
-					<img id="profile_image" src="${pageContext.request.contextPath }/author/authorImg?ap_pk=${AP_PK}">
+					<img id="profile_image" src="${pageContext.request.contextPath }/image/${HI_PK}">
 					<div id="profile_info_container">
 						<div><span class="info_title">NAME</span><span class='info_value'>${AT_NAME }</span></div>
 						<div><span class="info_title">EMAIL</span><span class='info_value'>${AT_EMAIL }</span></div>
@@ -263,7 +310,7 @@
 							<span class='info_value'>${AT_ADDRESS }</span>
 						</div>
 						<div id="button_container">
-							<div id="subBtn">구 독</div>
+							<div id="subBtn"></div>
 							<div>메시지</div>
 						</div>
 					</div>
@@ -294,10 +341,6 @@
 					<div id="studio_container">
 					</div>
 				</div>
-			</div>
-			
-			<div id="insta_container">
-				
 			</div>
 		</div>
 	</div>

@@ -262,17 +262,6 @@
 				<c:forEach items="${itemList }" var="item">
 					<div class="studioBox">
 						<img alt="" src="">
-						<!-- 하트 결정하기 -->
-						<div class='imgChange' data-sN='${item.num }' data-iH='${item.isHeart }'>
-							<c:choose>
-								<c:when test="${!(item.isHeart) }">
-									<span><i class="far fa-heart fa-lg heart" data-fa='${item.num }'></i></span>
-								</c:when>
-								<c:otherwise>
-									<span><i class="fas fa-heart fa-lg heart" data-fa='${item.num }'></i></span>
-								</c:otherwise>
-							</c:choose>
-						</div>
 						<span><a href="detail?num=${item.num}"><img class='studioImg'></a></span>
 						<div class="studioTitle">
 							<span><a href='detail?num=${item.num}'>${item.title }</a></span>

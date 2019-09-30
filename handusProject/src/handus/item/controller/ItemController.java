@@ -52,8 +52,8 @@ public class ItemController {
 		System.out.println("컨트롤러: "+itemService.getItemByNum(num));
 		if(itemService.updateReadCount(num)) {
 			model.addAttribute("item", itemService.getItemByNum(num));
+			model.addAttribute("itemImg",itemService.getItemImage(num));
 		}
 		return "item/itemView";
 	}
-	
 }

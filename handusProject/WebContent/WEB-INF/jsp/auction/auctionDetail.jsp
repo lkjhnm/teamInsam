@@ -376,6 +376,7 @@
 		top:90px;
 		left:840px;
 		z-index:103;
+		color:#ff1d43;
 	}
 	#down-arrow{
 		font-size:25px;
@@ -383,6 +384,7 @@
 		top:510px;
 		left:840px;
 		z-index:103;
+		color:#ff1d43;
 	}
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -750,12 +752,12 @@
 
 		<div id="main">
 			<div id="auctionInfoBox">
-				<img id="auctionImg" src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${auctionImg[0].img_pk}">
+				<img id="auctionImg" src="${pageContext.request.contextPath }/image/${auctionImg[0].HI_PK}">
 				<div id="thumnailContainer">
 					<div id="thumbnail_train">
 					<c:forEach items="${auctionImg }" var="img">
 						<c:if test="${fn:length(auctionImg) > 1 }">
-							<img class='thumnail' src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${img.img_pk}">			
+							<img class='thumnail' src="${pageContext.request.contextPath }/image/${img.HI_PK}">			
 						</c:if>
 					</c:forEach>
 					</div>
@@ -861,19 +863,16 @@
 			<div id="detailContainer">
 				<div id="detailBox">
 					<div class='infoBold'><span>ITEM DETAIL</span></div>
-					<ul>
-						<li>코디의 주역이 될 한발.</li>
-						<li>· 치마도 바지도 일치하는 레이디 아름다움 펌프스.</li>
-						<li>· 다리를 단단히 잡아주는 인상적인 3 개의 스트랩</li>
-						<li>· 6.5cm 힐
-					</ul>
+					<p>
+						${auction.a_details }
+					</p>
 				</div>
 				<div id="specBox">
 					<div class='infoBold'><span>ITEM SPEC</span></div>
-					<div class='specPosition'><div class='specType'><span> c o u n t r y </span></div><span> MADE IN KOREA</span></div>
-					<div class='specPosition'><div class='specType'><span> m a t e r i a l </span></div><span> GLASS </span></div>
-					<div class='specPosition'><div class='specType'><span> c o l o r </span></div><span> ASH BROWN</span></div>
-					<div class='specPosition'><div class='specType'><span> s i z e </span></div><span> 200 * 150 * 150 (cm)</span></div>
+					<div class='specPosition'><div class='specType'><span> c o u n t r y </span></div><span> ${auction.a_country }</span></div>
+					<div class='specPosition'><div class='specType'><span> m a t e r i a l </span></div><span> ${auction.c_category } </span></div>
+					<div class='specPosition'><div class='specType'><span> c o l o r </span></div><span> ${auction.a_color }</span></div>
+					<div class='specPosition'><div class='specType'><span> s i z e </span></div><span> ${auction.a_size }</span></div>
 				</div>
 			</div>
 		</div>

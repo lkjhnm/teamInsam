@@ -16,5 +16,5 @@ public interface StudioDao {
 	public List<Studio> selectAllStudio();
 	public int updateReadCount(int s_pk);
 	public int selectCount();
-	
+	public List<Map<String,Object>> selectStudioImage(int s_pk);
 }
