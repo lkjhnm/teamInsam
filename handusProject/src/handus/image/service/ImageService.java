@@ -24,7 +24,7 @@ public class ImageService {
 	private ImageDao imageDao;
 	
 	public ImageService() {
-		s3client = S3App.createConnectionWithCredentials(S3App.credentials);
+		s3client = S3Provider.createConnectionWithCredentials(S3Provider.credentials);
 	}
 	
 	public byte[] getImageData(int hi_pk) throws IOException {

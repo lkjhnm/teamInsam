@@ -21,7 +21,7 @@ import com.amazonaws.services.s3.AmazonS3;
 
 import handus.dao.AuthorDao;
 import handus.dao.MemberDao;
-import handus.image.service.S3App;
+import handus.image.service.S3Provider;
 import handus.model.Auction;
 import handus.model.Auth;
 import handus.model.HandusImage;
@@ -114,7 +114,7 @@ public class AuthorService {
 		int fk =imgList.getImgList().get(0).getImg_fk();
 		String path = type+"/"+fk;
 		
-		AmazonS3 s3client = S3App.createConnectionWithCredentials(S3App.credentials);
+		AmazonS3 s3client = S3Provider.createConnectionWithCredentials(S3Provider.credentials);
 		
 		for(HandusImage img : imgList.getImgList()) {
 			File file = new File(tempPath, img.getImg_fileName());
@@ -166,7 +166,7 @@ public class AuthorService {
 		final String tempPath = "c://handus/temp/";
 		final String realPath = "member/"+formData.get("m_pk");
 		
-		AmazonS3 s3client = S3App.createConnectionWithCredentials(S3App.credentials);
+		AmazonS3 s3client = S3Provider.createConnectionWithCredentials(S3Provider.credentials);
 		
 		s3client.putObject("handusbucket",realPath+"/"+formData.get("hi_filename"), new File(tempPath+formData.get("hi_filename")));
 		
