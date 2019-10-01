@@ -158,73 +158,32 @@
 		color: inherit;
 		text-decoration: none;
 	}
+
+/* 페이징 처리  */
+	#pageContainer{
+		margin-top: 100px;
+		text-align: center;
+		padding-right: 125px;
+	}
+	.page{
+		font-size:20px;
+		color:#191919;
+		letter-spacing: 10px;
+		font-weight:600;
+		text-decoration: none;
+		cursor:pointer;
+	}
+	.page:hover{
+		color:#ff1d43;
+	}
+	#start{
+		letter-spacing: 0px;
+	}
+	#end{
+		letter-spacing:0px;
+	}
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
-<script>
-	var memberNum = 1;	// 회원 번호, 세션에서 얻어오면 됨 
-	var itemNum; 		// 게시글 번호, 리스트에서 얻어옴 
-	var isHeart;
-	$(function () {
-		// 좋아요 하기, 좋아요 취소하기 
-		$(".imgChange").on("click", function () {
-			isHeart = $(this).attr("data-iH");
-			itemNum = $(this).attr("data-sN");
-			if(isHeart === "true"){
-				offHeart(itemNum);
-				$(this).attr("data-iH", false);
-			}else{
-				// 왜 값이 false 인데 여기로 안 떨어지지 
-				onHeart(itemNum);
-				$(this).attr("data-iH", true);
-			}
-		});
-	});
-	function onHeart(itemNum) {
-		$.ajax({
-			url: "${pageContext.request.contextPath}/heart/onHeartI",
-			data: {"hi_m_pk":memberNum, "hi_i_pk":itemNum},
-			type: "post",
-			success: function (result) {
-				if(result){
-					drawFas(itemNum);
-				}else{
-					alert("구독 불가");
-				}
-			},
-			error: function () {
-				alert("onHeart에러");
-			}
-		});
-	};
-	function offHeart(itemNum) {
-		$.ajax({
-			url: "${pageContext.request.contextPath}/heart/offHeartI",
-			data: {"hi_m_pk":memberNum, "hi_i_pk":itemNum},
-			type: "post",
-			success: function (result) {
-				if(result){
-					drawFar(itemNum);
-				}else{
-					alert("구독취소 불가");
-				}
-			},
-			error: function () {
-				alert("offHeart에러");
-			}
-		});
-	};
-	function drawFar(itemNum) {
-		// 해당 게시글 번호 속성을 가지고 있는 div의 i 속성 변경 
-		var faHeart = $("i[data-fa='"+itemNum+"']");
-		faHeart.removeClass("fas");
-		faHeart.addClass("far");
-	};
-	function drawFas(itemNum) {
-		var faHeart = $("i[data-fa='"+itemNum+"']");
-		faHeart.removeClass("far");
-		faHeart.addClass("fas");
-	};
-</script>
 </head>
 <body>
 	<div class="container">
@@ -234,13 +193,13 @@
 				<div id="category">
 					<div class="categoryTitle"><span> C A T E G O R Y ----- </span></div>
 					<ul>
-						<li><a href="#"> A L L</a> </li>
-						<li><a href="#"> C E R A M I C S </a></li>
-						<li><a href="#"> M E T A L </a></li>
-						<li><a href="#"> G L A S S </a></li>
-						<li><a href="#"> E M B R O I D E R Y </a></li>
-						<li><a href="#"> L E A T H E R </a></li>
-						<li><a href="#"> W O O D </a></li>
+						<li><a href="${pageContext.request.contextPath }/item/list"> A L L</a> </li>
+						<li><a href="${pageContext.request.contextPath }/item/list?type=ceramics"> C E R A M I C S </a></li>
+						<li><a href="${pageContext.request.contextPath }/item/list?type=metal"> M E T A L </a></li>
+						<li><a href="${pageContext.request.contextPath }/item/list?type=glass"> G L A S S </a></li>
+						<li><a href="${pageContext.request.contextPath }/item/list?type=embroidery"> E M B R O I D E R Y </a></li>
+						<li><a href="${pageContext.request.contextPath }/item/list?type=leather"> L E A T H E R </a></li>
+						<li><a href="${pageContext.request.contextPath }/item/list?type=wood"> W O O D </a></li>
 					</ul>
 				</div>
 			</div>
@@ -262,23 +221,39 @@
 				<c:forEach items="${itemList }" var="item">
 					<div class="studioBox">
 						<img alt="" src="">
-						<!-- 하트 결정하기 -->
-						<div class='imgChange' data-sN='${item.num }' data-iH='${item.isHeart }'>
-							<c:choose>
-								<c:when test="${!(item.isHeart) }">
-									<span><i class="far fa-heart fa-lg heart" data-fa='${item.num }'></i></span>
-								</c:when>
-								<c:otherwise>
-									<span><i class="fas fa-heart fa-lg heart" data-fa='${item.num }'></i></span>
-								</c:otherwise>
-							</c:choose>
-						</div>
-						<span><a href="detail?num=${item.num}"><img class='studioImg'></a></span>
+						<span><a href="detail?num=${item.i_pk}"><img class='studioImg'></a></span>
 						<div class="studioTitle">
-							<span><a href='detail?num=${item.num}'>${item.title }</a></span>
+							<span><a href='detail?num=${item.i_pk}'>${item.i_title }</a></span>
 						</div>
 					</div>
 				</c:forEach>
+			</div>
+			
+			<!-- 페이징 -->
+			<div id="pageContainer">
+				<a class='page' id="start" href="${pageContext.request.contextPath }/studio/list?page=1&type=${type}">
+					<i class="fas fa-caret-left"></i><i class="fas fa-caret-left"></i>
+				</a>&nbsp;&nbsp;
+				<a class='page' href="${pageContext.request.contextPath }/studio/list?page=${curPage <= 1 ? 1 : curPage -1 }&type=${type}">
+					<i class="fas fa-caret-left"></i>
+				</a>
+				<c:forEach begin="${startPage }" end="${endPage }" var="page">
+					<c:choose>
+						<c:when test="${page eq curPage}">
+							<span class='page' style='color:#ff1d43; cursor:default;'>${page }</span>
+						</c:when>
+						<c:otherwise>
+							<a class='page' href="${pageContext.request.contextPath }/studio/list?page=${page}&type=${type}"> ${page }</a>					
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+				&nbsp;&nbsp;
+				<a class='page' href="${pageContext.request.contextPath }/studio/list?page=${curPage >= total ? total : curPage + 1}&type=${type}">
+					<i class="fas fa-caret-right"></i>
+				</a>
+				<a class='page' id="end" href="${pageContext.request.contextPath }/studio/list?page=${total}&type=${type}">
+					<i class="fas fa-caret-right"></i><i class="fas fa-caret-right"></i>
+				</a>
 			</div>
 		</div>
 	</div>

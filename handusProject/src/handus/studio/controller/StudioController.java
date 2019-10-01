@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import handus.member.service.MemberService;
@@ -35,32 +36,27 @@ public class StudioController {
 	private HeartService heartService;
 	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String studioList(Model model, HttpSession session) {
+	public String studioList(Model model, HttpSession session, 
+			@RequestParam(defaultValue = "all") String type,
+			@RequestParam(defaultValue = "1")int page ) {
+		
 		// 필요 정보 : 이미지, 게시글 이름, 게시글 번호, 해당 게시글 구독 여부 
-		List<Studio> list = studioService.getAllStudio();
-		List<Map<String, Object>> studioList = new ArrayList<Map<String,Object>>();
-		for(int i = 0; i < list.size(); i++) {
-			Map<String, Object> studioInfo = new HashMap<String, Object>();
-			studioInfo.put("image", "");
-			studioInfo.put("title", list.get(i).getS_title());
-			studioInfo.put("num", list.get(i).getS_pk());
-			HeartStudio heart = new HeartStudio();
-			// 세션에서 로그인 회원 번호 받아오기 
-			heart.setHs_m_pk(1);
-			heart.setHs_s_pk(list.get(i).getS_pk());
-			studioInfo.put("isHeart", heartService.isHeartStudio(heart));
-			studioList.add(studioInfo);
-		}
+		List<Studio> studioList = studioService.getStudioList(page, type);
+		Map<String, Object> pageInfo = studioService.getPageInfo(page, type);
+		
 		model.addAttribute("studioList", studioList);
+		model.addAllAttributes(pageInfo);
 		return "studio/studioList";
 	}
 	
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
-	public String studioView(int num, Model model) {
+	public String studioView(int num, Model model, HttpSession session) {
 		// 조회수 증가 
 		// 조회수 증복 증가 방지 (쿠키) 
 		if(studioService.updateReadCount(num)) {
 			model.addAttribute("studio", studioService.getStudioByNum(num));
+			int m_pk = 222; //(int)session.getAttribute("m_pk");
+			model.addAttribute("m_pk", m_pk);
 		}
 		return "studio/studioView";
 	}

@@ -18,7 +18,6 @@
 		top:38%;
 		left:50%;
 		transform: translate(-50%,-50%);
-		border: 1.2px solid #191919;
 		margin-top: 70px;
 	}
 	#resultTitle{
@@ -28,7 +27,7 @@
 /* 		text-align: center; */
 		text-align: center;
 		font-size: 40px;
-		margin-top : 80px;
+		margin-top : 60px;
 		margin-bottom: 50px;
 	}
 	.resultBody{
@@ -36,6 +35,8 @@
 		margin: 50px auto;
 		font-size: 17px;
 		text-align: center;
+		border: 1px solid black;
+		padding: 20px;
 	}
 	.resultBody-section{
 		padding: 20px;
@@ -46,7 +47,7 @@
 	.resultSub{
 		font-size: 19px;
 		margin: 0 auto; 
-		margin-bottom: 15px; 
+		margin-bottom: 20px; 
 		border-bottom: 1px solid black;
 		padding-bottom: 3px;
 	}
@@ -59,6 +60,7 @@
 	.btnBox{
 		margin: 0 auto; 
 		margin-top: 50px;
+		margin-bottom: 20px;
 /* 		float: none; */
 		clear: both;
 	}
@@ -99,26 +101,26 @@
 		<!-- 결과알림창 -->
 		<div id="resultBox">
 		<div id="resultTitle"> O R D E R &nbsp;&nbsp; C O M P L E T E </div>
-				<div class='resultBody'>
-					<div class='resultBody-section result-left'>
-						<div class='resultSub'>주문 정보</div>
-						<div>주문자: ${orderDetail.M_NAME }님</div>
-						<div>주문번호: ${orderDetail.NUM }</div>
-						<div>주문일자: ${orderDetail.ORDER_DATE }</div>
-						<div>총 상품 갯수: ${orderDetail.COUNT }개</div>
-					</div>
-					<div class='resultBody-section result-right'>
-						<div class="resultSub">결제 정보</div>
-						<div>결제금액: ${orderDetail.PRICE }원</div>
-						<div>결제수단: ${orderDetail.PAY_METHOD }</div>
-						<div>결제일자: ${orderDetail.APPROVE_DATE }</div>
-					</div>
-					
-					<div class="btnBox">
-						<div class="reButton" ><button id="myCart">마이페이지</button></div>
-						<div class="reButton" ><button id="goShowping">쇼핑하기</button></div>
-					</div>
+			<div class='resultBody'>
+				<div class='resultBody-section result-left'>
+					<div class='resultSub'>주문 정보</div>
+					<div>주문자: ${orderDetail.M_NAME }님</div>
+					<div>주문번호: ${orderDetail.NUM }</div>
+					<div>주문일자: ${orderDetail.ORDER_DATE }</div>
+					<div>총 상품 갯수: ${orderDetail.COUNT }개</div>
 				</div>
+				<div class='resultBody-section result-right'>
+					<div class="resultSub">결제 정보</div>
+					<div>결제금액: ${orderDetail.PRICE }원</div>
+					<div>결제수단: ${orderDetail.PAY_METHOD }</div>
+					<div>결제일자: ${orderDetail.APPROVE_DATE }</div>
+				</div>
+				
+			<div class="btnBox">
+				<div class="reButton" ><button id="myCart">마이페이지</button></div>
+				<div class="reButton" ><button id="goShowping">쇼핑하기</button></div>
+			</div>
+			</div>
 		</div>
 	</div>
 </body>

@@ -286,11 +286,11 @@
   crossorigin="anonymous"></script>
  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=486df4f7ba9d0fcd564c18d5601724f6&libraries=services,clusterer"></script>
 <script type="text/javascript">
-	var memberNum = 3;				// 회원 번호 
+	var memberNum = ${m_pk};				// 회원 번호 
 	var itemNum = ${item.i_pk};		// 게시글 번호
-	var isHeart = false;			// 구독중인지 판별
+	
 	var isLock = false;				
-	var isReview = true;			// 리뷰 남기기 창 (초기값: false)
+	var isReview = false;			// 리뷰 남기기 창 (초기값: false)
 	var modBtn = 0; 				// 수정 버튼 기능 0=수정창보이기, 1=수정로직실행
 	$(function () {
 		// 해당 회원이 게시글에 대해 좋아요를 눌렀는지 확인 후 하트 클래스 추가/삭제
@@ -305,48 +305,8 @@
 		$("#messagePage").on("click", function () {
 			alert("메세지 창");
 		});
-		// 구독(하트) 버튼 누르기
-		$("#subButton").on("click", function () {
-			if(isHeart){
-				// 까만하트 -> 구독 취소 후 빈 하트
-				$.ajax({
-					url: "${pageContext.request.contextPath}/heart/offHeartI",
-					data: {"hi_m_pk":memberNum, "hi_i_pk":itemNum},
-					type: "post",
-					success: function (result) {
-						if(result){
-							drawFarHeart();
-							isHeart = false;
-							drawHeartCount();
-						}else{
-							alert("구독취소 불가");
-						}
-					},
-					error: function () {
-						alert("offHeart에러");
-					}
-				});
-			}else{
-				// 빈하트 -> 구독 후 까만 하트 
-				$.ajax({
-					url: "${pageContext.request.contextPath}/heart/onHeartI",
-					data: {"hi_m_pk":memberNum, "hi_i_pk":itemNum},
-					type: "post",
-					success: function (result) {
-						if(result){
-							drawFasHeart();
-							isHeart = true;
-							drawHeartCount();
-						}else{
-							alert("구독 불가");
-						}
-					},
-					error: function () {
-						alert("onHeart에러");
-					}
-				});
-			}
-		});
+		
+		
 		// 장바구니 클릭 > 장바구니 에 담기
 		$("#cartButton").on("click", function () {
 			alert("장바구니에 담기");
@@ -367,9 +327,27 @@
 				return;
 			}
 		});
+		
 		// 리뷰 남기기 버튼 
 		$(".reviewWrite").on("click", function () {
-			// ajax로 확인요청 후 맞으면 isReview(구매했으면) = true 로 변경 
+			// ajax로 확인요청 후 맞으면 isReview(구매했으면) = true 로 변경
+			$.ajax({
+				url: "${pageContext.request.contextPath}/purchase/isPurchaseI",
+				// 해당 물품 pk, 회원 pk 
+				data: {
+					i_pk: '${item.i_pk }'
+				},
+				dataType: "json",
+				success: function (result) {
+					alert(result);
+					if(result){
+						isReview = true;
+					}
+				},
+				error: function () {
+					alert("구매확인에러");	
+				}
+			});
 			if(isReview){
 				$("#reviewInput").css("display", "block");
 				isReview = false;

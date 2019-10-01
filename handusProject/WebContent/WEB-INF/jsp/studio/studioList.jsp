@@ -158,6 +158,30 @@
 		color: inherit;
 		text-decoration: none;
 	}
+	
+/* 페이징 처리  */
+	#pageContainer{
+		margin-top: 100px;
+		text-align: center;
+		padding-right: 125px;
+	}
+	.page{
+		font-size:20px;
+		color:#191919;
+		letter-spacing: 10px;
+		font-weight:600;
+		text-decoration: none;
+		cursor:pointer;
+	}
+	.page:hover{
+		color:#ff1d43;
+	}
+	#start{
+		letter-spacing: 0px;
+	}
+	#end{
+		letter-spacing:0px;
+	}
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
@@ -234,13 +258,13 @@
 				<div id="category">
 					<div class="categoryTitle"><span> C A T E G O R Y ----- </span></div>
 					<ul>
-						<li><a href="#"> A L L</a> </li>
-						<li><a href="#"> C E R A M I C S </a></li>
-						<li><a href="#"> M E T A L </a></li>
-						<li><a href="#"> G L A S S </a></li>
-						<li><a href="#"> E M B R O I D E R Y </a></li>
-						<li><a href="#"> L E A T H E R </a></li>
-						<li><a href="#"> W O O D </a></li>
+						<li><a href="${pageContext.request.contextPath }/studio/list"> A L L</a> </li>
+						<li><a href="${pageContext.request.contextPath }/studio/list?type=ceramics"> C E R A M I C S </a></li>
+						<li><a href="${pageContext.request.contextPath }/studio/list?type=metal"> M E T A L </a></li>
+						<li><a href="${pageContext.request.contextPath }/studio/list?type=glass"> G L A S S </a></li>
+						<li><a href="${pageContext.request.contextPath }/studio/list?type=embroidery"> E M B R O I D E R Y </a></li>
+						<li><a href="${pageContext.request.contextPath }/studio/list?type=leather"> L E A T H E R </a></li>
+						<li><a href="${pageContext.request.contextPath }/studio/list?type=wood"> W O O D </a></li>
 					</ul>
 				</div>
 			</div>
@@ -262,23 +286,39 @@
 				<c:forEach items="${studioList }" var="studio">
 					<div class="studioBox">
 						<img alt="" src="">
-						<!-- 하트 결정하기 -->
-						<div class='imgChange' data-sN='${studio.num }' data-iH='${studio.isHeart }'>
-							<c:choose>
-								<c:when test="${!(studio.isHeart) }">
-									<span><i class="far fa-heart fa-lg heart" data-fa='${studio.num }'></i></span>
-								</c:when>
-								<c:otherwise>
-									<span><i class="fas fa-heart fa-lg heart" data-fa='${studio.num }'></i></span>
-								</c:otherwise>
-							</c:choose>
-						</div>
-						<span><a href="detail?num=${studio.num}"><img class='studioImg'></a></span>
+						<span><a href="detail?num=${studio.s_pk}"><img class='studioImg'></a></span>
 						<div class="studioTitle">
-							<span><a href='detail?num=${studio.num}'>${studio.title }</a></span>
+							<span><a href='detail?num=${studio.s_pk}'>${studio.s_title }</a></span>
 						</div>
 					</div>
 				</c:forEach>
+			</div>
+			
+			<!-- 페이징 -->
+			<div id="pageContainer">
+				<a class='page' id="start" href="${pageContext.request.contextPath }/studio/list?page=1&type=${type}">
+					<i class="fas fa-caret-left"></i><i class="fas fa-caret-left"></i>
+				</a>&nbsp;&nbsp;
+				<a class='page' href="${pageContext.request.contextPath }/studio/list?page=${curPage <= 1 ? 1 : curPage -1 }&type=${type}">
+					<i class="fas fa-caret-left"></i>
+				</a>
+				<c:forEach begin="${startPage }" end="${endPage }" var="page">
+					<c:choose>
+						<c:when test="${page eq curPage}">
+							<span class='page' style='color:#ff1d43; cursor:default;'>${page }</span>
+						</c:when>
+						<c:otherwise>
+							<a class='page' href="${pageContext.request.contextPath }/studio/list?page=${page}&type=${type}"> ${page }</a>					
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+				&nbsp;&nbsp;
+				<a class='page' href="${pageContext.request.contextPath }/studio/list?page=${curPage >= total ? total : curPage + 1}&type=${type}">
+					<i class="fas fa-caret-right"></i>
+				</a>
+				<a class='page' id="end" href="${pageContext.request.contextPath }/studio/list?page=${total}&type=${type}">
+					<i class="fas fa-caret-right"></i><i class="fas fa-caret-right"></i>
+				</a>
 			</div>
 		</div>
 	</div>

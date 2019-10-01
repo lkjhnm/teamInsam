@@ -5,17 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import handus.heart.service.HeartService;
 import handus.item.service.ItemService;
 import handus.member.service.MemberService;
 import handus.model.HeartItem;
 import handus.model.Item;
+import handus.model.Studio;
 
 @Component
 @RequestMapping("/item")
@@ -28,30 +32,26 @@ public class ItemController {
 	private HeartService heartService;
 	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String itemList(Model model) {
+	public String itemList(Model model, HttpSession session, 
+			@RequestParam(defaultValue = "all") String type,
+			@RequestParam(defaultValue = "1")int page ) {
+		
 		// 필요 정보 : 해당 리스트에 뿌려질 아이템 리스트 
-		List<Item> list = itemService.getAllItem();
-		List<Map<String, Object>> itemList = new ArrayList<Map<String,Object>>();
-		for(int i = 0; i <list.size(); i++) {
-			Map<String, Object> itemInfo = new HashMap<String, Object>();
-			itemInfo.put("image", "");
-			itemInfo.put("title", list.get(i).getI_title());
-			itemInfo.put("num", list.get(i).getI_pk());
-			HeartItem heart = new HeartItem();
-			heart.setHi_i_pk(1);
-			heart.setHi_i_pk(list.get(i).getI_pk());
-			itemInfo.put("isHeart", heartService.isHeartItem(heart));
-			itemList.add(itemInfo);
-		}
+		List<Item> itemList = itemService.getStudioList(page, type);
+		Map<String, Object> pageInfo = itemService.getPageInfo(page, type);
+		
 		model.addAttribute("itemList", itemList);
+		model.addAllAttributes(pageInfo);
 		return "item/itemList";
 	}
 	
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
-	public String itemView(int num, Model model) {
-		System.out.println("컨트롤러: "+itemService.getItemByNum(num));
+	public String itemView(int num, Model model, HttpSession session) {
+		
 		if(itemService.updateReadCount(num)) {
 			model.addAttribute("item", itemService.getItemByNum(num));
+			int m_pk = 144; // (int)session.getAttribute("m_pk");
+			model.addAttribute("m_pk", m_pk);
 		}
 		return "item/itemView";
 	}

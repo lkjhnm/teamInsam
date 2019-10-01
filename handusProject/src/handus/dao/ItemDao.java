@@ -2,6 +2,8 @@ package handus.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import handus.model.Item;
 
 public interface ItemDao {
@@ -11,8 +13,8 @@ public interface ItemDao {
 	public int updateStock(int i_pk, int stock);
 	public int deleteItem(int i_pk);
 	public Item selectItemByNum(int i_pk);
-	// 검색 메소드 추가 
-	public List<Item> selectItemList(int startRow, int endRow);
+	// 카테고리, 페이징처리 목록 
+	public List<Item> selectItemList(@Param("page")int page, @Param("type") String type);
 	public List<Item> selectAllItems();
-	public int selectCount();	// 총 갯수 구하는 메소드 
+	public int selectCount(@Param("type") String type);	
 }
