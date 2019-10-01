@@ -57,6 +57,12 @@ public class UserController {
 		return userService.userSubscribeList(type, m_pk_user);
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="subscribeListAll",method=RequestMethod.POST)
+	public List<Map<String,Object>> showSubscribeListAll(int m_pk_user){
+		return userService.userSubscribeListAll(m_pk_user);
+	}
+	
 	@RequestMapping(value="/myPage", method=RequestMethod.GET)
 	public String myPage(int m_pk,Model model) {
 		

@@ -44,6 +44,11 @@ public class AuthorService {
 	@Autowired
 	private MemberDao memberDao;
 	
+	public boolean alarmToUser(int m_pk_writer) {
+		
+		return false;
+	}
+	
 	@Transactional
 	public boolean registerAuction(Map<String,Object> auction, HandusImgList imgList){
 		

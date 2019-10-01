@@ -60,6 +60,7 @@ public class AuthorController {
 	public String regsiterPages(@PathVariable(value="type") String type 
 			,@RequestParam Map<String,Object> itemInfo 
 			,HandusImgList imgList
+			,Model model
 			) {			// item 추가 요망		
 
 		switch(type) {
@@ -74,7 +75,11 @@ public class AuthorController {
 			break;
 		}
 		
-		return null; // 작가 마이페이지로 리다이렉트
+		authorService.alarmToUser(Integer.parseInt((String)itemInfo.get("m_pk_writer")));
+		
+		model.addAttribute("m_pk", itemInfo.get("m_pk_writer"));
+		
+		return "redirect:/author/privatePage"; // 작가 마이페이지로 리다이렉트
 	}
 	
 	
