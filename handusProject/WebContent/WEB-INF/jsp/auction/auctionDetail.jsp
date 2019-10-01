@@ -389,8 +389,6 @@
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-<script src="${pageContext.request.contextPath }/js/sockjs.js"></script>
-<script src="${pageContext.request.contextPath }/js/stomp.js"></script>
 <sec:authorize access="isAnonymous()" var="isAnony"></sec:authorize>
 <script>
 	var dps;
@@ -533,7 +531,6 @@
 			})
 		})
 		
-		connect();
 		imgSlide();
 		
 		$(".thumnail").first().css("border-color","#191919")
@@ -712,38 +709,6 @@
 	  
 	    return str +"원";
 	}
-	
-	
-//----------------- 	웹소켓
-	
-	var sock;
-	var stompClient;
-	
-	function connect(){
-		sock = new SockJS("${pageContext.request.contextPath}/connect");
-		stompClient = Stomp.over(sock);
-		stompClient.connect({},function(){
-			stompClient.subscribe("/subscribe/bidding/auction/${auction.a_pk}",function(webSocketData){
-				var data = JSON.parse(webSocketData.body);
-				
-				if(data[0].result){
-					$("#bidTime").text("< " + data[0].regDate + " >")
-					data.shift()
-					makeChart(data);
-					$(".currentPrice").text(comma(data[data.length - 1].y))
-					$(".currentPrice").css("color","#ff1d43")
-					setTimeout(() => {
-						$(".currentPrice").css("color","#544a4a")
-					},2000)
-				}
-			})
-			
-			stompClient.subscribe("/subscribe/alarm/${auction.a_pk}",function(webSocketData){	// 애를 개인 구독 페이지로 넘긴다.
-				var data = webSocketData.body;
-				alert(data);
-			})
-		})
-	}
 </script>
 </head>
 <body>
@@ -915,5 +880,30 @@
 			</div>
 		</div>
 	</div>
+	
+	<!-- 웹소켓 관련 스크립트 -->
+	<script type="text/javascript">
+		$(function(){
+			var connectAlarm = setInterval(() => {
+				if(sock.readyState == 1){
+					stompClient.subscribe("/subscribe/bidding/auction/${auction.a_pk}",function(webSocketData){
+						var data = JSON.parse(webSocketData.body);
+						
+						if(data[0].result){
+							$("#bidTime").text("< " + data[0].regDate + " >")
+							data.shift()
+							makeChart(data);
+							$(".currentPrice").text(comma(data[data.length - 1].y))
+							$(".currentPrice").css("color","#ff1d43")
+							setTimeout(() => {
+								$(".currentPrice").css("color","#544a4a")
+							},2000)
+						}
+					})
+					clearInterval(connectAlarm);
+				}			
+			}, 1000);
+		})
+	</script>
 </body>
 </html>

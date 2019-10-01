@@ -63,6 +63,12 @@
 				where m_pk = #{m_pk}
 	</select>
 	
+	<select id="selectSubsListAll" parameterType="int" resultType="map">
+		select ms_pk, ms_type, ms_fk
+			from member_subscribe
+				where m_pk_user = #{m_pk_user}
+	</select>
+	
 	<update id="updateUserInfo" parameterType="map">
 		update MEMBER set m_name =#{m_name} , m_phonenum = #{m_phonenum} , m_email = #{m_email} , m_address = #{m_address}
 			where m_pk = #{m_pk}

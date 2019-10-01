@@ -684,7 +684,7 @@
 		
 		<div id="main">
 			<div id="studioInfoBox">
-				<img id="studioImg" src="${pageContext.request.contextPath }/image/${itemImg[0].HI_PK}">
+				<img id="studioImg" src="${pageContext.request.contextPath }/image/${img.HI_PK}">
 				<div id="thumnailContainer">
 					<div id="thumbnail_train">
 					<c:forEach items="${itemImg }" var="img">
