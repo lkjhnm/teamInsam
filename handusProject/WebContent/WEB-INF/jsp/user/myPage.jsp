@@ -316,8 +316,8 @@
 						<div class="information">
 							<div><span class="info-title">SUBSCRIBE</span><span class="info-value count" id="alarmBtn"> [ ${M_SUB_COUNT } ]</span></div>
 							<div><span class="info-title">MESSAGE</span><span class="info-value count"> [ ? ] </span></div>
-						</div>
-						
+							<div><span class="info-title">ALARM</span><span class="info-value count"> [ ? ] </span></div>
+						</div>					
 					</div>
 				</fieldset>
 			</div>

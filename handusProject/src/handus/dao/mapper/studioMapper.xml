@@ -35,7 +35,7 @@
 	       S.S_COMMENT, 
 	       S.S_NAME,
 	       M.M_NAME, 
-	       C.C_CATEGORY, 
+	       C.C_CATEGORY,
 	       (select count(*) from REVIEW_STUDIO where S.S_PK = #{S_PK} ) as RS_COUNT, 
 	       (select count(*) from HEART_STUDIO where HS_S_PK = #{S_PK} )as HS_COUNT 
 	from STUDIO S 
@@ -79,7 +79,6 @@
 				rownum <= #{page}*6 )
 		where RN > (#{page} -1 )*6 
 	]]>
-		
 	</select>
 	
 	<select id="selectAllStudio" resultMap="studioMap">
@@ -117,8 +116,22 @@
 				</choose>
 			</trim>
 	</select>
-
-
+	<select id="selectStudioImage" parameterType="int" resultType="map">
+		select hi_pk
+			from HANDUS_IMAGE
+				where hi_fk = #{s_pk} and hi_type = 3
+					order by hi_main desc
+	</select>
+<!-- 	<update id="minusHeart"> -->
+<!-- 		update STUDIO -->
+<!-- 		set S_HEART = S_HEART + 1  -->
+<!-- 		where where S_PK = #{s_pk}  -->
+<!-- 	</update> -->
+<!-- 	<update id="plusHeart"> -->
+<!-- 		update STUDIO -->
+<!-- 		set S_HEART = S_HEART - 1  -->
+<!-- 		where where S_PK = #{s_pk}  -->
+<!-- 	</update> -->
 	<resultMap type="studio" id="studioMap">
 		<result column="S_PK" property="s_pk"/>
 		<result column="S_TITLE" property="s_title"/>

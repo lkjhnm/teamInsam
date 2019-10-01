@@ -52,8 +52,8 @@ public class ItemController {
 			model.addAttribute("item", itemService.getItemByNum(num));
 			int m_pk = 144; // (int)session.getAttribute("m_pk");
 			model.addAttribute("m_pk", m_pk);
+			model.addAttribute("itemImg",itemService.getItemImage(num));
 		}
 		return "item/itemView";
 	}
-	
 }

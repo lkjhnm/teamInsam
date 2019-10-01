@@ -57,6 +57,7 @@ public class StudioController {
 			model.addAttribute("studio", studioService.getStudioByNum(num));
 			int m_pk = 222; //(int)session.getAttribute("m_pk");
 			model.addAttribute("m_pk", m_pk);
+			model.addAttribute("studioImg",studioService.getStudioImage(num));
 		}
 		return "studio/studioView";
 	}

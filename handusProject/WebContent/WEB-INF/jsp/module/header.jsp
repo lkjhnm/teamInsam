@@ -3,6 +3,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
+<script src="${pageContext.request.contextPath }/js/sockjs.js"></script>
+<script src="${pageContext.request.contextPath }/js/stomp.js"></script>
 <script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
 <script type="text/javascript">
 	$(function(){
@@ -70,7 +72,43 @@
 		$("#myPageAuthor").on("click",function(){
 			location.href="${pageContext.request.contextPath}/author/privatePage?m_pk=${m_pk}";
 		})
+		
+		//웹소켓 정의 (알람)
+		connect()
 	})
+	
+	
+	function connect(){
+		var m_pk = "${m_pk}";
+		
+		sock = new SockJS("${pageContext.request.contextPath}/connect");
+		stompClient = Stomp.over(sock);
+		stompClient.connect({},function(){
+		
+			if(!m_pk || m_pk==""){
+				return;
+			}
+		
+			$.ajax({
+				url:"${pageContext.request.contextPath}/user/subscribeListAll",
+				data: {"m_pk_user":m_pk},
+				dataType: "json",
+				type:"post",
+				success:function(data){					// 1: author   2:studio    3:auction
+					
+					$.each(data,function(i,list){
+						console.log(list);
+						stompClient.subscribe("/subscribe/alarm/"+list.MS_TYPE+"/"+list.MS_FK, function(webSocketData){
+							var data = webSocketData.body;
+							alert(data);
+						})
+					})
+				}
+			})
+		})
+	
+	}
+	
 </script>
 <sec:authorize access="isAuthenticated()" >
 	<script>

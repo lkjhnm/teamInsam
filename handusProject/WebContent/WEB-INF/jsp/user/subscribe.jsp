@@ -96,7 +96,7 @@
 		
 		showMySubsList("${m_pk}",1,function(data){
 			$.each(data,function(i,item){
-				var parent = $("<div>").append($("<img src='${pageContext.request.contextPath}/author/authorImg?ap_pk="+item.AP_PK+"'>"))
+				var parent = $("<div>").append($("<img src='${pageContext.request.contextPath}/image/"+item.HI_PK+"'>"))
 				var div = $("<div class='author_info'>")
 				
 				var name = $("<div><span class='info-title'>NAME</span><span>"+item.AT_NAME+"</span></div>")
@@ -136,8 +136,8 @@
 		$("#authorBtn").on("click",function(){			
 			showMySubsList("${m_pk}",1,function(data){
 				$.each(data,function(i,item){
-					console.log(data);
-					var parent = $("<div>").append($("<img src='${pageContext.request.contextPath}/author/authorImg?ap_pk="+item.AP_PK+"'>"))
+
+					var parent = $("<div>").append($("<img src='${pageContext.request.contextPath}/image/"+item.HI_PK+"'>"))
 					var div = $("<div class='author_info'>")
 					
 					var name = $("<div><span class='info-title'>NAME</span><span>"+item.AT_NAME+"</span></div>")
@@ -159,16 +159,36 @@
 			})
 		})
 
-// 		$("#studioBtn").on("click",function(){			스튜디오 구독 목록
-// 			showMySubsList("${m_pk}",2,function(data){
+		$("#studioBtn").on("click",function(){
+			showMySubsList("${m_pk}",2,function(data){
 				
-// 			})
-// 		})	
+				$.each(data,function(i,item){
+					var parent = $("<div>").append("<img src='${pageContext.request.contextPath}/image/"+item.HI_PK+"'>")
+					var div = $("<div class='author_info'>")
+					
+					var title = $("<div><span class='info-title'>TITLE</span><span>"+item.S_TITLE+"</span></div>");
+					var category = $("<div><span class='info-title'>CATEGORY</span><span>"+item.C_CATEGORY+"</span></div>")
+					var classStart = $("<div><span class='info-title'>CLASS START</span><span>"+
+										dateFormat(new Date(item.S_CLASSSTART))+"</span></div>")
+					var location = $("<div><span class='info-title'>LOCATION</span><span>"+item.S_LOCATION+"</span></div>")
+					
+					var div2 = $("<div class='author_btn_container'>")
+					var btn1 = $("<div class='author_btn' onclick='cancelSubscribe(2,${m_pk},"+item.S_PK+",this)'>구독 취소</div>")
+					var btn2 = $("<div class='author_btn' onclick='movetoPage(2,"+item.S_PK+")'>상세 보기</div>")
+					
+					div.append(title).append(category).append(classStart).append(location)
+					div2.append(btn1).append(btn2)
+					parent.append(div).append(div2)
+					$(".list").append(parent)
+				})
+			})
+		})	
 		
 		$("#auctionBtn").on("click",function(){
 			showMySubsList("${m_pk}", 3, function(data){
+				
 				$.each (data,function(i, item){
-					var parent = $("<div>").append($("<img src='${pageContext.request.contextPath }/auction/auctionImg?ai_pk="+item.AI_PK+"'>"))
+					var parent = $("<div>").append($("<img src='${pageContext.request.contextPath }/image/"+item.HI_PK+"'>"))
 					var div = $("<div class='author_info'>")
 
 					var name = $("<div><span class='info-title'>TITLE</span><span>"+item.A_TITLE+"</span></div>")
@@ -179,13 +199,12 @@
 					
 					var div2 = $("<div class='author_btn_container'>")
 					var btn1 = $("<div class='author_btn' onclick='cancelSubscribe(3,${m_pk},"+item.A_PK+",this)'>구독 취소</div>")
-					var btn2 = $("<div class='author_btn' onclick='movetoPage(3,"+item.A_PK+")'>경매 보기</div>")
+					var btn2 = $("<div class='author_btn' onclick='movetoPage(3,"+item.A_PK+")'>상세 보기</div>")
 					
 					div.append(name).append(category).append(endtime).append(bidding)
 					div2.append(btn1).append(btn2)
 					parent.append(div).append(div2)
-					$(".list").append(parent)
-					
+					$(".list").append(parent)				
 				})
 			});
 		})

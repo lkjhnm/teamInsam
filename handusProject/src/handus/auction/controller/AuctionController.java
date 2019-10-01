@@ -47,16 +47,6 @@ public class AuctionController {
 		return "auction/auctionDetail";
 	}
 	
-	@RequestMapping(value="/auctionImg", method=RequestMethod.GET)
-	public ResponseEntity<byte[]> auctionImage(int ai_pk) throws IOException{
-		HttpHeaders headers = new HttpHeaders();
-		byte[] image = auctionService.getAuctionImages(ai_pk);
-		headers.setCacheControl(CacheControl.noCache().getHeaderValue());
-		
-		ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(image,headers,HttpStatus.OK);
-		return responseEntity;
-	}
-	
 	@RequestMapping(value="/graph", method=RequestMethod.GET)
 	@ResponseBody
 	public String auctionGraph(AuctionGraph ag) {
@@ -80,13 +70,13 @@ public class AuctionController {
 	public String auctionAlarm(int a_pk,boolean a_end, boolean a_start) {
 		
 		if(a_start) {
-			simpMessagingTemplate.convertAndSend("/subscribe/alarm/auction/"+a_pk, "{\"type\":1}");		// 경매 시작 알림
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/3/"+a_pk, "{\"type\":1}");		// 경매 시작 알림
 			return null;
 		}
 		if(a_end) {
-			simpMessagingTemplate.convertAndSend("/subscribe/alarm/auction/"+a_pk, "{\"type\":2}");		// 경매 종료 알림
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/3/"+a_pk, "{\"type\":2}");		// 경매 종료 알림
 		}else {	
-			simpMessagingTemplate.convertAndSend("/subscribe/alarm/auction/"+a_pk, "{\"type\":3}");		// 경매 종료 1시간 전 알림
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/3/"+a_pk, "{\"type\":3}");		// 경매 종료 1시간 전 알림
 		}
 		return null;
 	}

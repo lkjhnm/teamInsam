@@ -1,6 +1,7 @@
 package handus.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -17,4 +18,5 @@ public interface ItemDao {
 	public List<Item> selectItemList(@Param("page")int page, @Param("type") String type);
 	public List<Item> selectAllItems();
 	public int selectCount(@Param("type") String type);	
+	public List<Map<String,Object>>	selectItemImage(int i_pk);
 }

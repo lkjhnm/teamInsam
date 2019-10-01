@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -279,6 +282,43 @@
 		background-color: #ffff;
 	}
 }
+	#thumnailContainer{
+		width: 92px;
+		height: 425px;
+		position:absolute;
+		left: 805px;
+		top: 110px;
+		z-index: 103;
+		overflow:hidden;
+	}
+	.thumnail{
+		width: 90px;
+		height: 90px;
+		background-color: #fff;
+		margin-top: 10px;
+		border: 1px solid #e3e2de;
+	}
+	#thumbnail_train{
+		position:relative;
+		top:0;
+		left:0;
+	}
+	#up-arrow{
+		font-size:25px;
+		position: relative;
+		top:90px;
+		left:840px;
+		z-index:103;
+		color:#ff1d43;
+	}
+	#down-arrow{
+		font-size:25px;
+		position: relative;
+		top:510px;
+		left:840px;
+		z-index:103;
+		color:#ff1d43;
+	}
 </style>
 <script
   src="https://code.jquery.com/jquery-3.4.1.js"
@@ -415,6 +455,15 @@
 				}
 			});
 		});
+		
+		imgSlide();
+		
+		$(".thumnail").first().css("border-color","#191919")
+		$(".thumnail").on("click",function(){
+			$(this).css("border-color","#191919")
+			$(this).siblings().css("border-color","#e3e2de" )
+			$("#studioImg").attr("src", $(this).attr("src"))
+		})
 	});  // ----------------------------------------------------------------------------- onload 끝 
 	function heartCheck() {
 		$.ajax({
@@ -613,7 +662,20 @@
 		
 		<div id="main">
 			<div id="studioInfoBox">
-				<img id="studioImg">
+				<img id="studioImg" src="${pageContext.request.contextPath }/image/${img.HI_PK}">
+				<div id="thumnailContainer">
+					<div id="thumbnail_train">
+					<c:forEach items="${itemImg }" var="img">
+						<c:if test="${fn:length(itemImg) > 1 }">
+							<img class='thumnail' src="${pageContext.request.contextPath }/image/${img.HI_PK}">			
+						</c:if>
+					</c:forEach>
+					</div>
+				</div>
+				<c:if test="${fn:length(studioImg) > 4 }">
+					<div id="up-arrow"><span><i class="fas fa-chevron-up"></i></span></div>
+					<div id="down-arrow"><span><i class="fas fa-chevron-down"></i></span></div>
+				</c:if>
 				<div id="studioInfo">
 					<div class='infoPosition infoBold'><span>${item.i_title }</span></div>
 					<div class='infoPosition'><span>${item.m_name }</span></div>				
@@ -667,7 +729,7 @@
 				<div id="specBox">
 					<div class='infoBold'><span>ITEM SPEC</span></div>
 					<div class='specPosition'><div class='specType'><span> c o u n t r y </span></div><span> ${item.i_country } </span></div>
-					<div class='specPosition'><div class='specType'><span> m e t a r i a l </span></div><span> ${item.i_meterial } </span></div>
+					<div class='specPosition'><div class='specType'><span> m e t a r i a l </span></div><span> ${item.i_material } </span></div>
 					<div class='specPosition'><div class='specType'><span> c o l o r </span></div><span> ${item.i_color } </span></div>
 					<div class='specPosition'><div class='specType'><span> s i z e </span></div><span> ${item.i_size } </span></div>
 				</div>

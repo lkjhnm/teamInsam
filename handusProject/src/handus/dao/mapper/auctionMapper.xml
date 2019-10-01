@@ -13,9 +13,9 @@
 			   					from AUCTION_GRAPH ag
 			   						where ag.a_pk = aa.a_pk)
                    								where rn = 1 )  as a_currentprice ,
-            ( select  ai_pk
-                    from auction_image ai
-                        where ai.a_pk = aa.a_pk and ai.ai_main = 1
+            ( select  hi_pk
+                    from HANDUS_IMAGE hi
+                        where hi.hi_fk = aa.a_pk and hi.hi_main = 1
               )  as ai_pk
                         
 			from
@@ -80,8 +80,8 @@
 	
 	<select id="selectAuction" parameterType="int" resultType="auction">
 		select a_pk, m_pk_writer, a_title, a_startprice, a_endprice, c_category, a_regDate, a_starttime, a_end, a_start,
-			   a_endTime, a_readcount, a_comment, r_pk, a_subscribe , a_currentprice, to_char(ag_regdate,'yyyy/MM/dd HH:mm') as ag_regdate
-			   
+			   a_endTime, a_readcount, a_comment, r_pk, a_subscribe , a_currentprice, to_char(ag_regdate,'yyyy/MM/dd HH:mm') as ag_regdate,
+			   a_country, a_size, a_color,a_details
 		from AUCTION a JOIN CATEGORYNAME c ON (a.c_pk = c.c_pk),
 			   <!-- 최근 입찰 가격 가져오는 서브쿼리 -->
 				( select ag_bidding as a_currentprice, ag_regdate
@@ -92,18 +92,6 @@
                    								where rn = 1 )   
 			
 		where a_pk = #{a_pk}
-	</select>
-	
-	<select id="selectAuctionImagePath" parameterType="int" resultType="handusImage">
-		select  AI_SAVEPATH as img_savePath ,AI_FILENAME as img_fileName 
-			from AUCTION_IMAGE 
-				where ai_pk = #{ai_pk}
-	</select>
-	
-	<select id="selectImgListByA_pk" parameterType="int" resultType="handusImage">
-		select AI_PK as img_pk , AI_FILENAME as img_fileName , AI_SAVEPATH as img_savePath
-			FROM AUCTION_IMAGE
-			where A_PK = #{a_pk} order by ai_main desc
 	</select>
 	
 	<select id="selectAuctionGraphData" parameterType="int" resultType="int">

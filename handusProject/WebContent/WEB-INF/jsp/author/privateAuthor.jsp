@@ -103,6 +103,10 @@
 		var isMod = false;
 		var origin_src;
 		
+		$("#regBtn").on("click",function(){
+			location.href='register';
+		})
+		
 		$("#modBtn").on("click",function(){
 			$("#menu").css("display","none")
 			$("#modify").css("display","block")
@@ -146,7 +150,7 @@
 				url:"${pageContext.request.contextPath}/author/updateAuthor",
 				type:"post",
 				data: {"at_name":name, "at_email":email, "at_studio":studio, "at_address":address,
-						"ap_filename":filename, "m_pk":"${m_pk}"},
+						"hi_filename":filename, "m_pk":"${m_pk}"},
 				dataType:"json",
 				success: function(data){
 					$("#menu").css("display","block");
@@ -154,8 +158,8 @@
 					$(".info_value").css("display","block");
 					$(".modify-input").css("display","none");
 					$("#profile_info_container").children().css("border","none").css("border-bottom","1px solid #191919").removeClass("hover");
-					$("#profile_image").css("border","none").removeClass("hover")
-					$("#profile_image").attr("src","${pageContext.request.contextPath}/author/authorImg?ap_pk="+ data.ap_pk);
+					$("#profile_image").css("border","none").removeClass("hover");
+					$("#profile_image").attr("src","${pageContext.request.contextPath}/image/"+data.hi_pk);
 					isMod = false;
 					origin_src = $("#profile_image").attr("src");
 				}
@@ -211,8 +215,7 @@
 				url:"${pageContext.request.contextPath}/author/imgUpload",
 				type:"post",
 				data:data,
-				dataType:"json",
-				
+				dataType:"json",	
 				processData:false,
 				contentType:false,
 				success:function(data){
@@ -232,8 +235,8 @@
 			<div id="profile_container">
 				<fieldset>
 					<legend>PROFILE</legend>
-					<div><img id="profile_image" src="${pageContext.request.contextPath }/author/authorImg?ap_pk=${AP_PK}"
-								data-name="${AP_FILENAME }">
+					<div><img id="profile_image" src="${pageContext.request.contextPath }/image/${HI_PK}"
+								data-name="${HI_FILENAME }">
 					</div>
 					<div id="profile_info_container">
 						<div><span class="info_title">NAME</span><span class='info_value'> ${AT_NAME }</span>
