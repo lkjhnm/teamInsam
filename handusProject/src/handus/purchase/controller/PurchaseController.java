@@ -53,21 +53,23 @@ public class PurchaseController {
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
 	public String orderPage(HttpSession session, Model model, 
 			@RequestParam(required = false) Map<String, Object> products) {
-		// 현재 로그인 된 멤버의 번호 받아오기 > SNS로 로그인한 사람은 id가 없음 > pk로 받아와야함
-		int memberNum = 144;
-		// 파라미터로 주문할 상품의 타입과 pk 받아오기
-		// Map<String, Object> products = pNum, pType, pCount 
+		
+		int memberNum = 144;  // (int)session.getAttribute("m_pk");
+		
+		// ▼▼ 장바구니에서 요청파라미터로 받아옴 
+		// Map<String, Object> products = pNum, pType, pCount, pPrice 
 		System.out.println(products);
 		boolean isIt = false;
 		
-		// pNum, pType 을 가진 Map List를 session에 저장 
+		// List로 받아오는 products는 그대로 저장 
 		List<Map<String, Object>> pList = new ArrayList<Map<String,Object>>();
 		Map<String, Object> p = new HashMap<String, Object>();
-//		p.put("pNum", products.get("pNum"));
-//		p.put("pType", products.get("pType"));
 		p.put("pNum", 1);
 		p.put("pType", 1);
-		pList.add(p);
+		p.put("pCount", 2);
+		p.put("pPrice", 11000);
+		pList.add(p);	// pList.add(products);
+		session.setAttribute("pList", pList );
 		
 		
 		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
@@ -133,8 +135,6 @@ public class PurchaseController {
 		model.addAttribute("totalPay", totalPay);
 		model.addAttribute("totalCount", productList.size());
 		
-		session.setAttribute("pList", pList );
-		
 		return "purchase/order";
 	}
 	@RequestMapping(value = "/order1", method = RequestMethod.POST)
@@ -165,22 +165,25 @@ public class PurchaseController {
 	@ResponseBody
 	public String approval(Model model, String pg_token, String partner_order_id, 
 			HttpSession session) {
+		String mNum = "144"; //(String)session.getAttribute("m_pk");
+		
 		// 결제승인 api 요청 
 		Map<String, String> vars = new HashMap<String, String>();
 		vars.put("pg_token", pg_token);
 		vars.put("tid", kakaoService.getTid());
 		vars.put("partner_order_id", partner_order_id);
-//		String mNum = (String)session.getAttribute("m_pk");
-		vars.put("partner_user_id", "144");
+		vars.put("partner_user_id", mNum);
 
-		Map<String, Object> info = kakaoService.getKakaoPayOn(vars);
+		Map<String, Object> totalInfo = kakaoService.getKakaoPayOn(vars);
 		List<Map<String, Object>> pList = (List<Map<String, Object>>)session.getAttribute("pList");
-
+		
+		// 리스트 길이만큼 반복하면서 주문 테이블 삽입 
+		// 경매, 공방 = 1번 		아이템 = 여러번 
 		for(int i = 0; i < pList.size(); i ++) {
-			purchaseService.writeTotalOrder(info, pList.get(i));
+			purchaseService.writeOrders(totalInfo, pList.get(i), Integer.parseInt(mNum));
 		}
 		
-		String orderNum = (String)info.get("partner_order_id");
+		String orderNum = (String)totalInfo.get("partner_order_id");
 		
 		return "<script> window.close(); opener.location.href='orderSuccess?orderNum="+orderNum+"';</script>";
 	}
@@ -204,6 +207,23 @@ public class PurchaseController {
 			model.addAttribute("msg", "결제에 실패했습니다.");
 		}
 		return "purchase/fail";
+	}
+	
+	
+	// 리뷰 남기기 확인 ----------------------------------------------------------
+	
+	@RequestMapping("isPurchaseS")
+	@ResponseBody
+	public boolean isPurchaseS(int s_pk, HttpSession session) {
+		int m_pk = 144; 	// (int)session.getAttribute("m_pk");
+		return purchaseService.getStudioPurchase(s_pk, m_pk);
+	}
+	
+	@RequestMapping("isPurchaseI")
+	@ResponseBody
+	public boolean isPurchaseI(int i_pk, HttpSession session) {
+		int m_pk = 144; 	// (int)session.getAttribute("m_pk");
+		return purchaseService.getItemPurchase(i_pk, m_pk);
 	}
 
 }

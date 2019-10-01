@@ -17,4 +17,12 @@ public interface PurchaseDao {
 	// 주문번호로 Order 불러오기
 	public List<TotalOrder> getListByOrderNum(int orderNum);
 	
+	public int getStudioPurchase(int sNum, int mNum);
+	public int getItemPurchase(int iNum, int mNum);
+	
+	// 각각의 주문 입력하기 
+	public int insertItemOrder(Map<String, Object> product);
+	public int insertAuctionOrder(Map<String, Object> product);
+	public int insertStudioOrder(Map<String, Object> product);
+	
 }

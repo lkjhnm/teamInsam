@@ -38,6 +38,33 @@
 		where TO_NUM = #{to_num}
 	</select>
 	
+	<select id="getStudioPurchase" resultType="int">
+		select count(*) 
+		from STUDIO_ORDER 
+		where S_PK = #{param1} and M_PK_USER = #{param2}
+	</select>
+	<select id="getItemPurchase" resultType="int">
+		select count(*) 
+		from ITEM_ORDER 
+		where I_PK = #{param1} and M_PK_USER = #{param2}
+	</select>
+	
+	
+	<insert id="insertItemOrder" parameterType="map">
+		insert into ITEM_ORDER 
+			(IO_PK, I_PK, M_PK_USER, IO_AMOUNT, IO_PRICE)
+			values (IO_SEQ.NEXTVAL, #{I_PK}, #{M_PK_USER}, #{IO_AMOUNT}, #{IO_PRICE})
+	</insert>
+	<insert id="insertAuctionOrder" parameterType="map">
+		
+	</insert>
+	<insert id="insertStudioOrder" parameterType="map">
+		insert into STUDIO_ORDER 
+			(SO_PK, S_PK, M_PK_USER, SO_AMOUNT, SO_PRICE)
+			values (TO_SEQ.NEXTVAL, #{S_PK}, #{M_PK_USER}, #{SO_AMOUNT}, #{SO_PRICE})
+	</insert>
+	
+	
 	<resultMap type="totalOrder" id="toMap">
 		<result column="TO_PK" property="to_pk"/>
 		<result column="TO_NUM" property="to_num"/>

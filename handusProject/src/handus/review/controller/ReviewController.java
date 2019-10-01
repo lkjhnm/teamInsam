@@ -23,7 +23,8 @@ public class ReviewController {
 	@ResponseBody
 	@RequestMapping("/drawReviewS")
 	public List<ReviewStudio> drawReview(int sNum){
-		return reviewService.getAllRS();
+		System.out.println(sNum);
+		return reviewService.getAllRS(sNum);
 	}
 	@ResponseBody
 	@RequestMapping("/writeReviewS")
@@ -66,7 +67,7 @@ public class ReviewController {
 	@ResponseBody
 	@RequestMapping("/drawReviewI")
 	public List<ReviewItem> drawReviewI(int iNum){
-		return reviewService.getAllRI();
+		return reviewService.getAllRI(iNum);
 	}
 	@ResponseBody
 	@RequestMapping("/writeReviewI")

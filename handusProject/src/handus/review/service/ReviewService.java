@@ -32,8 +32,8 @@ public class ReviewService {
 		}
 		return false;
 	}
-	public List<ReviewStudio> getAllRS() {
-		return reviewDao.selectAllRS();
+	public List<ReviewStudio> getAllRS(int sNum) {
+		return reviewDao.selectAllRS(sNum);
 	}
 	public int selectCountRs(int sNum) {
 		return reviewDao.selectRScount(sNum);
@@ -57,8 +57,8 @@ public class ReviewService {
 		}
 		return false;
 	}
-	public List<ReviewItem> getAllRI() {
-		return reviewDao.selectAllRI();
+	public List<ReviewItem> getAllRI(int iNum) {
+		return reviewDao.selectAllRI(iNum);
 	}
 	public int selectCountRI(int iNum) {
 		return reviewDao.selectRIcount(iNum);
