@@ -3,6 +3,8 @@ package handus.user.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import handus.alarm.service.AlarmService;
 import handus.member.service.MemberService;
 import handus.user.service.UserService;
 
@@ -23,6 +26,8 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private AlarmService alarmService;
 	
 	@RequestMapping(value="/subscribe/{type}",method = RequestMethod.POST)
 	@ResponseBody
@@ -83,5 +88,13 @@ public class UserController {
 		boolean result = userService.updateUserInfo(userInfo);
 		
 		return result;
+	}
+	
+	@RequestMapping(value="/alarm", method=RequestMethod.GET)
+	public String alarmPage(Model model,HttpSession session, @RequestParam(defaultValue = "1") int readType) {
+		int m_pk = (int)session.getAttribute("m_pk");
+		
+		model.addAttribute("alarmList",alarmService.getAlarmMessage(m_pk, readType));
+		return "user/alarm";
 	}
 }

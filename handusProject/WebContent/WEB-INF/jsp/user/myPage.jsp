@@ -185,8 +185,13 @@
 			$(this).siblings().not("#tab_title").css({"opacity":"0.5","color":"#191919"})
 		})
 		
-		$("#alarmBtn").on("click",function(){
+		$("#subscribeBtn").on("click",function(){
 			location.href="subscribe"
+		})
+		
+		$("#alarmBtn").on("click",function(){
+			window.open("${pageContext.request.contextPath}/user/alarm","pop"
+						,"height=600,width=400,top=200,left=700,menubar=no,status=no,titlebar=no,resizable=no");
 		})
 		
 		$("#regAuthor").on("click",function(){
@@ -314,9 +319,9 @@
 					<legend class="myPage-title">ALARM</legend>
 					<div class="myPage_container">
 						<div class="information">
-							<div><span class="info-title">SUBSCRIBE</span><span class="info-value count" id="alarmBtn"> [ ${M_SUB_COUNT } ]</span></div>
+							<div><span class="info-title">SUBSCRIBE</span><span class="info-value count" id="subscribeBtn"> [ ${M_SUB_COUNT } ]</span></div>
 							<div><span class="info-title">MESSAGE</span><span class="info-value count"> [ ? ] </span></div>
-							<div><span class="info-title">ALARM</span><span class="info-value count"> [ ? ] </span></div>
+							<div><span class="info-title">ALARM</span><span class="info-value count" id="alarmBtn"> [ ? ] </span></div>
 						</div>					
 					</div>
 				</fieldset>

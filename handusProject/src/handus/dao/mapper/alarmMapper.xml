@@ -4,8 +4,20 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="handus.dao.AlarmDao">
 
-	<select id="getAlarmList" resultType="map">
-		
+	<select id="selectAlarmList" resultType="map">
+		select
+			UA_MESSAGE ,HI_PK
+			from USER_ALARM ua join HANDUS_IMAGE hi on (ua.ua_fk = hi.hi_fk and ua.ua_type = hi.hi_type and hi.hi_main = 1)
+				where m_pk = #{m_pk}
+					<choose>
+						<when test="readType == 1">
+							AND UA_READ = 0
+						</when>
+						<when test="readType == 2">
+							AND UA_READ = 1
+						</when>
+					</choose>
+					
 	</select>
 
 </mapper>
