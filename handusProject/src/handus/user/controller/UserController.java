@@ -90,11 +90,23 @@ public class UserController {
 		return result;
 	}
 	
-	@RequestMapping(value="/alarm", method=RequestMethod.GET)
-	public String alarmPage(Model model,HttpSession session, @RequestParam(defaultValue = "1") int readType) {
+	@RequestMapping(value="/alarmPage", method=RequestMethod.GET)
+	public String alarmPage() {
+		return "user/alarm";
+	}
+	
+	@RequestMapping(value="/alarmList", method=RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String,Object>> alarmList(Model model,HttpSession session, @RequestParam(defaultValue = "1") int readType) {
 		int m_pk = (int)session.getAttribute("m_pk");
 		
-		model.addAttribute("alarmList",alarmService.getAlarmMessage(m_pk, readType));
-		return "user/alarm";
+		return alarmService.getAlarmMessage(m_pk, readType);
+	}
+	
+	@RequestMapping(value="alarmRead/{ua_pk}",method=RequestMethod.PUT)
+	@ResponseBody
+	public boolean alarmRead(@PathVariable("ua_pk") int ua_pk){
+		
+		return alarmService.readAlarm(ua_pk);
 	}
 }

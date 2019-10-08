@@ -32,8 +32,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
+import handus.alarm.service.AlarmService;
 import handus.author.service.AuthorService;
+import handus.dao.AlarmDao;
 import handus.model.Auction;
 import handus.model.HandusImage;
 import handus.model.HandusImgList;
@@ -50,6 +53,8 @@ public class AuthorController {
 	private AuthorService authorService;
 	@Autowired
 	private SimpMessagingTemplate simpMessageTemplate;
+	@Autowired
+	private AlarmService alarmService;
 	
 	@RequestMapping(value="/register",method=RequestMethod.GET)
 	public String regsiterPage() {		
@@ -62,20 +67,27 @@ public class AuthorController {
 			,HandusImgList imgList
 			,Model model
 			) {			// item 추가 요망		
-
+		
+		int pk = 0;
+		int m_pk_writer = Integer.parseInt((String)itemInfo.get("m_pk_writer"));
+		
 		switch(type) {
 		case "auction":
 			authorService.registerAuction(itemInfo, imgList);
+			pk = (int)itemInfo.get("a_pk");
 			break;
 		case "item":
 			authorService.registerItem(itemInfo,imgList);
+			pk = (int)itemInfo.get("i_pk");
 			break;
 		case "studio":
 			authorService.registerStudio(itemInfo, imgList);
+
+			pk = (int)itemInfo.get("s_pk");
 			break;
 		}
 		
-		authorService.alarmToUser(Integer.parseInt((String)itemInfo.get("m_pk_writer")));
+		alarmService.alarmToUser(m_pk_writer, pk, type, simpMessageTemplate);
 		
 		model.addAttribute("m_pk", itemInfo.get("m_pk_writer"));
 		

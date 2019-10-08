@@ -65,7 +65,7 @@
 	<select id="selectItemImage" parameterType="int" resultType="map">
 		select hi_pk
 			from HANDUS_IMAGE
-				where hi_fk = #{i_pk} 
+				where hi_fk = #{i_pk}  and hi_type = 1
 					order by hi_main desc
 	</select>
 	

@@ -190,7 +190,7 @@
 		})
 		
 		$("#alarmBtn").on("click",function(){
-			window.open("${pageContext.request.contextPath}/user/alarm","pop"
+			window.open("${pageContext.request.contextPath}/user/alarmPage","pop"
 						,"height=600,width=400,top=200,left=700,menubar=no,status=no,titlebar=no,resizable=no");
 		})
 		
@@ -321,7 +321,9 @@
 						<div class="information">
 							<div><span class="info-title">SUBSCRIBE</span><span class="info-value count" id="subscribeBtn"> [ ${M_SUB_COUNT } ]</span></div>
 							<div><span class="info-title">MESSAGE</span><span class="info-value count"> [ ? ] </span></div>
-							<div><span class="info-title">ALARM</span><span class="info-value count" id="alarmBtn"> [ ? ] </span></div>
+							<div><span class="info-title">ALARM</span>
+								<span class="info-value count" id="alarmBtn"> [ ${UA_UNREAD_COUNT } / ${UA_ALL_COUNT } ] </span>
+							</div>
 						</div>					
 					</div>
 				</fieldset>

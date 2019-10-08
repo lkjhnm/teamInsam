@@ -58,7 +58,9 @@
 	
 	<select id="selectUserByPk" parameterType="int" resultType="map">
 		select M_NAME, M_EMAIL, M_PHONENUM ,M_ADDRESS ,
-				(select count(*) from MEMBER_SUBSCRIBE where m_pk_user = #{m_pk}) as M_SUB_COUNT
+				(select count(*) from MEMBER_SUBSCRIBE where m_pk_user = #{m_pk}) as M_SUB_COUNT,
+				(select count(*) from USER_ALARM ua where ua.m_pk = #{m_pk} AND ua_read = 0) as UA_UNREAD_COUNT,
+				(select count(*) from USER_ALARM ua where ua.m_pk = #{m_pk} ) as UA_ALL_COUNT 
 			from MEMBER m 
 				where m_pk = #{m_pk}
 	</select>
