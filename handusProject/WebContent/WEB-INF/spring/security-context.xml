@@ -21,6 +21,7 @@
 			login-page="/member/loginForm" 
 			login-processing-url="/member/login" 
 			default-target-url="/auction/list"
+			always-use-default-target="false"
 			authentication-failure-url="/member/loginForm"
 			authentication-success-handler-ref="customLoginSuccessHandler"
 		/>
@@ -29,8 +30,7 @@
 		</security:session-management>
 		
 		<security:logout logout-url="/logout" invalidate-session="true" logout-success-url="/member/loginForm"/>
-		<security:csrf disabled="true"/>
-		
+		<security:csrf disabled="true"/>	
 	</security:http>
 	
 	<security:authentication-manager id="authenticationManager">

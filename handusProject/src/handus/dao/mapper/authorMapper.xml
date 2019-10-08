@@ -4,7 +4,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="handus.dao.AuthorDao">
 
-	<insert id="insertAuction" parameterType="auction">
+	<insert id="insertAuction" parameterType="HashMap">
 		<selectKey order="BEFORE" keyProperty="a_pk" resultType="int">
 			select AUCTION_SEQ.NEXTVAL from dual
 		</selectKey>
@@ -24,38 +24,42 @@
 		select * from dual
 	</insert>
 	
-	<insert id="insertStudio" parameterType="studio">
+	<insert id="insertStudio" parameterType="HashMap">
 		<selectKey order="BEFORE" keyProperty="s_pk" resultType="int">
 			select STUDIO_SEQ.NEXTVAL from dual
 		</selectKey>
 		insert into STUDIO
-			()
-		values ()
+			(S_PK, S_TITLE, M_PK_WRITER,S_PRICE, S_LOCATION, S_CATEGORY, S_MAXIMUM, S_CLASSSTART, S_CLASSEND, S_CONTENT,S_COMMENT, S_NAME)
+		values (#{s_pk}, #{s_title}, #{m_pk_writer}, #{s_price}, #{s_location}, #{c_pk}, #{s_maximum},#{s_classstart},#{s_classend}, #{s_content},
+				#{s_comment}, #{s_name})
 	</insert>
 	
-	<insert id="insertItem" parameterType="item">
+	<insert id="insertItem" parameterType="HashMap">
 		<selectKey order="BEFORE" keyProperty="i_pk" resultType="int">
 			select ITEM_SEQ.NEXTVAL from dual
 		</selectKey>
 		insert into ITEM
-			()
-		values ()
+			(I_PK,I_TITLE, M_PK_WRITER, I_PRICE, I_CATEGORY,I_STOCK,I_COMMENT,I_CONTENT, I_COUNTRY, I_MATERIAL, I_COLOR,I_SIZE)
+		values (#{i_pk}, #{i_title}, #{m_pk_writer}, #{i_price}, #{c_pk}, #{i_stock}, #{i_comment}, #{i_details}, #{i_country}, #{i_material},
+				#{i_color}, #{i_size})
 	</insert>
 	
 	<insert id="insertImage">
 		insert all
 		<foreach collection="imgList.imgList" item="item">
-		into 
-			<if test="type == 'auction'">
-				AUCTION_IMAGE
-			</if>
+		into HANDUS_IMAGE
+			(HI_PK, HI_FILENAME, HI_SAVEPATH, HI_FK, HI_MAIN, HI_TYPE) 
+			values (get_pk_img, #{item.img_fileName}, #{item.img_savePath}, #{item.img_fk}, #{item.img_main},
 			<if test="type == 'item'">
-				ITEM_IMAGE
+				1
+			</if>
+			<if test="type == 'auction'">
+				2
 			</if>
 			<if test="type == 'studio'">
-				STUDIO_IMAGE
-			</if>
-			values (get_pk_img, #{item.img_fileName}, #{item.img_savePath}, #{item.img_fk}, #{item.img_main})
+				3
+			</if>			
+			)
 		</foreach>
 		select * from dual
 	</insert>
@@ -65,13 +69,13 @@
 			from 
 				<choose>
 					<when test="type == 1">
-						ITEM
+						ITEM i join HANDUS_IMAGE hi on (i.i_pk = hi.hi_fk and hi.hi_main = 1 and hi.hi_type = 1)
 					</when>
 					<when test="type == 2">
-						AUCTION a join AUCTION_IMAGE ai on (a.a_pk = ai.a_pk and ai.ai_main = 1) 
+						AUCTION a join HANDUS_IMAGE hi on (a.a_pk = hi.hi_fk and hi.hi_main = 1 and hi.hi_type = 2) 
 					</when>
 					<when test="type == 3">
-						STUDIO
+						STUDIO s join HANDUS_IMAGE hi on (s.s_pk = hi.hi_fk and hi.hi_main = 1 and hi.hi_type = 3)
 					</when>
 				</choose>
 			where m_pk_writer = #{m_pk_writer}
@@ -84,12 +88,12 @@
 	</insert>
 	
 	<insert id="insertAuthorImage" parameterType="HashMap">
-		<selectKey order="BEFORE" keyProperty="ap_pk"  resultType="int">
+		<selectKey order="BEFORE" keyProperty="hi_pk"  resultType="int">
 			select IMAGE_SEQ.NEXTVAL from dual		
 		</selectKey>
-		insert into AUTHOR_PROFILE
-			(AP_PK, AP_FILENAME, AP_SAVEPATH, M_PK, AP_MAIN)
-		values (#{ap_pk}, #{ap_filename}, #{ap_savepath}, #{m_pk}, 1)			
+		insert into HANDUS_IMAGE
+			(HI_PK, HI_FILENAME, HI_SAVEPATH, HI_FK, HI_MAIN, HI_TYPE)
+		values (#{hi_pk}, #{hi_filename}, #{hi_savepath}, #{m_pk}, 1,4)			
 	</insert>
 	
 	<update id="updateAuthor" parameterType="map">
@@ -99,20 +103,14 @@
 	</update>
 	
 	<update id="updateAuthorImage" parameterType="map">
-		update AUTHOR_PROFILE
-			SET AP_MAIN = 0 
-				WHERE M_PK = #{m_pk} and ap_pk != #{ap_pk}
+		update HANDUS_IMAGE
+			SET HI_MAIN = 0 
+				WHERE HI_FK = #{m_pk} and HI_PK != #{hi_pk}
 	</update>
 	
-	<select id="selectAuthorImage" parameterType="int" resultType="map">
-	 	select ap_filename, ap_savepath
-	 		from author_profile
-	 			where ap_pk = #{ap_pk}
-	</select>
-	
 	<select id="selectAuthorInfo" parameterType="int" resultType="map">
-		select at_pk, at_name, at_email, at_studio, at_address , ap_pk, ap_filename, ap_savepath , at.m_pk as m_pk_writer
-			from author at left outer join author_profile ap on (at.m_pk = ap.m_pk and ap.ap_main = 1)
+		select at_pk, at_name, at_email, at_studio, at_address , hi_pk, hi_filename, hi_savepath , hi.hi_fk as m_pk_writer
+			from author at left outer join HANDUS_IMAGE hi on (at.m_pk = hi.hi_fk and hi.hi_main = 1 and hi.hi_type = 4)
 				where at.m_pk = #{m_pk}
 	</select>
 </mapper>

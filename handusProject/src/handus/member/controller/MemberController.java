@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.http.NameValuePair;
@@ -29,6 +30,9 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -138,7 +142,7 @@ public class MemberController {
 	
 	@RequestMapping(value="/oauth")
 	@ResponseBody
-	public String kakaoLogin(String code,HttpSession session,HttpServletRequest req){
+	public String kakaoLogin(String code,HttpSession session,HttpServletResponse res,HttpServletRequest req){
 		
 		UsernamePasswordAuthenticationToken token = memberService.kakaoLogin(code);
 		if(token.getCredentials() != null) {
@@ -159,7 +163,16 @@ public class MemberController {
 			sessionRegistry.registerNewSession(session.getId(), authentication.getPrincipal());
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			
-			return "<script> window.close(); opener.location.href='/handusProject/auction/list';</script>";
+			RequestCache requestCache = new HttpSessionRequestCache();
+			SavedRequest savedRequest = requestCache.getRequest(req, res);
+			String targetUrl;
+			
+			if(savedRequest != null) {
+				targetUrl = savedRequest.getRedirectUrl();				
+			}else {
+				targetUrl = "/handusProject/auction/list";
+			}
+			return "<script> window.close(); opener.location.href='"+targetUrl+"';</script>";
 		}else {
 			session.setAttribute("apiId", token.getName());
 			session.setAttribute("apiType", 1);

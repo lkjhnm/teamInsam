@@ -51,13 +51,16 @@ public class StudioService {
 	}
 	public Studio getStudioByNum(int stuNum) {
 		return studioDao.selectStudioByNum(stuNum);
-	}
-	
+	}	
 	// 리스트 
 	public List<Studio> getStudioList(int page, String type) {
 		List<Studio> studioList = studioDao.selectStudioList(page, type);		
 		return studioList;
 	} 
+  
+  public List<Map<String,Object>> getStudioImage(int s_pk){
+		return studioDao.selectStudioImage(s_pk);
+	}
 	
 	// 페이지 정보 
 	public Map<String, Object> getPageInfo(int page, String type){

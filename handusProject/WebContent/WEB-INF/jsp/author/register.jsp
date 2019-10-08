@@ -260,6 +260,31 @@
  		cursor:pointer;
  		color:#ff1d43;
  	}
+	#addressBox input:not(#zipCode){
+		width: 100%;
+		height: 50px;
+		border-top:0;
+		border-left:0;
+		border-right:0;
+		border-bottom: 1px solid #191919;
+		background-color: inherit;
+	}
+	#zipCode{
+		width: 400px;
+		height: 50px;
+		border-top:0;
+		border-left:0;
+		border-right:0;
+		border-bottom: 1px solid #191919;
+		background-color: inherit;
+	}
+	#addressBox input:focus{
+		outline: none;
+	}
+	
+	#addressBox input:not(#address-detail){
+		cursor :pointer;	
+	}
 </style>
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" /> 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
@@ -338,11 +363,15 @@
 		
 		$("#category_container").children().first().css("color","#ff1d43").siblings().css("opacity","0.2")
 		
-		$(".datePick").datepicker()
+		$(".datePick").datepicker({
+			showOtherMonths:true,
+			changeMonth: true,
+		})
 		
 		$("#submitBtn").on("click",function(){
 			
 			var subtype = changeName(type)
+			var formContainer = $("#common_form")
 			
 			if(subtype == null){
 				subtype = 'item'
@@ -357,21 +386,22 @@
 				var input = $("<input type='hidden' name='imgList["+i+"].img_fileName' value='"+value+"'>")
 				if(mainImg == value){
 					var isMain = $('<input type="hidden" name="imgList['+i+'].img_main" value="true" >')
-					$("#common_form").append(isMain)
+					formContainer.append(isMain)
 				}
-				$("#common_form").append(input)
+				formContainer.append(input)
 			})
 			
 			
 			// 추가 데이터
 			var extraData = $("#"+subtype+"_form").find("input")
-			
 			$(extraData).each(function(){
+				console.log($(this))
 				var name = $(this).attr("name")
+				console.log(name)
 				var value = $(this).attr("value")
 				
 				var input = $("<input type='hidden'>").attr("name",name).attr("value",value)
-				$("#common_form").append(input)
+				formContainer.append(input)
 			})
 			
 			var textname = $("#"+subtype+"_form").find("textarea").attr("name")
@@ -379,10 +409,10 @@
 			var textarea = $("<textarea hidden='true'>").attr("name",textname).text(textvalue)
 			var m_pk = $("<input type='hidden'>").attr("name","m_pk_writer").attr("value","${m_pk}")
 			
-			$("#common_form").attr("action","${pageContext.request.contextPath}/author/register/"+subtype)
+			formContainer.attr("action","${pageContext.request.contextPath}/author/register/"+subtype)
 			
-			$("#common_form").append(textarea).append(m_pk);
-			$("#common_form").submit()			
+			formContainer.append(textarea).append(m_pk);
+			formContainer.submit()			
 		})
 		
 		
@@ -457,7 +487,13 @@
 			$("#upload_container").children().remove()
 		})
 		
+		$("#zipCode").on("click",function(){
+			daumPostcode()
+		})
 		
+		$("#address").on("click",function(){
+			daumPostcode()
+		})
 		
 	})// 온로드 끝
 	
@@ -550,9 +586,7 @@
 		<div id="main">
 			<div class="form_container">
 				<form id="common_form" method='POST' enctype="multipart/form-data">
-					<div id="common_info">
-					
-					
+					<div id="common_info">		
 						<div>
 							<img id="mainImg">
 							<div id="thumbnail_container">
@@ -561,9 +595,7 @@
 							</div>
 							<div id="left-arrow"><span><i class="fas fa-chevron-left"></i></span></div>
 							<div id="right-arrow"><span><i class="fas fa-chevron-right"></i></span></div>
-						</div>
-						
-						
+						</div>					
 						<div>
 							<div class="common_input">
 								<label >TITLE
@@ -680,39 +712,41 @@
 					</form>
 				</div>
 				
-				<!-- 스튜디오 경계선 위임 to UP -->
+				<!-- 스튜디오 경계선 위임  -->
 				<div class="details_info" id="studio">
 					<form id="studio_form">
 						<div class='details_input'>
-							<label> COUNTRY
-								<input type="text" >
-							</label>
-						</div>
-						<div class='details_input'>
-							<label> MATERIAL 
-								<input type="text" >
-							</label>
-						</div>
-						<div class='details_input'>
-							<label> COLOR 
-								<input type="text" >
-							</label>
-						</div>
-						<div class='details_input'>
-							<label> SIZE 
-								<input type="text" >
+							<label> MAXIMUM
+								<input type="number" name="s_maximum">
 							</label>
 						</div>
 						<div class='details_input'>
 							<label> START DATE
-								<input type="text" class="datePick" readonly="readonly">
+								<input type="text" class="datePick" readonly="readonly" name="s_classstart">
 							</label>
 						</div>
 						<div class='details_input'>
-							<label> ITEM DETAIL 
-								<textarea class="detail_text"></textarea>
+							<label> END DATE
+								<input type="text" class="datePick" readonly="readonly" name="s_classend">
 							</label>
 						</div>
+						<div class='details_input'>
+							<label> STUDIO NAME
+								<input type="text" name="s_name">
+							</label>
+						</div>
+						<div class='details_input'>
+							<label> STUDIO DETAIL 
+								<textarea class="detail_text" name="s_content"></textarea>
+							</label>
+						</div>
+						<div class='details_input' id='addressBox'>
+							<div>STUDIO ADDRESS</div>					
+							<div>
+								<input id="address" name="s_location" type="text" readonly="readonly" placeholder="Address">		
+								<input id="address-detail" name="s_loaction_detail" type="text"  placeholder="Detail" autocomplete="off">
+							</div>
+						</div>	
 					</form>
 				</div>
 			</div>
@@ -723,7 +757,7 @@
 				<span><i class="far fa-images"></i></span>
 				<span><i class="fas fa-times"></i></span>
 				<form id="fileForm" enctype="multipart/form-data">
-				<input type="file" name="uploadFiles" id="img_file" hidden="true" multiple="multiple"/>
+					<input type="file" name="uploadFiles" id="img_file" hidden="true" multiple="multiple"/>
 				</form>
 			</div>
 			<div id="upload_container">
@@ -732,4 +766,71 @@
 		</div>
 	</div>
 </body>
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+<script>
+	var themeObj = {
+	   bgColor: "#FBF9F6", //바탕 배경색
+	   searchBgColor: "#FBF9F6", //검색창 배경색
+	   contentBgColor: "#FBF9F6", //본문 배경색(검색결과,결과없음,첫화면,검색서제스트)
+	   pageBgColor: "#FBF9F6", //페이지 배경색
+	   textColor: "#191919", //기본 글자색
+	   queryTextColor: "#191919", //검색창 글자색
+	   //postcodeTextColor: "", //우편번호 글자색
+	   //emphTextColor: "", //강조 글자색
+	   outlineColor: "#191919" //테두리
+	};
+	var width = 500;
+	var height = 600;
+	
+    function daumPostcode() {
+        new daum.Postcode({
+        	theme: themeObj,
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if(data.userSelectedType === 'R'){
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+//                     document.getElementById("sample6_extraAddress").value = extraAddr;
+                
+                } else {
+//                     document.getElementById("sample6_extraAddress").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById("address").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("address-detail").focus();
+            }
+        }).open({
+        	left: (window.screen.width / 2) - (width / 2),
+            top: (window.screen.height / 2) - (height / 2)
+        });
+    }
+</script>
 </html>

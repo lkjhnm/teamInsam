@@ -18,5 +18,5 @@ public interface StudioDao {
 	public List<Studio> selectStudioList(@Param("page")int page, @Param("type") String type);
 	public List<Studio> selectAllStudio();
 	public int selectCount(@Param("type") String type);
-	
+	public List<Map<String,Object>> selectStudioImage(int s_pk);
 }

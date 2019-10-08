@@ -376,6 +376,7 @@
 		top:90px;
 		left:840px;
 		z-index:103;
+		color:#ff1d43;
 	}
 	#down-arrow{
 		font-size:25px;
@@ -383,12 +384,11 @@
 		top:510px;
 		left:840px;
 		z-index:103;
+		color:#ff1d43;
 	}
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-<script src="${pageContext.request.contextPath }/js/sockjs.js"></script>
-<script src="${pageContext.request.contextPath }/js/stomp.js"></script>
 <sec:authorize access="isAnonymous()" var="isAnony"></sec:authorize>
 <script>
 	var dps;
@@ -531,7 +531,6 @@
 			})
 		})
 		
-		connect();
 		imgSlide();
 		
 		$(".thumnail").first().css("border-color","#191919")
@@ -710,38 +709,6 @@
 	  
 	    return str +"원";
 	}
-	
-	
-//----------------- 	웹소켓
-	
-	var sock;
-	var stompClient;
-	
-	function connect(){
-		sock = new SockJS("${pageContext.request.contextPath}/connect");
-		stompClient = Stomp.over(sock);
-		stompClient.connect({},function(){
-			stompClient.subscribe("/subscribe/bidding/auction/${auction.a_pk}",function(webSocketData){
-				var data = JSON.parse(webSocketData.body);
-				
-				if(data[0].result){
-					$("#bidTime").text("< " + data[0].regDate + " >")
-					data.shift()
-					makeChart(data);
-					$(".currentPrice").text(comma(data[data.length - 1].y))
-					$(".currentPrice").css("color","#ff1d43")
-					setTimeout(() => {
-						$(".currentPrice").css("color","#544a4a")
-					},2000)
-				}
-			})
-			
-			stompClient.subscribe("/subscribe/alarm/${auction.a_pk}",function(webSocketData){	// 애를 개인 구독 페이지로 넘긴다.
-				var data = webSocketData.body;
-				alert(data);
-			})
-		})
-	}
 </script>
 </head>
 <body>
@@ -750,12 +717,12 @@
 
 		<div id="main">
 			<div id="auctionInfoBox">
-				<img id="auctionImg" src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${auctionImg[0].img_pk}">
+				<img id="auctionImg" src="${pageContext.request.contextPath }/image/${auctionImg[0].HI_PK}">
 				<div id="thumnailContainer">
 					<div id="thumbnail_train">
 					<c:forEach items="${auctionImg }" var="img">
 						<c:if test="${fn:length(auctionImg) > 1 }">
-							<img class='thumnail' src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${img.img_pk}">			
+							<img class='thumnail' src="${pageContext.request.contextPath }/image/${img.HI_PK}">			
 						</c:if>
 					</c:forEach>
 					</div>
@@ -861,19 +828,16 @@
 			<div id="detailContainer">
 				<div id="detailBox">
 					<div class='infoBold'><span>ITEM DETAIL</span></div>
-					<ul>
-						<li>코디의 주역이 될 한발.</li>
-						<li>· 치마도 바지도 일치하는 레이디 아름다움 펌프스.</li>
-						<li>· 다리를 단단히 잡아주는 인상적인 3 개의 스트랩</li>
-						<li>· 6.5cm 힐
-					</ul>
+					<p>
+						${auction.a_details }
+					</p>
 				</div>
 				<div id="specBox">
 					<div class='infoBold'><span>ITEM SPEC</span></div>
-					<div class='specPosition'><div class='specType'><span> c o u n t r y </span></div><span> MADE IN KOREA</span></div>
-					<div class='specPosition'><div class='specType'><span> m a t e r i a l </span></div><span> GLASS </span></div>
-					<div class='specPosition'><div class='specType'><span> c o l o r </span></div><span> ASH BROWN</span></div>
-					<div class='specPosition'><div class='specType'><span> s i z e </span></div><span> 200 * 150 * 150 (cm)</span></div>
+					<div class='specPosition'><div class='specType'><span> c o u n t r y </span></div><span> ${auction.a_country }</span></div>
+					<div class='specPosition'><div class='specType'><span> m a t e r i a l </span></div><span> ${auction.c_category } </span></div>
+					<div class='specPosition'><div class='specType'><span> c o l o r </span></div><span> ${auction.a_color }</span></div>
+					<div class='specPosition'><div class='specType'><span> s i z e </span></div><span> ${auction.a_size }</span></div>
 				</div>
 			</div>
 		</div>
@@ -916,5 +880,30 @@
 			</div>
 		</div>
 	</div>
+	
+	<!-- 웹소켓 관련 스크립트 -->
+	<script type="text/javascript">
+		$(function(){
+			var connectAlarm = setInterval(() => {
+				if(sock.readyState == 1){
+					stompClient.subscribe("/subscribe/bidding/auction/${auction.a_pk}",function(webSocketData){
+						var data = JSON.parse(webSocketData.body);
+						
+						if(data[0].result){
+							$("#bidTime").text("< " + data[0].regDate + " >")
+							data.shift()
+							makeChart(data);
+							$(".currentPrice").text(comma(data[data.length - 1].y))
+							$(".currentPrice").css("color","#ff1d43")
+							setTimeout(() => {
+								$(".currentPrice").css("color","#544a4a")
+							},2000)
+						}
+					})
+					clearInterval(connectAlarm);
+				}			
+			}, 1000);
+		})
+	</script>
 </body>
 </html>

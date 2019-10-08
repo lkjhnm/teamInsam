@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Handus</title>
+<title>Handus Studio</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/handus.css" />
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
 <style>
@@ -189,65 +189,14 @@
 	var studioNum; 		// 게시글 번호, 리스트에서 얻어옴 
 	var isHeart;
 	$(function () {
-		// 좋아요 하기, 좋아요 취소하기 
-		$(".imgChange").on("click", function () {
-			isHeart = $(this).attr("data-iH");
-			studioNum = $(this).attr("data-sN");
-			if(isHeart === "true"){
-				offHeart(studioNum);
-				$(this).attr("data-iH", false);
-			}else{
-				// 왜 값이 false 인데 여기로 안 떨어지지 
-				onHeart(studioNum);
-				$(this).attr("data-iH", true);
-			}
-		});
+		
+		$("#category ul li a").on("mouseover",function(){
+			$(this).css('color','#ff1d43')
+		})
+		$("#category ul li a").on("mouseleave",function(){
+			$(this).css('color','#544a4a')
+		})
 	});
-	function onHeart(studioNum) {
-		$.ajax({
-			url: "${pageContext.request.contextPath}/heart/onHeartS",
-			data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
-			type: "post",
-			success: function (result) {
-				if(result){
-					drawFas(studioNum);
-				}else{
-					alert("구독 불가");
-				}
-			},
-			error: function () {
-				alert("onHeart에러");
-			}
-		});
-	};
-	function offHeart(studioNum) {
-		$.ajax({
-			url: "${pageContext.request.contextPath}/heart/offHeartS",
-			data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
-			type: "post",
-			success: function (result) {
-				if(result){
-					drawFar(studioNum);
-				}else{
-					alert("구독취소 불가");
-				}
-			},
-			error: function () {
-				alert("offHeart에러");
-			}
-		});
-	};
-	function drawFar(studioNum) {
-		// 해당 게시글 번호 속성을 가지고 있는 div의 i 속성 변경 
-		var faHeart = $("i[data-fa='"+studioNum+"']");
-		faHeart.removeClass("fas");
-		faHeart.addClass("far");
-	};
-	function drawFas(studioNum) {
-		var faHeart = $("i[data-fa='"+studioNum+"']");
-		faHeart.removeClass("far");
-		faHeart.addClass("fas");
-	};
 </script>
 </head>
 <body>

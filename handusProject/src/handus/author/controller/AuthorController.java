@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -42,6 +43,7 @@ import handus.model.Studio;
 
 @RequestMapping("/author")
 @Controller
+@PreAuthorize("hasRole('ROLE_AUTHOR')")
 public class AuthorController {
 	
 	@Autowired
@@ -56,25 +58,28 @@ public class AuthorController {
 	}
 	@RequestMapping(value="/register/{type}",method=RequestMethod.POST)
 	public String regsiterPages(@PathVariable(value="type") String type 
-			,Auction auction
-			,Item item
-			,Studio studio
+			,@RequestParam Map<String,Object> itemInfo 
 			,HandusImgList imgList
+			,Model model
 			) {			// item 추가 요망		
 
 		switch(type) {
 		case "auction":
-			authorService.registerAuction(auction, imgList);
+			authorService.registerAuction(itemInfo, imgList);
 			break;
 		case "item":
-			authorService.registerItem(item,imgList);
+			authorService.registerItem(itemInfo,imgList);
 			break;
 		case "studio":
-			authorService.registerStudio(studio, imgList);
+			authorService.registerStudio(itemInfo, imgList);
 			break;
 		}
 		
-		return null; // 작가 마이페이지로 리다이렉트
+		authorService.alarmToUser(Integer.parseInt((String)itemInfo.get("m_pk_writer")));
+		
+		model.addAttribute("m_pk", itemInfo.get("m_pk_writer"));
+		
+		return "redirect:/author/privatePage"; // 작가 마이페이지로 리다이렉트
 	}
 	
 	
@@ -123,11 +128,6 @@ public class AuthorController {
 		return false;
 	}
 	
-	@RequestMapping(value="/modify",method=RequestMethod.POST)
-	public boolean modifyAuthorInfo() {
-		return false;
-	}
-	
 	@RequestMapping(value="/signUp", method=RequestMethod.GET)
 	public String authorSignUp() {
 		return "author/signUp";
@@ -142,6 +142,7 @@ public class AuthorController {
 	}
 	
 	@RequestMapping(value="/publicPage", method=RequestMethod.GET)
+	@PreAuthorize("hasRole('ROLE_MEMBER')")
 	public String showPublicAuthorPage(int m_pk, Model model) {
 		
 		model.addAllAttributes(authorService.getAuthorInfo(m_pk));
@@ -159,6 +160,7 @@ public class AuthorController {
 	
 	@RequestMapping(value="/getList/{type}", method=RequestMethod.POST)				// type :  1 - item, 2 - auction, 3 - studio
 	@ResponseBody
+	@PreAuthorize("hasRole('ROLE_MEMBER')")
 	public List<Map<String,Object>> getAuthorRegistList(@PathVariable(value="type") int type ,int m_pk){
 		
 		return authorService.getRegisterList(type, m_pk);
@@ -171,16 +173,6 @@ public class AuthorController {
 		String result = authorService.updateAuthor(formData);
 		
 		return result;
-	}
-	
-	@RequestMapping(value="/authorImg", method=RequestMethod.GET)
-	public ResponseEntity<byte[]> auctionImage(int ap_pk) throws IOException{
-		HttpHeaders headers = new HttpHeaders();
-		byte[] image = authorService.getAuthorImages(ap_pk);
-		headers.setCacheControl(CacheControl.noCache().getHeaderValue());
-		
-		ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(image,headers,HttpStatus.OK);
-		return responseEntity;
 	}
 }
 
