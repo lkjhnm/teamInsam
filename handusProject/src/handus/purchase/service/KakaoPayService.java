@@ -30,7 +30,7 @@ public class KakaoPayService {
 	private final String ADMIN_KEY = "ee642654ab353ff9d5db78eb644b07a8";
 	private final String CID = "TC0ONETIME";
 	private String tid; 
-
+	
 	// 결제준비
 	public String getKakaoPayAccess(Map<String, String> vars) {
 		System.out.println("결제--준비--요청:"+vars);
@@ -45,7 +45,8 @@ public class KakaoPayService {
 		System.out.println("approv: "+approval);
 		String cancle = "http://localhost:8081/handusProject/purchase/fail?isCancle=true";
 		String fail = "http://localhost:8081/handusProject/purchase/fail?isCancle=false";
-
+		
+		// url에 요청 파라미터 담기 
 		URI uri = UriComponentsBuilder.fromUriString(url)
 				.queryParam("cid", CID)		// 가맹점 코드 (테스트코드) 
 				.queryParam("partner_order_id", vars.get("order_num"))		// 가맹점 주문번호 (총주문 주문번호)

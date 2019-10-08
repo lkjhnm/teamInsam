@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Handus Studio:Detail</title>
+<title>Handus</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/handus.css" />
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&display=swap" rel="stylesheet">
@@ -416,8 +416,9 @@
 			alert("작가페이지 이동");
 		});
 		$("#messagePage").on("click", function () {
-			alert("메세지 창");
+			window.open('${pageContext.request.contextPath}/message/list','Handus Message','width=440, height=600');
 		});
+		
 		// 구독(하트) 버튼 누르기
 		$("#subButton").on("click", function () {
 			if(isHeart){
@@ -460,6 +461,7 @@
 				});
 			}
 		});
+		
 		// 예약 클릭시 모달 띄우기 
 		$("#reservButton").on("click", function () {
 			$("#modalContainer").css("top","18%");
@@ -469,6 +471,7 @@
 		$(".close").on("click", function () {
 			$("#modalContainer").hide("slow");
 		});
+		
 		// 리뷰 남기기 버튼 
 		$(".reviewWrite").on("click", function () {
 			// ajax로 확인요청 후 맞으면 isReview(구매했으면) = true 로 변경 
