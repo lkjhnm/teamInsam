@@ -266,7 +266,9 @@ function insertInfo() {
 	$("#email").val('${member.m_email}');
 	$("#phone").val('${member.m_phonenum}');
 	// 주소지 채우기 
-	
+	$("#zipCode").val('${member.m_zipcode}');
+	$("#address").val('${member.m_address}');
+	$("#address-detail").val('${member.m_address_detail}');
 };
 function drawTotalPay() {
 	totalPrice = ${totalPay };
@@ -308,10 +310,10 @@ function counts() {
 						
 						<div id='addressBoxS'>
 							<div>ADDRESS</div>
-								<input id="zipCodeS" type="text" readonly="readonly" >					
+								<input id="zipCodeS" type="text" readonly="readonly" value="${member.m_zipcode }">					
 							<div>
 								<input id="addressS" type="text" readonly="readonly" value="${member.m_address }">		
-								<input id="address-detailS" type="text" readonly="readonly" autocomplete="off">
+								<input id="address-detailS" type="text" readonly="readonly" autocomplete="off" value="${member.m_address_detail }">
 							</div>
 						</div>
 						

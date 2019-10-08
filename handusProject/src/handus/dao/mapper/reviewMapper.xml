@@ -15,8 +15,9 @@
 		delete from REVIEW_STUDIO
 		where RS_PK = #{rs_pk} 
 	</delete>
-	<select id="selectAllRS" resultMap="rsMap">
+	<select id="selectAllRS" parameterType="int" resultMap="rsMap">
 		select * from REVIEW_STUDIO 
+		where RS_S_PK = #{s_pk}
 		order by RS_PK 
 	</select>
 	<select id="selectRScount" parameterType="int" resultType="int">
@@ -47,8 +48,9 @@
 		delete from REVIEW_ITEM
 		where RI_PK = #{ri_pk} 
 	</delete>
-	<select id="selectAllRI" resultMap="riMap">
+	<select id="selectAllRI" parameterType="int" resultMap="riMap">
 		select * from REVIEW_ITEM 
+		where RI_I_PK = #{i_pk}
 		order by RI_PK 
 	</select>
 	<select id="selectRIcount" parameterType="int" resultType="int">

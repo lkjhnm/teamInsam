@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import handus.dao.PurchaseDao;
 import handus.model.TotalOrder;
@@ -17,7 +18,7 @@ public class PurchaseService {
 	@Autowired
 	private PurchaseDao purchaseDao;
 	
-	public boolean writeTotalOrder(Map<String, Object> info, Map<String, Object> pMap) {
+	private boolean writeTotalOrder(Map<String, Object> info, Map<String, Object> pMap) {
 		TotalOrder order = new TotalOrder();
 		order.setTo_num((String)info.get("partner_order_id"));
 		order.setTo_m_pk(Integer.parseInt((String)info.get("partner_user_id")));
@@ -37,6 +38,43 @@ public class PurchaseService {
 		}
 		return false;
 	}
+	
+	private boolean writeProductOrder(Map<String, Object> pMap, int mNum) {
+		int pType = (int)pMap.get("pType");
+		boolean result = false;
+		Map<String, Object> product = new HashMap<String, Object>();
+		switch (pType) {
+		case 1:
+			product.put("I_PK", (int)pMap.get("pNum"));
+			product.put("M_PK_USER", mNum);
+			product.put("IO_AMOUNT", (int)pMap.get("pCount"));
+			product.put("IO_PRICE", (int)pMap.get("pPrice"));
+			if(purchaseDao.insertItemOrder(product)>0) result = true;
+			break;
+		case 2:
+			
+			if(purchaseDao.insertAuctionOrder(product)>0) result = true;
+			break;
+		case 3:
+			product.put("S_PK", (int)pMap.get("pNum"));
+			product.put("M_PK_USER", mNum);
+			product.put("SO_AMOUNT", (int)pMap.get("pCount"));
+			product.put("SO_PRICE", (int)pMap.get("pPrice"));
+			if(purchaseDao.insertStudioOrder(product)>0) result = true;
+			break;
+		}
+		return result;
+	}
+	
+	@Transactional
+	public boolean writeOrders(Map<String, Object> info, Map<String, Object> pMap, int mNum) {
+		if(writeTotalOrder(info, pMap) && writeProductOrder(pMap, mNum)) {
+			return true;
+		};
+		return false;
+	}
+	
+	
 	public boolean removeTotalOrder(int to_pk) {
 		if(purchaseDao.deleteTotalOrder(to_pk)>0) {
 			return true;
@@ -46,6 +84,8 @@ public class PurchaseService {
 	public TotalOrder getTotalOrder(int to_pk) {
 		return purchaseDao.getTObyNum(to_pk);
 	}
+	
+	
 	public List<TotalOrder> getTotalListByMember(int mNum){
 		return purchaseDao.getAllTOList(mNum);
 	}
@@ -64,4 +104,20 @@ public class PurchaseService {
 		order.put("APPROVE_DATE", approveDate);
 		return order;
 	}
+	
+	
+	public boolean getStudioPurchase(int sNum, int mNum) {
+		if(purchaseDao.getStudioPurchase(sNum, mNum)>0) {
+			return true;
+		}
+		return false;
+	}
+	public boolean getItemPurchase(int iNum, int mNum) {
+		System.out.println("서비스: "+purchaseDao.getStudioPurchase(iNum, mNum));
+		if(purchaseDao.getItemPurchase(iNum, mNum)>0) {
+			return true;
+		}
+		return false;
+	}
+	
 }

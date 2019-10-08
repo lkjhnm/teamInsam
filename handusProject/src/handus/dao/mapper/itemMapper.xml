@@ -38,8 +38,7 @@
 	       I.I_SIZE, 
 	       M.M_NAME, 
 	       C.C_CATEGORY, 
-	       (select count(*) from REVIEW_ITEM where I.I_PK = #{i_pk} ) as RI_COUNT, 
-	       (select count(*) from HEART_ITEM where HI_I_PK = #{i_pk} ) as HI_COUNT 
+	       (select count(*) from REVIEW_ITEM where RI_I_PK = #{i_pk} ) as RI_COUNT
 		from ITEM I 
 		  JOIN MEMBER M 
 		  ON I.M_PK_WRITER = M.M_PK  
@@ -47,25 +46,78 @@
 		  ON C.C_PK = I.I_CATEGORY 
 		where I.I_PK = #{i_pk}
 	</select>
-	<select id="selectItemList" resultMap="itemMap">
-		select *  
-		from(select rownum as rnum, I_PK, I_TITLE, M_PK_WRITER, I_PRICE 
-			from (select I_PK, I_TITLE, M_PK_WRITER, I_PRICE 
-				from STUDIO
-				order by  desc))
-		where rnum between #{param1} and #{param2}
+	
+	
+	<select id="selectItemList" parameterType="int" resultMap="itemMap">
+		select
+			RN,  
+			I_PK,
+			I_TITLE,
+			M_PK_WRITER
+		from (select I_PK, I_TITLE, M_PK_WRITER, rownum RN 
+				from ITEM 
+				where 
+				<choose>
+					<when test="type == 'wood'">
+				 			I_CATEGORY = 6 and
+				 		</when>
+				 		<when test="type == 'ceramics'">
+				 			I_CATEGORY = 1 and
+				 		</when>
+				 		<when test="type == 'metal'">
+				 			I_CATEGORY = 2 and
+				 		</when>
+				  		<when test="type == 'glass'">
+				 			I_CATEGORY = 3 and
+				 		</when>
+				 		<when test="type == 'embroidery'">
+				 			I_CATEGORY = 4 and
+				 		</when>
+				 		<when test="type == 'leather'">
+				 			I_CATEGORY = 5 and
+				 		</when>
+				</choose>
+				<![CDATA[
+				rownum <= #{page}*6 )
+		where RN > (#{page} -1 )*6 
+	]]>
 	</select>
+	
 	<select id="selectAllItems" resultMap="itemMap">
 		select * from ITEM
 	</select>
+	
 	<select id="selectCount" resultType="int">
-		select count(*) from ITEM
+		select count(*) 
+			from ITEM
+			<trim prefix="where">
+				<choose>
+					<when test = "type == 'wood'">
+						I_CATEGORY = 6
+					</when>
+					<when test = "type == 'ceramics'">
+						I_CATEGORY = 1
+					</when>
+					<when test = "type == 'metal'">
+						I_CATEGORY = 2
+					</when>
+					<when test = "type == 'glass'">
+						I_CATEGORY = 3
+					</when>
+					<when test = "type == 'embroidery'">
+						I_CATEGORY = 4
+					</when>
+					<when test = "type == 'leather'">
+						I_CATEGORY = 5
+					</when>
+				</choose>
+			</trim>
 	</select>
 	
 	<select id="selectItemImage" parameterType="int" resultType="map">
 		select hi_pk
 			from HANDUS_IMAGE
-				where hi_fk = #{i_pk}  and hi_type = 1
+				where hi_fk = #{i_pk} 
 					order by hi_main desc
 	</select>
 	

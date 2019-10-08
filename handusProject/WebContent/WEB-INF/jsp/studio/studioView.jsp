@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Handus Studio:Detail</title>
+<title>Handus</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/handus.css" />
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&display=swap" rel="stylesheet">
@@ -408,11 +408,11 @@
  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=486df4f7ba9d0fcd564c18d5601724f6&libraries=services,clusterer"></script>
 <sec:authorize access="isAuthenticated()" var="isLogin"></sec:authorize>
 <script type="text/javascript">
-	var memberNum = 1;				// 회원 번호 
+	var memberNum = ${m_pk};		// 회원 번호 
 	var studioNum = ${studio.s_pk};	// 게시글 번호
-	var isHeart = false;			// 구독중인지 판별
+	
 	var isLock = false;				
-	var isReview = true;			// 리뷰 남기기 창 (초기값: false)
+	var isReview = false;			// 리뷰 남기기 창 (초기값: false)
 	var modBtn = 0; 				// 수정 버튼 기능 0=수정창보이기, 1=수정로직실행
 	var mapX ;						// 127.02448266126561
 	var mapY ;						// 37.50312464278207
@@ -426,6 +426,7 @@
 		drawReview();
 		// 달력그리기 
 		drawCalendar(new Date());
+		
 		// 지도 API 
 		// 지도 - 그리기 
 		var mapBox = document.getElementById("mapBox");
@@ -458,8 +459,9 @@
 			alert("작가페이지 이동");
 		});
 		$("#messagePage").on("click", function () {
-			alert("메세지 창");
+			window.open('${pageContext.request.contextPath}/message/list','Handus Message','width=440, height=600');
 		});
+		
 		// 구독(하트) 버튼 누르기
 		$("#subButton").on("click", function () {
 			if(!isAuthenticated){
@@ -504,6 +506,7 @@
 				});
 			}
 		});
+		
 		// 예약 클릭시 모달 띄우기 
 		$("#reservButton").on("click", function () {
 			$("#modalContainer").css("top","18%");
@@ -513,9 +516,27 @@
 		$(".close").on("click", function () {
 			$("#modalContainer").hide("slow");
 		});
+		
 		// 리뷰 남기기 버튼 
 		$(".reviewWrite").on("click", function () {
 			// ajax로 확인요청 후 맞으면 isReview(구매했으면) = true 로 변경 
+			$.ajax({
+				url: "${pageContext.request.contextPath}/purchase/isPurchaseS",
+				// 해당 물품 pk, 회원 pk 
+				data: {
+					s_pk: '${studio.s_pk }'
+				},
+				dataType: "json",
+				success: function (result) {
+					alert(result);
+					if(result){
+						isReview = true;
+					}
+				},
+				error: function () {
+					alert("구매확인에러");	
+				}
+			});
 			if(isReview){
 				$("#reviewInput").css("display", "block");
 				isReview = false;
