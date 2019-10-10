@@ -13,7 +13,7 @@ import handus.model.HandusImage;
 public interface AuctionDao {
 	
 	public List<Auction> selectAuctionList(@Param("page")int page,@Param("type") String type);
-	public Auction selectAuction(int a_pk);
+	public Map<String,Object> selectAuction(int a_pk);
 	public HandusImage selectAuctionImagePath(int ai_pk);
 	public List<Integer> selectAuctionGraphData(int a_pk);
 	public boolean insertBidding(AuctionGraph ag);

@@ -48,14 +48,15 @@
 	</select>
 	
 	
-	<select id="selectItemList" parameterType="int" resultMap="itemMap">
+	<select id="selectItemList" parameterType="int" resultType="map">
 		select
 			RN,  
 			I_PK,
 			I_TITLE,
-			M_PK_WRITER
-		from (select I_PK, I_TITLE, M_PK_WRITER, rownum RN 
-				from ITEM 
+			M_PK_WRITER,
+			HI_PK
+		from (select I_PK, I_TITLE, M_PK_WRITER, rownum RN ,HI_PK
+				from ITEM i join handus_image hi on (i.i_pk = hi.hi_fk and hi.hi_main = 1 and hi.hi_type = 1)
 				where 
 				<choose>
 					<when test="type == 'wood'">

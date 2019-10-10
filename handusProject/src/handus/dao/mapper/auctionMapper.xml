@@ -78,11 +78,12 @@
 		 	</trim>
 	</select>
 	
-	<select id="selectAuction" parameterType="int" resultType="auction">
+	<select id="selectAuction" parameterType="int" resultType="map">
 		select a_pk, m_pk_writer, a_title, a_startprice, a_endprice, c_category, a_regDate, a_starttime, a_end, a_start,
 			   a_endTime, a_readcount, a_comment, r_pk, a_subscribe , a_currentprice, to_char(ag_regdate,'yyyy/MM/dd HH:mm') as ag_regdate,
-			   a_country, a_size, a_color,a_details
-		from AUCTION a JOIN CATEGORYNAME c ON (a.c_pk = c.c_pk),
+			   a_country, a_size, a_color,a_details,
+			   au.at_name
+		from AUCTION a JOIN CATEGORYNAME c ON (a.c_pk = c.c_pk) join AUTHOR au on (a.m_pk_writer = au.m_pk ) ,
 			   <!-- 최근 입찰 가격 가져오는 서브쿼리 -->
 				( select ag_bidding as a_currentprice, ag_regdate
           		   from (select /*+ INDEX (ag AG_BIDDING_INDEX)*/

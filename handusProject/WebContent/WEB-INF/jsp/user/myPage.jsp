@@ -99,16 +99,13 @@
 		border-bottom-style: dashed;
 		border-bottom-color: #ebe7dd;
 		display:flex;
-	}
-	.list > div > div{
-		height:230px;
-		margin-bottom:55px;
-		margin-top:55px;
+		flex-wrap: wrap;
+		justify-content: space-around;
 	}
 	.list img{
 		width:230px;
 		height:230px;
-		margin: 45px;
+		margin: 45px 0 45px 45px;
 	}
 	.list_container{
 		width:1325px;
@@ -172,6 +169,37 @@
 	}
 	.hover{
 		cursor:pointer;
+	}
+	[data-list='auction']{
+		display: none;
+	}
+	[data-list='studio']{
+		display: none;
+	}
+	.info-container{
+		border-bottom: 1px solid #191919;
+		width: 750px;
+		height:30px;
+		margin-bottom:10px;
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: nowrap;
+	}
+	.list>div>div{
+		margin-top: 45px;
+	}
+	.button_container>div{
+		width:100px;
+		height:40px;
+		background-color: #191919;
+		color:#fff;
+		text-align: center;
+		line-height: 40px;
+		margin-bottom: 5px;
+	}
+	.button_container>div:hover{
+		cursor:pointer;
+		color:#ff1d43;	
 	}
 </style>
 <script>
@@ -260,7 +288,50 @@
 				}
 			})			
 		})
-	})	
+		
+		$("[data-tab]").on("click",function(){
+			
+			var tabVal = $(this).attr("data-tab");
+			
+			$("[data-list='"+tabVal+"']").css("display","block");
+			$("[data-list='"+tabVal+"']").siblings().not("#tab_menu_container").css("display","none");
+		})
+		
+		
+		
+		
+	})
+	function buyAuction(pNum,pType,pCount,pPrice,pImage){
+		
+		var pNum = $("<input type='hidden' name='pNum'>").val(pNum);
+		var pType = $("<input type='hidden' name='pType'>").val(pType);
+		var pCount = $("<input type='hidden' name='pCount'>").val(pCount);
+		var pPrice = $("<input type='hidden' name='pPrice'>").val(pPrice);
+		var pImage = $("<input type='hidden' name='pImage'>").val(pImage);
+		
+		$("#buyForm").append(pNum).append(pType).append(pCount).append(pPrice).append(pImage);
+		$("#buyForm").submit();
+	}
+	
+	function moveToPage(data, num){
+		var type = $(data).attr("data-type");
+		
+		var url = "${pageContext.request.contextPath}/";
+		
+		switch(type){
+		
+		case "auction":
+			url += "auction/detail?a_pk="+num;
+			break;
+		case "item":
+			url += "item/detail?num="+num;
+			break;
+		case "studio":
+			url += "studio/detail?num="+num;
+			break;
+		}
+		location.href= url;
+	}
 </script>
 </head>
 <body>
@@ -331,23 +402,71 @@
 			<div class='list_container'>
 				<div id="tab_menu_container">
 					<div id="tab_title">SHOPPING LIST</div>
-					<div class="tab_menu">ITEM</div>
-					<div class="tab_menu">AUCTION</div>
-					<div class="tab_menu">STUDIO</div>
+					<div class="tab_menu" data-tab='item'>ITEM</div>
+					<div class="tab_menu" data-tab='auction'>AUCTION</div>
+					<div class="tab_menu" data-tab='studio'>STUDIO</div>
 				</div>
-				<div class="list">
+				<div class='list' data-list="item">
 					<div>
-						<img>
-						<div><span>제목</span></div>
+						<img>			
+						<div>
+							<div class='info-container'>
+								<span class="info-title">TITLE </span>
+								<span class="info-value"> 제목제목잼</span>
+							</div>
+							<div class='info-container'>
+								<span class="info-title">PRICE </span>
+								<span class="info-value"> 제목제목잼</span>
+							</div>
+							<div class='info-container'>
+								<span class="info-title">QUANTITY </span>
+								<span class="info-value"> 제목제목잼</span>
+							</div>
+						</div>
+						<div class='button_container'>
+							<div data-type='item'> 상세보기 </div>	 <!-- onclick='moveToPage(this,pk)' -->
+						</div>
 					</div>
+				</div>
+				<div class='list' data-list="auction">
+					<c:forEach items="${winningBid }" var="auction">
 					<div>
-						<img>
-						<div></div>
+						<img src="${pageContext.request.contextPath }/image/${auction.HI_PK}">			
+						<div>
+							<div class='info-container'>
+								<span class="info-title">TITLE </span>
+								<span class="info-value"> ${auction.A_TITLE }</span>
+							</div>
+							<div class='info-container'>
+								<span class="info-title">AUTHOR </span>
+								<span class="info-value"> ${auction.AT_NAME }</span>
+							</div>
+							<div class='info-container'>
+								<span class="info-title">CATEGORY </span>
+								<span class="info-value"> ${auction.C_CATEGORY }</span>
+							</div>
+							<div class='info-container'>
+								<span class="info-title">PRICE </span>
+								<span class="info-value"> ${auction.A_ENDPRICE }</span>
+							</div>
+						</div>
+						<div class='button_container'>
+							<c:choose>
+								<c:when test="${auction.A_BUY eq 0 }">
+									<div onclick='buyAuction(${auction.A_PK},2,1,${auction.A_ENDPRICE },${auction.HI_PK})'>구 매</div>
+								</c:when>
+								<c:otherwise>
+									<div onclick='buyAuction(${auction.A_PK},2,1,${auction.A_ENDPRICE },${auction.HI_PK})'>구매 완료</div>
+								</c:otherwise>				
+							</c:choose>
+							<div data-type='auction' onclick='moveToPage(this, ${auction.A_PK})'>상세보기</div>
+						</div>
+						<form id="buyForm" action="${pageContext.request.contextPath }/purchase/order">		
+						</form>
 					</div>
-					<div>
-						<img>
-						<div></div>
-					</div>
+					</c:forEach>					
+				</div>
+				<div class='list' data-list="studio">
 				</div>
 			</div>
 		</div>

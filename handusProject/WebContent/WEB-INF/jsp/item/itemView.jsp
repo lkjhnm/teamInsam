@@ -281,7 +281,6 @@
 		border-radius: 5px;
 		background-color: #ffff;
 	}
-}
 	#thumnailContainer{
 		width: 92px;
 		height: 425px;

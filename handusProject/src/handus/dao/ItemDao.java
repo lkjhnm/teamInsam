@@ -15,7 +15,7 @@ public interface ItemDao {
 	public int deleteItem(int i_pk);
 	public Item selectItemByNum(int i_pk);
 	// 카테고리, 페이징처리 목록 
-	public List<Item> selectItemList(@Param("page")int page, @Param("type") String type);
+	public List<Map<String,Object>> selectItemList(@Param("page")int page, @Param("type") String type);
 	public List<Item> selectAllItems();
 	public int selectCount(@Param("type") String type);	
 	public List<Map<String,Object>>	selectItemImage(int i_pk);

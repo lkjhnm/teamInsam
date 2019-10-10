@@ -96,6 +96,54 @@
 	.modify-input:focus{
 		outline:none;
 	}
+	.list{ 
+		margin-bottom:55px;
+		margin-top:55px;
+		border: 1px solid #191919;
+		overflow: hidden;
+		position:relative;
+		height: 302px;
+	}
+	.list > div{
+		
+	}
+	.list > div > div{
+		height:230px;
+		margin-bottom:55px;
+		margin-top:55px;
+	}
+	.list img{
+		width:230px;
+		height:230px;
+		margin: 35px;
+		border: 1px solid #191919;
+	}
+	.list_container{
+		width: 80%;
+		margin: 100px auto;
+	}
+	.tab_menu{
+		width: 130px;
+		font-size: 22px;
+	}
+	.slide_button{
+		position:relative;
+		font-size: 80px;
+		top:280px;
+	}
+	.slide_button:hover{
+		cursor:pointer;
+		color: #ff1d43;
+	}
+	.left{
+		left:-50px;
+	}
+	.right{
+		left: 1215px;
+	}
+	.train{
+		position:relative;
+	}
 </style>
 <script>
 	$(function(){
@@ -224,7 +272,105 @@
 				}
 			})
 		})
+		
+		
+		//리싀트
+		getListOfType(1,function(data){		// ITEM 데이터 가져오기	
+			$("#item_container").css("width",302*data.length)
+			$.each(data,function(i,item){
+				var img = $("<img src='${pageContext.request.contextPath}/image/"+item.HI_PK+"'>")
+				$(img).on("click",function(){
+					location.href='${pageContext.request.contextPath}/item/detail?num='+item.I_PK;
+				});
+				$("#item_container").append(img)
+			})
+			imgSlide("item_container")
+		})
+		
+		getListOfType(2,function(data){		// AUCTION 데이터 가져오기
+			$("#auction_container").css("width", 302*data.length)
+			$.each(data,function(i,item){
+				var img = $("<img src='${pageContext.request.contextPath }/image/"+item.HI_PK+"'>")
+				$(img).on("click",function(){
+					location.href="${pageContext.request.contextPath}/auction/detail?a_pk="+item.A_PK;
+				})
+				$("#auction_container").append(img)
+			})
+			imgSlide("auction_container")
+		})
+		
+		getListOfType(3,function(data){		// STUDIO 데이터 가져오기
+			$("#studio_container").css("width", 302*data.length)
+			$.each(data,function(i,item){
+				var img = $("<img src='${pageContext.request.contextPath}/image/"+item.HI_PK+"'>")
+				$(img).on("click",function(){
+					location.href="${pageContext.request.contextPath}/studio/detail?num="+item.S_PK;
+				})
+				$("#studio_container").append(img)
+			})
+			imgSlide("studio_container")
+		})
 	})
+	
+	
+	function getListOfType(type,func){
+		
+		$.ajax({
+			url:"${pageContext.request.contextPath}/author/getList/"+type,
+			type:"post",
+			data: {"m_pk": '${M_PK_WRITER}' },
+			dataType: "json",
+			success: function(data){
+				func(data)
+			}
+		})
+	}
+	
+	// 이미지 슬라이드 쇼
+	function imgSlide(cont_name){
+		var position = 0;
+		var train = $("#"+cont_name)
+		var count = $(train).children().length - 4;
+		var left = $(train).parent().prev().prev().prev()
+		var right = $(train).parent().prev().prev()
+		
+		if(count < 4){
+			left.css("display","none")
+			right.css("display","none")
+		}
+
+		$(left).on("click",function(){
+			if(position -1 < 0){
+				console.log("왼쪽안됌")
+				return;
+			}
+			console.log("asd")
+			position = position <= 0 ? 0 : position - 1;
+			
+			
+			var left = position == 0 ? 0 : (-300)*position;
+
+			$(train).animate({
+				"left" : left
+			})
+		})
+		
+		$(right).on("click",function(){
+			if(position + 1 > count){
+				console.log("오른쪽 안됨")
+				return;
+			}
+			console.log('asd')
+			position = position >= count ? count : position + 1;
+			
+			
+			var left = position == count ? (-300)*count : (-300)*position;
+			
+			$(train).animate({
+				"left" : left
+			})
+		})
+	}
 </script>
 </head>
 <body>
@@ -256,7 +402,6 @@
 						<div class='profile_button' id="regBtn">작품 등록</div>
 						<div class='profile_button' id="modBtn">정보 수정</div>
 						<div class='profile_button' id="msgBtn">문의 보기</div>
-						<div class='profile_button'>작품 검색</div>
 					</div>
 					<div class="profile_button_container" id="modify">
 						<div class='profile_button' id="confirm">수 정</div>
@@ -264,6 +409,32 @@
 					</div>
 				</fieldset>
 			</div>
+			<div class='list_container'>
+				<span class='slide_button left'><i class="fas fa-caret-left"></i></span>
+				<span class='slide_button right'><i class="fas fa-caret-right"></i></span>
+				<div class="tab_menu" id="itemBtn">ITEM</div>
+				<div class="list">
+					<div id="item_container" class='train'>
+					</div>
+				</div>
+
+				<span class='slide_button left'><i class="fas fa-caret-left"></i></span>
+				<span class='slide_button right'><i class="fas fa-caret-right"></i></span>
+				<div class="tab_menu" id="auctionBtn">AUCTION</div>
+				<div class="list">
+					<div id="auction_container" class='train'>
+					</div>
+				</div>
+
+				<span class='slide_button left'><i class="fas fa-caret-left"></i></span>
+				<span class='slide_button right'><i class="fas fa-caret-right"></i></span>
+				<div class="tab_menu" id="studioBtn">STUDIO</div>
+				<div class="list">
+					<div id="studio_container" class='train'>
+					</div>
+				</div>
+			</div>
+			
 			<div id="modifyModal">
 				
 			</div>

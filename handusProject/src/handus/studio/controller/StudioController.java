@@ -41,9 +41,9 @@ public class StudioController {
 			@RequestParam(defaultValue = "1")int page ) {
 		
 		// 필요 정보 : 이미지, 게시글 이름, 게시글 번호, 해당 게시글 구독 여부 
-		List<Studio> studioList = studioService.getStudioList(page, type);
+		List<Map<String,Object>> studioList = studioService.getStudioList(page, type);
 		Map<String, Object> pageInfo = studioService.getPageInfo(page, type);
-		
+	
 		model.addAttribute("studioList", studioList);
 		model.addAllAttributes(pageInfo);
 		return "studio/studioList";

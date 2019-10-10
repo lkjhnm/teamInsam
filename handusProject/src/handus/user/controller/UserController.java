@@ -72,7 +72,9 @@ public class UserController {
 	public String myPage(int m_pk,Model model) {
 		
 		model.addAllAttributes(userService.getUserInfo(m_pk));
-		
+		model.addAttribute("winningBid",userService.getWinningBid(m_pk));
+		model.addAttribute("itemList", userService.getPayedItemList(m_pk));
+		model.addAttribute("studioList", userService.getPayedStudioList(m_pk));
 		return "user/myPage";
 	}
 	
