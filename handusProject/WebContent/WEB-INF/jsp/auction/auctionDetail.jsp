@@ -753,9 +753,9 @@
 						<div class='infoPosition'><span> ${auction.A_COMMENT }</span></div>
 						<div class='infoPosition iconContainer'>
 							<div><img id='icon' src='${pageContext.request.contextPath }/img/hand-right.svg'>
-							<span> 조회수 ${auction.a_readCount } 명 </span></div>
+							<span> 조회수 ${auction.A_READCOUNT } 명 </span></div>
 							<div><img id='icon' src='${pageContext.request.contextPath }/img/like.svg'>
-							<span> 구독자 650 명 </span></div>
+							<span> 구독자 ${auction.A_SUBSCRIBE eq null ? 0 : auction.A_SUBSCRIBE} 명 </span></div>
 						</div>
 						<div id="button-boundary"></div>
 						<div class='infoPosition'>
