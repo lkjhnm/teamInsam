@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -34,7 +36,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import handus.dao.MemberDao;
 import handus.model.Auth;
-import handus.model.Criteria;
 import handus.model.Member;
 import handus.model.MemberInterest;
 import handus.model.MemberVerify;
@@ -93,6 +94,8 @@ public class MemberService {
 		member.setAuthList(authList);
 		member.setMiList(miList);
 	}
+	
+	// 권한주기 (리스트 반환) 
 	private List<Auth> makeAuth(int type){
 		List<Auth> authList = new ArrayList<>();
 		
@@ -163,15 +166,16 @@ public class MemberService {
 		return memberDao.selectByID(id);
 	}
 	
-	public Member getMemberByApiId(String apiId){
-		return memberDao.selectByApiId(apiId);
+
+	public Member getMemberByApiId(String apiId, int apiType){
+		return memberDao.selectByApiId(apiId, apiType);
 	}
 
 	public List<Member> getMemberList() {
 		return memberDao.selectAllMember();
 	}
 
-
+	
 	public boolean checkDuplicatedId(String m_id) {
 		
 		Member mem = memberDao.selectByID(m_id);
@@ -186,13 +190,16 @@ public class MemberService {
 		JsonNode accessNode = getAccessToken(authorize_code);
 		JsonNode userNode = getUserInfo(accessNode.findValue("access_token").toString());
 		String apiId = userNode.findValue("id").toString();
-		Member mem = memberDao.selectByApiId(apiId);
+
+		int apiType = 1;
+		Member mem = memberDao.selectByApiId(apiId, apiType);
 		
 		if(mem == null) {
+			
 			return new UsernamePasswordAuthenticationToken(apiId, null);
 		}
 		return new UsernamePasswordAuthenticationToken("Kakao_"+apiId, "Kakao_"+apiId ,
-					mem.getAuthList().stream().map( auth -> new SimpleGrantedAuthority(auth.getMa_authority())).collect(Collectors.toList()));
+				mem.getAuthList().stream().map( auth -> new SimpleGrantedAuthority(auth.getMa_authority())).collect(Collectors.toList()));
 	}
 	
 	private JsonNode getAccessToken(String authorize_code){
@@ -262,34 +269,14 @@ public class MemberService {
 		return false;
 	}
 	
+	// 네아로 권한주기 
+	public UsernamePasswordAuthenticationToken naverLogin(String apiId, Member member) {
+		return new UsernamePasswordAuthenticationToken("Naver_"+apiId, "Naver_"+apiId ,
+				member.getAuthList().stream().map( auth -> new SimpleGrantedAuthority(auth.getMa_authority())).collect(Collectors.toList()));
+	}
+	
 	public Member getMemberDetail(int m_pk) {
 		return memberDao.selectMember(m_pk);
-	}
-	
-	public int countMemberList() {
-		return (Integer) selectOne("member.countMemberList");
-	}
-
-	private Integer selectOne(String string) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public int getTotalCount(Criteria cri) {
-		return memberDao.getTotalCount(cri);
-	}
-	
-	public List<Member> memberForm(Criteria cri) {
-		return memberDao.listPage(cri);
-	}
-	
-	public Member read(int bno) throws Exception {
-		
-		return memberDao.read(bno);
-	}
-	
-	public List<Member> listPage(Criteria cri) {
-		return memberDao.listPage(cri);
 	}
 	
 	public boolean removeMember(int m_pk) {
@@ -298,5 +285,4 @@ public class MemberService {
 		}
 		return false;
 	}
-	
 }

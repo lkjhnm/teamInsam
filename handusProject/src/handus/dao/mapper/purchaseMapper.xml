@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="handus.dao.PurchaseDao">
+	<select id="selectTONumber" resultType="String">
+		select concat(to_char(sysdate, 'yyyymmdd-'), LPAD(TO_NUM_SEQ.NEXTVAL, 6, 0)) from dual 
+	</select>
+	<insert id="insertTotalOrder" parameterType="totalOrder">
+		insert into TOTAL_ORDER 
+	    (TO_PK, TO_NUM, TO_M_PK, TO_P_PK, TO_TYPE, TO_PRICE, 
+	    	TO_PAY_METHOD, TO_ORDER_NAME, TO_TID, TO_APPROVED_DATE, TO_COUNT )
+	    values (TO_SEQ.NEXTVAL, #{to_num}, #{to_m_pk}, #{to_p_pk}, #{to_type}, #{to_price},
+	    	#{to_pay_method}, #{to_order_name}, #{to_tid}, #{to_approved_date}, #{to_count} )
+	</insert>
+	<delete id="deleteTotalOrder" parameterType="int">
+		delete from TOTAL_ORDER 
+		where to_pk = #{to_pk}
+	</delete>
+	<select id="getTObyNum" parameterType="int" resultType="totalOrder">
+		select * from TOTAL_ORDER where TO_PK = #{to_pk} 
+	</select>
+	<select id="getAllTOList" parameterType="int" resultType="totalOrder">
+		select * from TOTAL_ORDER where TO_M_PK = #{m_pk} 
+	</select>
+	<select id="getListByOrderNum" parameterType="int" resultType="totalOrder">
+		select * 
+		from TOTAL_ORDER where TO_NUM = #{to_num}
+	</select>
+	<select id="getTObyOrderNum" parameterType="String" resultType="map">
+		select TO_PK as PK ,
+		       TO_NUM as NUM ,
+		       TO_PAY_DATE as ORDER_DATE ,
+		       TO_APPROVED_DATE as APPROVE_DATE,
+		       TO_PRICE as PRICE,
+		       TO_COUNT as COUNT ,
+		       TO_PAY_METHOD as PAY_METHOD ,
+		       (select M_NAME from MEMBER where M_PK = TO_M_PK) as M_NAME
+		from TOTAL_ORDER   
+		where TO_NUM = #{to_num}
+	</select>
+	
+	<select id="getStudioPurchase" resultType="int">
+		select count(*) 
+		from STUDIO_ORDER 
+		where S_PK = #{param1} and M_PK_USER = #{param2}
+	</select>
+	<select id="getItemPurchase" resultType="int">
+		select count(*) 
+		from ITEM_ORDER 
+		where I_PK = #{param1} and M_PK_USER = #{param2}
+	</select>
+	
+	
+	<insert id="insertItemOrder" parameterType="map">
+		insert into ITEM_ORDER 
+			(IO_PK, I_PK, M_PK_USER, IO_AMOUNT, IO_PRICE)
+			values (IO_SEQ.NEXTVAL, #{I_PK}, #{M_PK_USER}, #{IO_AMOUNT}, #{IO_PRICE})
+	</insert>
+	<insert id="insertAuctionOrder" parameterType="map">
+		
+	</insert>
+	<insert id="insertStudioOrder" parameterType="map">
+		insert into STUDIO_ORDER 
+			(SO_PK, S_PK, M_PK_USER, SO_AMOUNT, SO_PRICE)
+			values (TO_SEQ.NEXTVAL, #{S_PK}, #{M_PK_USER}, #{SO_AMOUNT}, #{SO_PRICE})
+	</insert>
+	
+	
+	<resultMap type="totalOrder" id="toMap">
+		<result column="TO_PK" property="to_pk"/>
+		<result column="TO_NUM" property="to_num"/>
+		<result column="TO_M_PK" property="to_m_pk"/>
+		<result column="TO_P_PK" property="to_p_pk"/>
+		<result column="TO_TYPE" property="to_type"/>
+		<result column="TO_PAY_DATE" property="to_pay_date"/>
+		<result column="TO_PRICE" property="to_price"/>
+		<result column="TO_PAY_METHOD" property="to_pay_method"/>
+		<result column="TO_ORDER_NAME" property="to_order_name"/>
+		<result column="TO_TID" property="to_tid"/>
+		<result column="TO_APPROVED_DATE" property="to_approved_date"/>
+		<result column="TO_COUNT" property="to_count"/>
+	</resultMap>
+</mapper>

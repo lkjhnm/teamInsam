@@ -12,7 +12,9 @@ public class Member{
 	private String m_phonenum;
 	private int m_enabled;
 	private Date m_regdate;
+	private String m_zipcode;
 	private String m_address;
+	private String m_address_detail;
 	private boolean m_eval;
 	private boolean m_pval;
 	private List<Auth> authList;
@@ -21,6 +23,18 @@ public class Member{
 	private String m_apiId;
 	
 	
+	public String getM_zipcode() {
+		return m_zipcode;
+	}
+	public String getM_address_detail() {
+		return m_address_detail;
+	}
+	public void setM_zipcode(String m_zipcode) {
+		this.m_zipcode = m_zipcode;
+	}
+	public void setM_address_detail(String m_address_detail) {
+		this.m_address_detail = m_address_detail;
+	}
 	public int getM_apiType() {
 		return m_apiType;
 	}
@@ -115,8 +129,9 @@ public class Member{
 	public String toString() {
 		return "Member [m_pk=" + m_pk + ", m_id=" + m_id + ", m_password=" + m_password + ", m_name=" + m_name
 				+ ", m_email=" + m_email + ", m_phonenum=" + m_phonenum + ", m_enabled=" + m_enabled + ", m_regdate="
-				+ m_regdate + ", m_address=" + m_address + ", m_eval=" + m_eval + ", m_pval=" + m_pval + ", authList="
-				+ authList + ", miList=" + miList + "]";
+				+ m_regdate + ", m_zipcode=" + m_zipcode + ", m_address=" + m_address + ", m_address_detail="
+				+ m_address_detail + ", m_eval=" + m_eval + ", m_pval=" + m_pval + ", authList=" + authList
+				+ ", miList=" + miList + ", m_apiType=" + m_apiType + ", m_apiId=" + m_apiId + "]";
 	}
 	
 }

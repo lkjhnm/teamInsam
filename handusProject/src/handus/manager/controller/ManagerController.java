@@ -69,7 +69,7 @@ public class ManagerController {
 	
 	@RequestMapping(value = "Amodify", method = RequestMethod.GET)
 	public String ManagerAModifyForm(Model model, int a_pk) {
-		Auction auction = auctionService.getAuctionDetail(a_pk);
+		Map<String,Object> auction = auctionService.getAuctionDetail(a_pk);
 		model.addAttribute("Amodify", auction);
 		model.addAttribute("auction", auctionService.getAuctionDetail(a_pk));
 		return "manager/managerAModify";

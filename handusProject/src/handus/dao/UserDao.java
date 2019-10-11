@@ -11,4 +11,10 @@ public interface UserDao {
 	public Map<String,Object> selectSubscribe(Map<String,Object> subsInfo);
 	public int deleteSubscribe(Map<String,Object> subsInfo);
 	public List<Map<String,Object>> selectSubsListData(@Param("type") int type, @Param("m_pk_user") int m_pk_user);
+	public List<Map<String,Object>> selectSubsListAll(int m_pk_user);
+	public Map<String,Object> selectUserByPk(int m_pk);
+	public boolean updateUserInfo(Map<String,Object> userInfo);
+	public List<Map<String,Object>> selectWinningBid(int m_pk);
+	public List<Map<String,Object>> selectPayedItem(int m_pk);
+	public List<Map<String,Object>> selectPayedStudio(int m_pk);
 }

@@ -8,8 +8,8 @@
 		insert all 
 		
 		into MEMBER 
-    	( M_PK, M_ID, M_PASSWORD, M_NAME, M_EMAIL, M_PHONENUM, M_ADDRESS )
-    	values ( #{m_pk}, #{m_id}, #{m_password}, #{m_name}, #{m_email}, #{m_phonenum}, #{m_address} )
+    	( M_PK, M_ID, M_PASSWORD, M_NAME, M_EMAIL, M_PHONENUM, M_ADDRESS ,M_ZIPCODE,M_ADDRESS_DETAIL)
+    	values ( #{m_pk}, #{m_id}, #{m_password}, #{m_name}, #{m_email}, #{m_phonenum}, #{m_address},#{m_zipcode},#{m_address_detail} )
     	<foreach collection="miList" item="mi">
     		into MEMBER_INTEREST (MI_PK, M_PK, C_PK)
     			VALUES	(GET_PK_MI, #{m_pk}, #{mi.c_pk})
@@ -28,8 +28,8 @@
 		insert all 
 		
 		into MEMBER
-			( M_PK, M_NAME, M_EMAIL, M_PHONENUM, M_ADDRESS , M_APITYPE, M_APIID)  <!-- APITYPE 1번 카카오, 2번 네이버 -->
-		values (#{m_pk}, #{m_name}, #{m_email}, #{m_phonenum}, #{m_address}, #{m_apiType}, #{m_apiId})
+			( M_PK, M_NAME, M_EMAIL, M_PHONENUM,M_ZIPCODE, M_ADDRESS,M_ADDRESS_DETAIL , M_APITYPE, M_APIID)  <!-- APITYPE 1번 카카오, 2번 네이버 -->
+		values (#{m_pk}, #{m_name}, #{m_email} ,#{m_phonenum},#{m_zipcode}, #{m_address},#{m_address_detail}, #{m_apiType}, #{m_apiId})
 		<foreach collection="miList" item="mi">
     		into MEMBER_INTEREST (MI_PK, M_PK, C_PK)
     			VALUES	(GET_PK_MI, #{m_pk}, #{mi.c_pk})
@@ -64,10 +64,9 @@
 	
 	<select id="selectByNum" parameterType="int" resultType="member">
 		select 
-			m.M_PK, m.M_ID, m.M_PASSWORD, m.M_NAME, m.M_EMAIL, m.M_PHONENUM, m.M_ENABLED, m.M_REGDATE, m.M_ADDRESS, m.M_APITYPE, m.M_APIID,
-			mi.c_pk, ma.authority	 
-		 from MEMBER m
-		where M_PK = #{m_pk} 
+			m.M_PK, m.M_ID, m.M_NAME, m.M_EMAIL, m.M_PHONENUM, m.M_ADDRESS
+			from MEMBER m
+		where m.M_PK = #{m_pk} 
 	</select>
 	
 	<select id="selectAllMember" resultType="member">
@@ -92,9 +91,14 @@
 	<update id="updateMemberAuth" parameterType="auth">
 		update MEMBER_AUTHORITY set ma_authority = #{ma_authority}
 			where m_pk = #{m_pk} and ma_authority =
-				<if test="ma_authority == 'ROLE_MEMBER' ">
-					'ROLE_MEMBER_NV'
-				</if>
+				<choose>
+					<when test="ma_authority == 'ROLE_MEMBER' ">
+						'ROLE_MEMBER_NV'
+					</when>
+					<when test="ma_authority == 'ROLE_AUTHOR' ">
+						'ROLE_AUTHOR_NV'
+					</when>
+				</choose>
 	</update>
 	
 	<select id="selectMemberVerify" parameterType="int" resultType="memberVerify">
@@ -111,12 +115,12 @@
 		update member set m_eval = #{m_eval} where m_pk = #{m_pk}
 	</update>
 	
-	<select id="selectByApiId" parameterType="string" resultMap="memberMap">
+	<select id="selectByApiId" resultMap="memberMap">
 		select * 
 			from MEMBER m 
 				LEFT OUTER JOIN MEMBER_INTEREST mi ON (m.m_pk = mi.m_pk ) 
 					LEFT OUTER JOIN MEMBER_AUTHORITY ma ON (m.m_pk = ma.m_pk)	
-		where m_apiid = #{m_apiId} 
+		where m_apiid = #{param1} and M_APITYPE = #{param2}
 	</select>
 	
 	<select id="selectMember" parameterType="int" resultMap="memberMap">
@@ -146,6 +150,8 @@
 		<result property="m_enabled" column="m_enabled"/>
 		<result property="m_regdate" column="m_regdate"/>
 		<result property="m_address" column="m_address"/>
+		<result property="m_zipcode" column="m_zipcode"/>
+		<result property="m_address_detail" column="m_address_detail"/>
 		<result property="m_eval" column="m_eval"/>
 		<result property="m_pval" column="m_pval"/>
 		<result property="m_apiType" column="m_apitype"/>

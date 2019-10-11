@@ -16,6 +16,7 @@
 	<delete id="deleteStudio" parameterType="int">
 		delete from STUDIO where S_PK = #{s_pk} 
 	</delete>
+	
 	<select id="selectStudioByNum" parameterType="int" resultMap="studioMap">
 		select S.S_PK, 
 	       S.M_PK_WRITER, 
@@ -34,7 +35,7 @@
 	       S.S_COMMENT, 
 	       S.S_NAME,
 	       M.M_NAME, 
-	       C.C_CATEGORY, 
+	       C.C_CATEGORY,
 	       (select count(*) from REVIEW_STUDIO where S.S_PK = #{S_PK} ) as RS_COUNT, 
 	       (select count(*) from HEART_STUDIO where HS_S_PK = #{S_PK} )as HS_COUNT 
 	from STUDIO S 
@@ -44,14 +45,43 @@
 	  ON C.C_PK = S.S_CATEGORY 
 	where S.S_PK = #{S_PK} 
 	</select>
-	<select id="selectStudioList" resultMap="studioMap">
-		select *  
-		from(select rownum as rnum, S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_REGDATE, S_UPDATEDATE, S_MAXIMUM, S_CURRENT, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT
-			from (select S_PK, S_TITLE, M_PK_WRITER, S_PRICE, S_LOCATION, S_CATEGORY, S_REGDATE, S_UPDATEDATE, S_MAXIMUM, S_CURRENT, S_CLASSSTART, S_CLASSEND, S_READ_COUNT, S_CONTENT 
-				from STUDIO
-				order by  desc))
-		where rnum between #{param1} and #{param2}
+	
+	<select id="selectStudioList" parameterType="int" resultType="map">
+		select
+			RN,  
+			S_PK,
+			S_TITLE,
+			M_PK_WRITER,
+			HI_PK
+		from (select S_PK, S_TITLE, M_PK_WRITER, rownum RN , HI_PK
+				from STUDIO S join HANDUS_IMAGE hi on (s.s_pk = hi.hi_fk and hi.hi_main = 1 and hi.hi_type = 3 )
+				where 
+				<choose>
+					<when test="type == 'wood'">
+				 			S_CATEGORY = 6 and
+				 		</when>
+				 		<when test="type == 'ceramics'">
+				 			S_CATEGORY = 1 and
+				 		</when>
+				 		<when test="type == 'metal'">
+				 			S_CATEGORY = 2 and
+				 		</when>
+				  		<when test="type == 'glass'">
+				 			S_CATEGORY = 3 and
+				 		</when>
+				 		<when test="type == 'embroidery'">
+				 			S_CATEGORY = 4 and
+				 		</when>
+				 		<when test="type == 'leather'">
+				 			S_CATEGORY = 5 and
+				 		</when>
+				</choose>
+				<![CDATA[
+				rownum <= #{page}*6 )
+		where RN > (#{page} -1 )*6 
+	]]>
 	</select>
+	
 	<select id="selectAllStudio" resultMap="studioMap">
 		select * from STUDIO
 	</select>
@@ -60,8 +90,38 @@
 		set S_READ_COUNT = S_READ_COUNT + 1
 		where S_PK = #{s_pk} 
 	</update>
+	
 	<select id="selectCount" resultType="int">
-		select count(*) from STUDIO
+		select count(*) 
+			from STUDIO
+			<trim prefix="where">
+				<choose>
+					<when test = "type == 'wood'">
+						S_CATEGORY = 6
+					</when>
+					<when test = "type == 'ceramics'">
+						S_CATEGORY = 1
+					</when>
+					<when test = "type == 'metal'">
+						S_CATEGORY = 2
+					</when>
+					<when test = "type == 'glass'">
+						S_CATEGORY = 3
+					</when>
+					<when test = "type == 'embroidery'">
+						S_CATEGORY = 4
+					</when>
+					<when test = "type == 'leather'">
+						S_CATEGORY = 5
+					</when>
+				</choose>
+			</trim>
+	</select>
+	<select id="selectStudioImage" parameterType="int" resultType="map">
+		select hi_pk
+			from HANDUS_IMAGE
+				where hi_fk = #{s_pk} and hi_type = 3
+					order by hi_main desc
 	</select>
 <!-- 	<update id="minusHeart"> -->
 <!-- 		update STUDIO -->

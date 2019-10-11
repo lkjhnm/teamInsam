@@ -22,10 +22,15 @@ public class CustomUserDetailsService implements UserDetailsService{
 		
 		Member mem;
 		if(username.contains("Kakao")) {
-			mem = memberDao.selectByApiId(username.substring(6));
+			mem = memberDao.selectByApiId(username.substring(6),1);
 			mem.setM_id(username);
 			mem.setM_password(encoder.encode(username));
-		}else {
+		}else if(username.contains("Naver")){
+			mem = memberDao.selectByApiId(username.substring(6), 2);
+			mem.setM_id(username);
+			mem.setM_password(encoder.encode(username));
+		}
+		else {
 			mem = memberDao.selectByID(username);
 		}		
 		

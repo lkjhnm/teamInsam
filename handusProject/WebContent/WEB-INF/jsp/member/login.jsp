@@ -114,7 +114,6 @@
 							+id+"&redirect_uri=http://localhost:8081/handusProject/member/oauth&response_type=code","PopupWin",
 							"width=500,height=600");
 				})
-				
 			}
 		})
 		
@@ -145,7 +144,7 @@
 								<img src="${pageContext.request.contextPath}/img/kakao_account_login_btn_medium_narrow.png">
 							</div>
 							<div id="naverButton" class='apiButton'>
-								<img src="${pageContext.request.contextPath}/img/Log_in_with NAVER_Official_Green.png">
+								<a href="${naverUrl }" onclick="window.open(this.href, '', 'width=500, height=700'); return false"><img src="${pageContext.request.contextPath}/img/Log_in_with NAVER_Official_Green.png"></a>
 							</div>
 						</div>
 					</div>

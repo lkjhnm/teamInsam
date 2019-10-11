@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import handus.dao.AuctionDao;
+import handus.dao.ImageDao;
 import handus.model.Auction;
 import handus.model.AuctionGraph;
 import handus.model.HandusImage;
@@ -27,6 +28,10 @@ public class AuctionService {
 	@Autowired
 	private AuctionDao auctionDao;
 	
+	@Autowired 
+	private ImageDao imageDao;
+	
+	private final int IMAGE_TYPE = 2;
 		
 	public List<Auction> getAuctionList(int page,String type){
 		return auctionDao.selectAuctionList(page,type);
@@ -68,16 +73,16 @@ public class AuctionService {
 		return pageInfo;
 	}
 	
-	public Auction getAuctionDetail(int a_pk) {
-		Auction auction = auctionDao.selectAuction(a_pk);
-		auction.setA_remain(auction.getA_endTime().getTime() - new Date().getTime());
-		auction.setA_remainText(getRemainTime(auction.getA_remain()));
+	public Map<String,Object> getAuctionDetail(int a_pk) {
+		Map<String,Object> auction = auctionDao.selectAuction(a_pk);
+		auction.put("A_REMAIN",((Date)auction.get("A_ENDTIME")).getTime() - new Date().getTime());
+		auction.put("A_REMAIN_TEXT",getRemainTime((long)auction.get("A_REMAIN")));
 		
 		return auction;
 	}
 	
-	public List<HandusImage> getAuctionImg(int a_pk) {
-		return auctionDao.selectImgListByA_pk(a_pk);
+	public List<Map<String,Object>> getAuctionImg(int a_pk) {	
+		return imageDao.selectImageListByFK(a_pk, IMAGE_TYPE);
 	}
 	
 	private String getRemainTime(long remain){	
@@ -92,19 +97,6 @@ public class AuctionService {
 		String day  = (days  < 1 ) ? "" : days+"일 ";
         
 		return day + hours + ":" + minutes + ":" + seconds;
-	}
-	
-	public byte[] getAuctionImages(int ai_pk) throws IOException {		//예외발생시 예외 이미지 주기
-		HandusImage image = auctionDao.selectAuctionImagePath(ai_pk);
-		String savePath = image.getImg_savePath();
-		String fileName = image.getImg_fileName();
-		
-		if(fileName == null) {
-			return null;
-		}
-		byte[] bytes = FileUtils.readFileToByteArray(new File(savePath,fileName));
-		
-		return bytes;
 	}
 	
 	public String getAuctionGraphData(AuctionGraph ag) {

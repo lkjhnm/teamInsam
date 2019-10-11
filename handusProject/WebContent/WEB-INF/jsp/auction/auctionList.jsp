@@ -193,28 +193,6 @@
 	
 	$(function(){
 		
-// 		$(".auctionImg").on("mouseenter",function(e){
-// 			var i = 0;
-// 			auctionInter = setInterval(() => {
-// 				i++;
-// 				if(i == 4){
-// 					$(this).next().css('display','block')
-// 					$(this).next().animate({
-// 						opacity : '1.0'
-// 					},600)	
-// 				}
-// 			}, 100);
-// 		})
-		
-// 		$(".auctionImg").on("mouseleave",function(){
-// 			clearInterval(auctionInter)
-// 			$(this).next().animate({
-// 				opacity : '0'
-// 			},600,function(){
-// 				$(this).css('display','none')				
-// 			})
-// 		})
-		
 		$(".auctionImg").on("click",function(){
 			var a = $(this).next().find("a").get(0).click();
 		})
@@ -262,11 +240,7 @@
 			<div class="auctionList">
 				<c:forEach items="${auctionList }" var="item">
 					<div class="auctionBox">
-						<img class='auctionImg' src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${item.ai_pk}">
-<!-- 						<div class='auctionInfo'> -->
-<%-- 							<p class='info'><i>작가 ${item.m_pk_writer }</i></p> --%>
-<%-- 							<p class='info'><i>현재 가격 <fmt:formatNumber value="${item.a_currentPrice }" pattern="#,###원"/></i></p> --%>
-<!-- 						</div> -->
+						<img class='auctionImg' src="${pageContext.request.contextPath }/image/${item.ai_pk}">
 						<div class="auctionTitle">
 							<span><a href='detail?a_pk=${item.a_pk}'>${item.a_title }</a></span>
 						</div>

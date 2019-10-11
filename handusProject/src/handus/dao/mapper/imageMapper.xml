@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="handus.dao.ImageDao">
+
+	<select id="selectImageByPK" parameterType="int" resultType="map"> 
+		select *
+			from HANDUS_IMAGE
+				where hi_pk = #{hi_pk}
+	</select>
+	
+	<select id="selectImageListByFK" parameterType="int" resultType="map">
+		select *
+			from HANDUS_IMAGE
+				where hi_fk = #{hi_fk} and hi_type= #{hi_type} 
+					order by hi_main desc
+	</select>
+</mapper>

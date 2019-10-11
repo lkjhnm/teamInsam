@@ -45,4 +45,25 @@ public class UserService {
 	public List<Map<String,Object>> userSubscribeList(int type,int m_pk_user){
 		return userDao.selectSubsListData(type, m_pk_user);
 	}
+	public List<Map<String,Object>> userSubscribeListAll(int m_pk_user){
+		return userDao.selectSubsListAll(m_pk_user);
+	}
+	
+	public Map<String,Object> getUserInfo(int m_pk){
+		return userDao.selectUserByPk(m_pk);
+	}
+	
+	public boolean updateUserInfo(Map<String,Object> userInfo) {
+		return userDao.updateUserInfo(userInfo);
+	}
+	
+	public List<Map<String,Object>> getWinningBid(int m_pk){
+		return userDao.selectWinningBid(m_pk);
+	}
+	public List<Map<String,Object>> getPayedItemList(int m_pk){
+		return userDao.selectPayedItem(m_pk);
+	}
+	public List<Map<String,Object>> getPayedStudioList(int m_pk){
+		return userDao.selectPayedStudio(m_pk);
+	}
 }

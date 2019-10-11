@@ -41,14 +41,62 @@
 							where m_pk_user = #{m_pk_user} and ms_type = #{type} ) fk on 
 			<choose>
 				<when test="type == 1">
-					(msa.m_pk = fk.ms_fk)
+					(msa.m_pk = fk.ms_fk) join AUTHOR ah on (ah.m_pk = msa.m_pk) 
+						left outer join HANDUS_IMAGE hi on (hi.hi_fk = msa.m_pk AND hi_main = 1 AND hi.hi_type = 4)
 				</when>
 				<when test="type == 2">
-					(msa.s_pk = fk.ms_fk)
+					(msa.s_pk = fk.ms_fk) join CATEGORYNAME c on (msa.s_category = c.c_pk)
+						left outer join HANDUS_IMAGE hi on (hi.hi_fk = msa.s_pk and hi_main = 1 AND hi_type = 3)
 				</when>
 				<when test="type == 3">
-					(msa.a_pk = fk.ms_fk) join AUCTION_IMAGE ai on (msa.a_pk = ai.a_pk and ai.ai_main = 1)
+					(msa.a_pk = fk.ms_fk) join HANDUS_IMAGE hi on (msa.a_pk = hi.hi_fk and hi.hi_main = 1 AND hi.hi_type = 2) 
+						join CATEGORYNAME c on (msa.c_pk = c.c_pk) join auction_graph ag on (msa.a_pk = ag.a_pk)
+						where ag.ag_bidding = ( select max(ag.ag_bidding) from auction_graph ag where msa.a_pk = ag.a_pk )
 				</when>
 			</choose>				
+	</select>
+	
+	<select id="selectUserByPk" parameterType="int" resultType="map">
+		select M_NAME, M_EMAIL, M_PHONENUM ,M_ADDRESS ,
+				(select count(*) from MEMBER_SUBSCRIBE where m_pk_user = #{m_pk}) as M_SUB_COUNT,
+				(select count(*) from USER_ALARM ua where ua.m_pk = #{m_pk} AND ua_read = 0) as UA_UNREAD_COUNT,
+				(select count(*) from USER_ALARM ua where ua.m_pk = #{m_pk} ) as UA_ALL_COUNT 
+			from MEMBER m 
+				where m_pk = #{m_pk}
+	</select>
+	
+	<select id="selectSubsListAll" parameterType="int" resultType="map">
+		select ms_pk, ms_type, ms_fk
+			from member_subscribe
+				where m_pk_user = #{m_pk_user}
+	</select>
+	
+	<update id="updateUserInfo" parameterType="map">
+		update MEMBER set m_name =#{m_name} , m_phonenum = #{m_phonenum} , m_email = #{m_email} , m_address = #{m_address}
+			where m_pk = #{m_pk}
+	</update>
+	
+	<select id="selectWinningBid" resultType="map">
+		select a.a_pk, a.a_title, a_endprice, c.c_category, hi.hi_pk, au.at_name , a.a_buy
+			 from auction a join auction_graph ag 
+			 	on (a.a_pk = ag.a_pk and a.a_end = 1 and ag.m_pk_user = #{m_pk} and a.a_endprice = ag.ag_bidding)
+			 		join HANDUS_IMAGE hi on (a.a_pk = hi.hi_fk and hi.hi_main = 1 and hi.hi_type = 2)
+			 			join AUTHOR au on (a.m_pk_writer = au.m_pk)
+        					join categoryname c on (a.c_pk = c.c_pk)
+		
+	</select>
+	
+	<select id="selectPayedItem" parameterType="int" resultType="map">
+		select *
+			from TOTAL_ORDER tod join ITEM i on (tod.to_type = 1 and tod.to_p_pk = i.i_pk)
+					join HANDUS_IMAGE hi on (hi.hi_type = 1 and hi.hi_main = 1 and hi.hi_fk = i.i_pk)
+				where tod.to_m_pk = #{m_pk}
+	</select>
+	
+	<select id="selectPayedStudio" parameterType="int" resultType="map">
+		select *
+			from TOTAL_ORDER tod join STUDIO s on (tod.to_type = 3 and tod.to_p_pk = s.s_pk)
+					join HANDUS_IMAGE hi on (hi.hi_type = 3 and hi.hi_main = 1 and hi.hi_fk = s.s_pk)
+				where tod.to_m_pk = #{m_pk}
 	</select>
 </mapper>

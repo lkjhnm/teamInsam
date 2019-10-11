@@ -158,6 +158,30 @@
 		color: inherit;
 		text-decoration: none;
 	}
+	
+/* 페이징 처리  */
+	#pageContainer{
+		margin-top: 100px;
+		text-align: center;
+		padding-right: 125px;
+	}
+	.page{
+		font-size:20px;
+		color:#191919;
+		letter-spacing: 10px;
+		font-weight:600;
+		text-decoration: none;
+		cursor:pointer;
+	}
+	.page:hover{
+		color:#ff1d43;
+	}
+	#start{
+		letter-spacing: 0px;
+	}
+	#end{
+		letter-spacing:0px;
+	}
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
@@ -165,65 +189,14 @@
 	var studioNum; 		// 게시글 번호, 리스트에서 얻어옴 
 	var isHeart;
 	$(function () {
-		// 좋아요 하기, 좋아요 취소하기 
-		$(".imgChange").on("click", function () {
-			isHeart = $(this).attr("data-iH");
-			studioNum = $(this).attr("data-sN");
-			if(isHeart === "true"){
-				offHeart(studioNum);
-				$(this).attr("data-iH", false);
-			}else{
-				// 왜 값이 false 인데 여기로 안 떨어지지 
-				onHeart(studioNum);
-				$(this).attr("data-iH", true);
-			}
-		});
+		
+		$("#category ul li a").on("mouseover",function(){
+			$(this).css('color','#ff1d43')
+		})
+		$("#category ul li a").on("mouseleave",function(){
+			$(this).css('color','#544a4a')
+		})
 	});
-	function onHeart(studioNum) {
-		$.ajax({
-			url: "${pageContext.request.contextPath}/heart/onHeart",
-			data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
-			type: "post",
-			success: function (result) {
-				if(result){
-					drawFas(studioNum);
-				}else{
-					alert("구독 불가");
-				}
-			},
-			error: function () {
-				alert("onHeart에러");
-			}
-		});
-	};
-	function offHeart(studioNum) {
-		$.ajax({
-			url: "${pageContext.request.contextPath}/heart/offHeart",
-			data: {"hs_m_pk":memberNum, "hs_s_pk":studioNum},
-			type: "post",
-			success: function (result) {
-				if(result){
-					drawFar(studioNum);
-				}else{
-					alert("구독취소 불가");
-				}
-			},
-			error: function () {
-				alert("offHeart에러");
-			}
-		});
-	};
-	function drawFar(studioNum) {
-		// 해당 게시글 번호 속성을 가지고 있는 div의 i 속성 변경 
-		var faHeart = $("i[data-fa='"+studioNum+"']");
-		faHeart.removeClass("fas");
-		faHeart.addClass("far");
-	};
-	function drawFas(studioNum) {
-		var faHeart = $("i[data-fa='"+studioNum+"']");
-		faHeart.removeClass("far");
-		faHeart.addClass("fas");
-	};
 </script>
 </head>
 <body>
@@ -234,13 +207,13 @@
 				<div id="category">
 					<div class="categoryTitle"><span> C A T E G O R Y ----- </span></div>
 					<ul>
-						<li><a href="#"> A L L</a> </li>
-						<li><a href="#"> C E R A M I C S </a></li>
-						<li><a href="#"> M E T A L </a></li>
-						<li><a href="#"> G L A S S </a></li>
-						<li><a href="#"> E M B R O I D E R Y </a></li>
-						<li><a href="#"> L E A T H E R </a></li>
-						<li><a href="#"> W O O D </a></li>
+						<li><a href="${pageContext.request.contextPath }/studio/list"> A L L</a> </li>
+						<li><a href="${pageContext.request.contextPath }/studio/list?type=ceramics"> C E R A M I C S </a></li>
+						<li><a href="${pageContext.request.contextPath }/studio/list?type=metal"> M E T A L </a></li>
+						<li><a href="${pageContext.request.contextPath }/studio/list?type=glass"> G L A S S </a></li>
+						<li><a href="${pageContext.request.contextPath }/studio/list?type=embroidery"> E M B R O I D E R Y </a></li>
+						<li><a href="${pageContext.request.contextPath }/studio/list?type=leather"> L E A T H E R </a></li>
+						<li><a href="${pageContext.request.contextPath }/studio/list?type=wood"> W O O D </a></li>
 					</ul>
 				</div>
 			</div>
@@ -261,24 +234,41 @@
 				<!-- 리스트 그리기 -->
 				<c:forEach items="${studioList }" var="studio">
 					<div class="studioBox">
-						<img alt="" src="">
-						<!-- 하트 결정하기 -->
-						<div class='imgChange' data-sN='${studio.num }' data-iH='${studio.isHeart }'>
-							<c:choose>
-								<c:when test="${!(studio.isHeart) }">
-									<span><i class="far fa-heart fa-lg heart" data-fa='${studio.num }'></i></span>
-								</c:when>
-								<c:otherwise>
-									<span><i class="fas fa-heart fa-lg heart" data-fa='${studio.num }'></i></span>
-								</c:otherwise>
-							</c:choose>
-						</div>
-						<span><a href="detail?num=${studio.num}"><img class='studioImg'></a></span>
+						<span><a href="detail?num=${studio.S_PK}">
+							  <img class='studioImg' src="${pageContext.request.contextPath }/image/${studio.HI_PK}"></a>
+						</span>
 						<div class="studioTitle">
-							<span><a href='detail?num=${studio.num}'>${studio.title }</a></span>
+							<span><a href='detail?num=${studio.S_PK}'>${studio.S_TITLE }</a></span>
 						</div>
 					</div>
 				</c:forEach>
+			</div>
+			
+			<!-- 페이징 -->
+			<div id="pageContainer">
+				<a class='page' id="start" href="${pageContext.request.contextPath }/studio/list?page=1&type=${type}">
+					<i class="fas fa-caret-left"></i><i class="fas fa-caret-left"></i>
+				</a>&nbsp;&nbsp;
+				<a class='page' href="${pageContext.request.contextPath }/studio/list?page=${curPage <= 1 ? 1 : curPage -1 }&type=${type}">
+					<i class="fas fa-caret-left"></i>
+				</a>
+				<c:forEach begin="${startPage }" end="${endPage }" var="page">
+					<c:choose>
+						<c:when test="${page eq curPage}">
+							<span class='page' style='color:#ff1d43; cursor:default;'>${page }</span>
+						</c:when>
+						<c:otherwise>
+							<a class='page' href="${pageContext.request.contextPath }/studio/list?page=${page}&type=${type}"> ${page }</a>					
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+				&nbsp;&nbsp;
+				<a class='page' href="${pageContext.request.contextPath }/studio/list?page=${curPage >= total ? total : curPage + 1}&type=${type}">
+					<i class="fas fa-caret-right"></i>
+				</a>
+				<a class='page' id="end" href="${pageContext.request.contextPath }/studio/list?page=${total}&type=${type}">
+					<i class="fas fa-caret-right"></i><i class="fas fa-caret-right"></i>
+				</a>
 			</div>
 		</div>
 	</div>

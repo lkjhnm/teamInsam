@@ -2,6 +2,7 @@ package handus.auction.controller;
 
 import org.springframework.http.MediaType;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.google.gson.JsonObject;
 
 import handus.auction.service.AuctionService;
 import handus.model.AuctionGraph;
@@ -47,16 +50,6 @@ public class AuctionController {
 		return "auction/auctionDetail";
 	}
 	
-	@RequestMapping(value="/auctionImg", method=RequestMethod.GET)
-	public ResponseEntity<byte[]> auctionImage(int ai_pk) throws IOException{
-		HttpHeaders headers = new HttpHeaders();
-		byte[] image = auctionService.getAuctionImages(ai_pk);
-		headers.setCacheControl(CacheControl.noCache().getHeaderValue());
-		
-		ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(image,headers,HttpStatus.OK);
-		return responseEntity;
-	}
-	
 	@RequestMapping(value="/graph", method=RequestMethod.GET)
 	@ResponseBody
 	public String auctionGraph(AuctionGraph ag) {
@@ -71,7 +64,7 @@ public class AuctionController {
 	public String auctionBidding(AuctionGraph ag) {
 		
 		String dataAfterBid = auctionService.biddingAuction(ag);
-		simpMessagingTemplate.convertAndSend("/subscribe/bidding/"+ag.getA_pk(), dataAfterBid);
+		simpMessagingTemplate.convertAndSend("/subscribe/bidding/auction/"+ag.getA_pk(), dataAfterBid);
 		System.out.println(simpMessagingTemplate);
 		return dataAfterBid;
 	}
@@ -79,14 +72,24 @@ public class AuctionController {
 	@RequestMapping(value="/alarm", method=RequestMethod.GET)
 	public String auctionAlarm(int a_pk,boolean a_end, boolean a_start) {
 		
+		int hi_pk = ((BigDecimal)auctionService.getAuctionImg(a_pk).get(0).get("HI_PK")).intValue();
+		
+		JsonObject  object = new JsonObject();
+		object.addProperty("title","경매 알람");
+		object.addProperty("pk",a_pk);
+		object.addProperty("img",hi_pk);
+		object.addProperty("type", 1);
 		if(a_start) {
-			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "{\"type\":1}");
+			object.addProperty("content", "경매가 시작 되었습니다.");
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/3/"+a_pk, object.toString());		// 경매 시작 알림
 			return null;
 		}
 		if(a_end) {
-			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "{\"type\":2}");
-		}else {
-			simpMessagingTemplate.convertAndSend("/subscribe/alarm/"+a_pk, "{\"type\":3}");
+			object.addProperty("content", "경매가 종료 되었습니다.");
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/3/"+a_pk, object.toString());		// 경매 종료 알림
+		}else {	
+			object.addProperty("content", "경매 종료까지 1시간 남았습니다.");
+			simpMessagingTemplate.convertAndSend("/subscribe/alarm/3/"+a_pk, object.toString());		// 경매 종료 1시간 전 알림
 		}
 		return null;
 	}

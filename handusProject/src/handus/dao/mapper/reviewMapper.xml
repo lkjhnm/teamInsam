@@ -15,8 +15,9 @@
 		delete from REVIEW_STUDIO
 		where RS_PK = #{rs_pk} 
 	</delete>
-	<select id="selectAllRS" resultMap="rsMap">
+	<select id="selectAllRS" parameterType="int" resultMap="rsMap">
 		select * from REVIEW_STUDIO 
+		where RS_S_PK = #{s_pk}
 		order by RS_PK 
 	</select>
 	<select id="selectRScount" parameterType="int" resultType="int">
@@ -27,10 +28,42 @@
 		<result column="RS_PK" property="rs_pk"/>
 		<result column="RS_M_PK" property="rs_m_pk"/>
 		<result column="RS_M_NAME" property="rs_m_name"/>
-		<result column="RS_M_ID" property="rs_m_id"/>
 		<result column="RS_GRADE" property="rs_grade"/>
 		<result column="RS_CONTENT" property="rs_content"/>
 		<result column="RS_S_PK" property="rs_s_pk"/>
 		<result column="RS_REG_DATE" property="rs_reg_date"/>
+	</resultMap>
+	
+	<insert id="insertRI" parameterType="reviewItem">
+		insert into REVIEW_ITEM 
+    	( RI_PK, RI_M_PK, RI_M_NAME, RI_GRADE, RI_CONTENT, RI_I_PK )
+    	values (RI_SEQ.NEXTVAL, #{ri_m_pk}, #{ri_m_name}, #{ri_grade}, #{ri_content}, #{ri_i_pk} )
+	</insert>
+	<update id="updateRI" parameterType="reviewItem">
+		update REVIEW_ITEM
+		set RI_CONTENT = #{ri_content}  
+		where RI_PK = #{ri_pk} 
+	</update>
+	<delete id="deleteRI" parameterType="int">
+		delete from REVIEW_ITEM
+		where RI_PK = #{ri_pk} 
+	</delete>
+	<select id="selectAllRI" parameterType="int" resultMap="riMap">
+		select * from REVIEW_ITEM 
+		where RI_I_PK = #{i_pk}
+		order by RI_PK 
+	</select>
+	<select id="selectRIcount" parameterType="int" resultType="int">
+		select count(*) from REVIEW_ITEM
+		where RI_I_PK = #{ri_i_pk} 
+	</select>
+	<resultMap type="reviewItem" id="riMap">
+		<result column="RI_PK" property="ri_pk"/>
+		<result column="RI_M_PK" property="ri_m_pk"/>
+		<result column="RI_M_NAME" property="ri_m_name"/>
+		<result column="RI_GRADE" property="ri_grade"/>
+		<result column="RI_CONTENT" property="ri_content"/>
+		<result column="RI_I_PK" property="ri_i_pk"/>
+		<result column="RI_REG_DATE" property="ri_reg_date"/>
 	</resultMap>
 </mapper>

@@ -376,6 +376,7 @@
 		top:90px;
 		left:840px;
 		z-index:103;
+		color:#ff1d43;
 	}
 	#down-arrow{
 		font-size:25px;
@@ -383,12 +384,11 @@
 		top:510px;
 		left:840px;
 		z-index:103;
+		color:#ff1d43;
 	}
 </style>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-<script src="${pageContext.request.contextPath }/js/sockjs.js"></script>
-<script src="${pageContext.request.contextPath }/js/stomp.js"></script>
 <sec:authorize access="isAnonymous()" var="isAnony"></sec:authorize>
 <script>
 	var dps;
@@ -402,7 +402,7 @@
 		var increments = 1000;
 		var isAnony = ${isAnony};
 		
-		var formatDate = ${auction.a_remain}
+		var formatDate = ${auction.A_REMAIN}
 		setTimeout(() => {
 			formatDate = formatDate - 1000;
 			$("#auctionTime").text(msToTime(formatDate))
@@ -440,7 +440,7 @@
 				//옥션 그래프 데이터 요청
 				$.ajax({
 					url: "graph",
-					data: {"a_pk": '${auction.a_pk}'},
+					data: {"a_pk": '${auction.A_PK}'},
 					type : 'get',
 					dataType: "json",
 					success: function(data){
@@ -513,8 +513,8 @@
 				url: "bidding",
 				type : "post",
 				data : {"ag_bidding": $("#bidInput").val() , 
-						"a_pk": "${auction.a_pk}",
-						"m_pk_user" : "${m_pk}"					// %Q 유저부분 수정
+						"a_pk": "${auction.A_PK}",
+						"m_pk_user" : "${m_pk}"				
 						},
 				dataType: "json",
 				success: function(data){
@@ -531,7 +531,6 @@
 			})
 		})
 		
-		connect();
 		imgSlide();
 		
 		$(".thumnail").first().css("border-color","#191919")
@@ -541,7 +540,7 @@
 			$("#auctionImg").attr("src", $(this).attr("src"))
 		})
 		
-		var isSubs = isSubscribe()
+		var isSubs = isAnony == false ? isSubscribe() : false;
 		
 		$("#subButton").on("click",function(){
 
@@ -557,7 +556,7 @@
 					$.ajax({
 						url: "${pageContext.request.contextPath}/user/subscribe/3",		// auction 은 3번
 						type:"post",
-						data :  {"m_pk_user":"${m_pk}", "ms_fk":"${auction.a_pk}"},
+						data :  {"m_pk_user":"${m_pk}", "ms_fk":"${auction.A_PK}"},
 						dataType: "json",
 						success: function(data){
 							isSubs = data;
@@ -572,7 +571,7 @@
 					$.ajax({
 						url : "${pageContext.request.contextPath}/user/subscribeCancel/3",
 						type:"post",
-						data : {"m_pk_user": "${m_pk}","ms_fk":"${auction.a_pk}"},
+						data : {"m_pk_user": "${m_pk}","ms_fk":"${auction.A_PK}"},
 						dataType:"json",
 						success: function(data){
 							isSubs = !data;		//성공적으로 지우면 false로
@@ -581,6 +580,10 @@
 					})
 				}
 			}
+		})
+		
+		$("#writerBtn").on("click",function(){
+			location.href="${pageContext.request.contextPath}/author/publicPage?m_pk="+${auction.M_PK_WRITER};
 		})
 	})
 // 	윈도우 온로드 종료  --------------------------------------------------------------
@@ -591,7 +594,7 @@
 		
 		$.ajax({
 			url:"${pageContext.request.contextPath}/user/subscribeCheck/3",
-			data : {"m_pk_user":"${m_pk}", "ms_fk":"${auction.a_pk}"},
+			data : {"m_pk_user":"${m_pk}", "ms_fk":"${auction.A_PK}"},
 			type:"post",
 			dataType :"json",
 			async:false,
@@ -706,38 +709,6 @@
 	  
 	    return str +"원";
 	}
-	
-	
-// 	웹소켓
-	
-	var sock;
-	var stompClient;
-	
-	function connect(){
-		sock = new SockJS("${pageContext.request.contextPath}/connect");
-		stompClient = Stomp.over(sock);
-		stompClient.connect({},function(){
-			stompClient.subscribe("/subscribe/bidding/${auction.a_pk}",function(webSocketData){
-				var data = JSON.parse(webSocketData.body);
-				
-				if(data[0].result){
-					$("#bidTime").text("< " + data[0].regDate + " >")
-					data.shift()
-					makeChart(data);
-					$(".currentPrice").text(comma(data[data.length - 1].y))
-					$(".currentPrice").css("color","#ff1d43")
-					setTimeout(() => {
-						$(".currentPrice").css("color","#544a4a")
-					},2000)
-				}
-			})
-			
-			stompClient.subscribe("/subscribe/alarm/${auction.a_pk}",function(webSocketData){	// 애를 개인 구독 페이지로 넘긴다.
-				var data = webSocketData.body;
-				alert(data);
-			})
-		})
-	}
 </script>
 </head>
 <body>
@@ -746,12 +717,12 @@
 
 		<div id="main">
 			<div id="auctionInfoBox">
-				<img id="auctionImg" src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${auctionImg[0].img_pk}">
+				<img id="auctionImg" src="${pageContext.request.contextPath }/image/${auctionImg[0].HI_PK}">
 				<div id="thumnailContainer">
 					<div id="thumbnail_train">
 					<c:forEach items="${auctionImg }" var="img">
 						<c:if test="${fn:length(auctionImg) > 1 }">
-							<img class='thumnail' src="${pageContext.request.contextPath }/auction/auctionImg?ai_pk=${img.img_pk}">			
+							<img class='thumnail' src="${pageContext.request.contextPath }/image/${img.HI_PK}">			
 						</c:if>
 					</c:forEach>
 					</div>
@@ -765,10 +736,10 @@
 				</div>
 				<div class="auctionInfoContainer">
 					<div id="auctionInfo">
-						<div class='infoPosition infoBold'><span> ${auction.a_title } </span></div>
-						<div class='infoPosition'><span> 작가 이름 </span></div>				
+						<div class='infoPosition infoBold'><span> ${auction.A_TITLE } </span></div>
+						<div class='infoPosition'><span> ${auction.AT_NAME } </span></div>				
 						<div class='infoPosition'>
-							<div class='infoButton'><span> 작가 페이지 </span></div> <div class='infoButton'><span>메시지 문의</span></div>
+							<div class='infoButton' id="writerBtn"><span> 작가 페이지 </span></div> <div class='infoButton'><span>메시지 문의</span></div>
 						</div>
 						<div id="button-boundary"></div>
 						
@@ -778,27 +749,27 @@
 						</div>
 						
 						<div id="button-boundary"></div>
-						<div class='infoPosition'><span> ${auction.c_category } </span></div>
-						<div class='infoPosition'><span> ${auction.a_comment }</span></div>
+						<div class='infoPosition'><span> ${auction.C_CATEGORY } </span></div>
+						<div class='infoPosition'><span> ${auction.A_COMMENT }</span></div>
 						<div class='infoPosition iconContainer'>
 							<div><img id='icon' src='${pageContext.request.contextPath }/img/hand-right.svg'>
-							<span> 조회수 ${auction.a_readCount } 명 </span></div>
+							<span> 조회수 ${auction.A_READCOUNT } 명 </span></div>
 							<div><img id='icon' src='${pageContext.request.contextPath }/img/like.svg'>
-							<span> 구독자 650 명 </span></div>
+							<span> 구독자 ${auction.A_SUBSCRIBE eq null ? 0 : auction.A_SUBSCRIBE} 명 </span></div>
 						</div>
 						<div id="button-boundary"></div>
 						<div class='infoPosition'>
 							<c:choose>
-								<c:when test="${auction.a_start eq false}">
+								<c:when test="${auction.A_START eq 0}">
 									<span class="infoBold">
-										<fmt:formatDate value="${auction.a_startTime }" pattern="yyyy/MM/dd 경매 시작"/>
+										<fmt:formatDate value="${auction.A_STARTTIME }" pattern="yyyy/MM/dd 경매 시작"/>
 									</span>
 								</c:when>
-								<c:when test="${auction.a_end }">
+								<c:when test="${auction.A_END eq 1}">
 									<span class="infoBold"> 이미 종료된 경매입니다. </span>									
 								</c:when>
 								<c:otherwise>
-									<span> 종료 시간 </span><span id="auctionTime"> ${auction.a_remainText}</span>
+									<span> 종료 시간 </span><span id="auctionTime"> ${auction.A_REMAIN_TEXT}</span>
 								</c:otherwise>			
 							</c:choose>
 						</div>  
@@ -806,25 +777,25 @@
 						<div class='infoPosition infoBold'>
 							
 							<c:choose>
-								<c:when test="${auction.a_start eq false}">
+								<c:when test="${auction.A_START eq 0}">
 									<span class="infoBold">
 										시작 가격 
 									</span>
 								</c:when>
-								<c:when test="${auction.a_end }">
+								<c:when test="${auction.A_END eq 1}">
 									<span class='smallText' id="bidTime">
-										 &lt; <fmt:formatDate value="${auction.ag_regDate }" pattern="yyyy/MM/dd HH:mm 낙찰" /> &gt; 
+										 &lt; ${auction.AG_REGDATE } 낙찰 &gt; 
 									</span>									
 								</c:when>
 								<c:otherwise>
 									<span class='smallText' id="bidTime">
-										 &lt; ${auction.ag_regDate } 입찰 &gt; 
+										 &lt; ${auction.AG_REGDATE } 입찰 &gt; 
 									</span>
 								</c:otherwise>			
 							</c:choose>
 							&nbsp;
 							<span class='currentPrice' id="auctionInfoPrice"> 
-								<fmt:formatNumber value="${auction.a_currentPrice }" pattern="#,###원"/>
+								<fmt:formatNumber value="${auction.A_CURRENTPRICE }" pattern="#,###원"/>
 							</span>
 						</div>
 						<div id="button-boundary"></div>
@@ -832,13 +803,13 @@
 						<div class='infoPosition' id="buy_sub_container">
 							<div id='buttonContainer'>
 								<c:choose>
-									<c:when test="${auction.a_end }">
+									<c:when test="${auction.A_END eq 1}">
 										<div class="button">
 											종 료
 										</div>
 									</c:when>
 									<c:otherwise>
-										<c:if test="${auction.a_start eq true }">
+										<c:if test="${auction.A_START eq 1 }">
 											<div class="button" id='buyButton'>
 												입 찰
 											</div>
@@ -857,38 +828,35 @@
 			<div id="detailContainer">
 				<div id="detailBox">
 					<div class='infoBold'><span>ITEM DETAIL</span></div>
-					<ul>
-						<li>코디의 주역이 될 한발.</li>
-						<li>· 치마도 바지도 일치하는 레이디 아름다움 펌프스.</li>
-						<li>· 다리를 단단히 잡아주는 인상적인 3 개의 스트랩</li>
-						<li>· 6.5cm 힐
-					</ul>
+					<p>
+						${auction.A_DETAILS }
+					</p>
 				</div>
 				<div id="specBox">
 					<div class='infoBold'><span>ITEM SPEC</span></div>
-					<div class='specPosition'><div class='specType'><span> c o u n t r y </span></div><span> MADE IN KOREA</span></div>
-					<div class='specPosition'><div class='specType'><span> m a t e r i a l </span></div><span> GLASS </span></div>
-					<div class='specPosition'><div class='specType'><span> c o l o r </span></div><span> ASH BROWN</span></div>
-					<div class='specPosition'><div class='specType'><span> s i z e </span></div><span> 200 * 150 * 150 (cm)</span></div>
+					<div class='specPosition'><div class='specType'><span> c o u n t r y </span></div><span> ${auction.A_COUNTRY }</span></div>
+					<div class='specPosition'><div class='specType'><span> m a t e r i a l </span></div><span> ${auction.C_CATEGORY } </span></div>
+					<div class='specPosition'><div class='specType'><span> c o l o r </span></div><span> ${auction.A_COLOR }</span></div>
+					<div class='specPosition'><div class='specType'><span> s i z e </span></div><span> ${auction.A_SIZE }</span></div>
 				</div>
 			</div>
 		</div>
 		<div id="modalContainer">
 			<div id="biddingModal">
-				<div class='infoBold' id="modalTitle"><div id="modalClose">x</div> <span>${auction.a_title }</span> </div>
+				<div class='infoBold' id="modalTitle"><div id="modalClose">x</div> <span>${auction.A_TITLE }</span> </div>
 				<div id="modalBody">
 					<div class='modalPosition'>
-						<div><span>시작 가격 : <fmt:formatNumber value="${auction.a_startPrice }" pattern="#,###원"/></span></div>
+						<div><span>시작 가격 : <fmt:formatNumber value="${auction.A_STARTPRICE }" pattern="#,###원"/></span></div>
 						<div id='modalBoundary'></div>
 						<div><span>최고 가격 : </span><span class='currentPrice'> 
-							<fmt:formatNumber value="${auction.a_currentPrice }" pattern="#,###원"/></span>
+							<fmt:formatNumber value="${auction.A_CURRENTPRICE }" pattern="#,###원"/></span>
 						</div>
 					</div>
 				</div>
 				<div id="bidContainer">
 					<div class='priceBtn' id="minusBtn"> - </div>
-					<input id="bidInput" type="number" name="bidding" readonly="readonly" min="${auction.a_currentPrice }" 
-						value="${auction.a_currentPrice }">
+					<input id="bidInput" type="number" name="bidding" readonly="readonly" min="${auction.A_CURRENTPRICE }" 
+						value="${auction.A_CURRENTPRICE }">
 					<div class='priceBtn' id="plusBtn"> + </div>
 					
 				</div>
@@ -912,5 +880,30 @@
 			</div>
 		</div>
 	</div>
+	
+	<!-- 웹소켓 관련 스크립트 -->
+	<script type="text/javascript">
+		$(function(){
+			var connectAlarm = setInterval(() => {
+				if(sock.readyState == 1){
+					stompClient.subscribe("/subscribe/bidding/auction/${auction.A_PK}",function(webSocketData){
+						var data = JSON.parse(webSocketData.body);
+						
+						if(data[0].result){
+							$("#bidTime").text("< " + data[0].regDate + " >")
+							data.shift()
+							makeChart(data);
+							$(".currentPrice").text(comma(data[data.length - 1].y))
+							$(".currentPrice").css("color","#ff1d43")
+							setTimeout(() => {
+								$(".currentPrice").css("color","#544a4a")
+							},2000)
+						}
+					})
+					clearInterval(connectAlarm);
+				}			
+			}, 1000);
+		})
+	</script>
 </body>
 </html>
