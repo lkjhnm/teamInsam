@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import handus.dao.MemberDao;
 import handus.model.Auth;
+import handus.model.Criteria;
 import handus.model.Member;
 import handus.model.MemberInterest;
 import handus.model.MemberVerify;
@@ -49,7 +50,6 @@ public class MemberService {
 	
 	@Autowired
 	private PasswordEncoder encoder;
-	
 	
 	/*
 	 * signUp 과정
@@ -261,4 +261,42 @@ public class MemberService {
 		}
 		return false;
 	}
+	
+	public Member getMemberDetail(int m_pk) {
+		return memberDao.selectMember(m_pk);
+	}
+	
+	public int countMemberList() {
+		return (Integer) selectOne("member.countMemberList");
+	}
+
+	private Integer selectOne(String string) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public int getTotalCount(Criteria cri) {
+		return memberDao.getTotalCount(cri);
+	}
+	
+	public List<Member> memberForm(Criteria cri) {
+		return memberDao.listPage(cri);
+	}
+	
+	public Member read(int bno) throws Exception {
+		
+		return memberDao.read(bno);
+	}
+	
+	public List<Member> listPage(Criteria cri) {
+		return memberDao.listPage(cri);
+	}
+	
+	public boolean removeMember(int m_pk) {
+		if(memberDao.deleteMember(m_pk) > 0) {
+			return true;
+		}
+		return false;
+	}
+	
 }

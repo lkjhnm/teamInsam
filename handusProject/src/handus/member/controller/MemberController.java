@@ -127,6 +127,7 @@ public class MemberController {
 		
 		return "member/myPage";
 	}
+	
 	@RequestMapping(value="/subscribe",method=RequestMethod.GET)
 	public String alarm() {
 		return "member/subscribe";

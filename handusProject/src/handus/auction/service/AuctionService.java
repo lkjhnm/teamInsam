@@ -173,5 +173,12 @@ public class AuctionService {
 		}
 	}
 	
+	public boolean modifyAuction(Auction auction) {
+		if(auctionDao.updateAuction(auction)>0) {
+			return true;
+		}
+		return false;
+	}
+	
 	
 }
