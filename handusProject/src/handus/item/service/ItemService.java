@@ -55,8 +55,8 @@ public class ItemService {
 	
 	
 	// 리스트 
-		public List<Item> getStudioList(int page, String type) {
-			List<Item> itemList = itemDao.selectItemList(page, type);		
+		public List<Map<String,Object>> getStudioList(int page, String type) {
+			List<Map<String,Object>> itemList = itemDao.selectItemList(page, type);		
 			return itemList;
 		} 
 		

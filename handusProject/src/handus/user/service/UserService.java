@@ -56,4 +56,14 @@ public class UserService {
 	public boolean updateUserInfo(Map<String,Object> userInfo) {
 		return userDao.updateUserInfo(userInfo);
 	}
+	
+	public List<Map<String,Object>> getWinningBid(int m_pk){
+		return userDao.selectWinningBid(m_pk);
+	}
+	public List<Map<String,Object>> getPayedItemList(int m_pk){
+		return userDao.selectPayedItem(m_pk);
+	}
+	public List<Map<String,Object>> getPayedStudioList(int m_pk){
+		return userDao.selectPayedStudio(m_pk);
+	}
 }

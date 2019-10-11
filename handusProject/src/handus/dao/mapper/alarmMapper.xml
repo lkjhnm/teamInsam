@@ -4,8 +4,43 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="handus.dao.AlarmDao">
 
-	<select id="getAlarmList" resultType="map">
-		
+	<select id="selectAlarmList" resultType="map">
+		select
+			ua.UA_PK , ua.UA_MESSAGE ,hi.HI_PK ,ua.UA_FK,ua.UA_TYPE ,a.AT_NAME , ua.UA_READ
+			from USER_ALARM ua join HANDUS_IMAGE hi on (ua.ua_fk = hi.hi_fk and ua.ua_type = hi.hi_type and hi.hi_main = 1)
+				join AUTHOR a on (ua.m_pk_writer = a.m_pk)
+				where ua.m_pk = #{m_pk}
+					<choose>
+						<when test="readType == 1">
+							AND UA_READ = 0
+						</when>
+						<when test="readType == 2">
+							AND UA_READ = 1
+						</when>
+					</choose>					
 	</select>
-
+	
+	<update id="updateAlarm" parameterType="int">
+		update USER_ALARM 
+			set ua_read = 1
+				where ua_pk = #{ua_pk} 
+	</update>
+	
+	<select id="selectAlarmInfo" resultType="map">
+		select (select hi_pk from handus_image where hi_fk = #{pk} and 
+			<choose>
+				<when test="type == 'item'">
+					hi_type = 1 
+				</when>
+				<when test="type == 'auction'">
+					hi_type = 2 
+				</when>
+				<when test="type == 'studio'">
+					hi_type = 3
+				</when>
+			</choose>	
+								and hi_main = 1) as hi_pk,
+  			    (select at_name from author where m_pk = #{m_pk_writer} ) as at_name
+    		from dual
+	</select>
 </mapper>

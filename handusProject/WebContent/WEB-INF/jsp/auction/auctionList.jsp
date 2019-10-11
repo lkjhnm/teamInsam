@@ -241,10 +241,6 @@
 				<c:forEach items="${auctionList }" var="item">
 					<div class="auctionBox">
 						<img class='auctionImg' src="${pageContext.request.contextPath }/image/${item.ai_pk}">
-<!-- 						<div class='auctionInfo'> -->
-<%-- 							<p class='info'><i>작가 ${item.m_pk_writer }</i></p> --%>
-<%-- 							<p class='info'><i>현재 가격 <fmt:formatNumber value="${item.a_currentPrice }" pattern="#,###원"/></i></p> --%>
-<!-- 						</div> -->
 						<div class="auctionTitle">
 							<span><a href='detail?a_pk=${item.a_pk}'>${item.a_title }</a></span>
 						</div>

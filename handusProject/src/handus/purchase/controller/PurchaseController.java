@@ -105,12 +105,12 @@ public class PurchaseController {
 				break;
 			case 2:
 				// 옥션
-				Auction auction = auctionService.getAuctionDetail(pNum);
-				product.put("p_name", auction.getA_title());
+				Map<String,Object> auction = auctionService.getAuctionDetail(pNum);
+				product.put("p_name", auction.get("A_TITLE"));
 				product.put("p_image", "");
 				product.put("p_count", pCount);
-				product.put("p_price", (auction.getA_endPrice())*pCount);
-				totalPay +=  (auction.getA_endPrice())*pCount;
+				product.put("p_price", ((int)auction.get("A_ENDPRICE"))*pCount);
+				totalPay +=  ((int)auction.get("A_ENDPRICE"))*pCount;
 				product.put("p_link", "/auction/detail?num="+pNum);
 				break;
 			case 3:

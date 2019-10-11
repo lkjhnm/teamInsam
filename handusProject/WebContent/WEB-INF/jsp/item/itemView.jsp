@@ -281,7 +281,6 @@
 		border-radius: 5px;
 		background-color: #ffff;
 	}
-}
 	#thumnailContainer{
 		width: 92px;
 		height: 425px;
@@ -654,6 +653,41 @@
 		$("#reviewInput").css("display", "none");
 	};
 	
+	//이미지 슬라이드 쇼
+	function imgSlide(){
+		var position = 0;
+		var count = $("#thumbnail_train").children().length -4;
+		
+		$("#up-arrow > span").on("click",function(){
+			
+			if(position -1 < 0){
+				return;
+			}
+			position = position <= 0 ? 0 : position - 1;
+			
+			
+			var top = position == 0 ? 0 : (-105)*position;
+
+			$("#thumbnail_train").animate({
+				"top" : top 
+			})
+		})
+		
+		$("#down-arrow >span").on("click",function(){
+			
+			if(position + 1 > count){
+				return;
+			}
+			position = position >= count ? count : position + 1;
+			
+			
+			var top = position == count ? (-105)*count : (-105)*position;
+			
+			$("#thumbnail_train").animate({
+				"top" : top
+			})
+		})
+	}	
 </script>
 </head>
 <body>
@@ -662,7 +696,7 @@
 		
 		<div id="main">
 			<div id="studioInfoBox">
-				<img id="studioImg" src="${pageContext.request.contextPath }/image/${img.HI_PK}">
+				<img id="studioImg" src="${pageContext.request.contextPath }/image/${itemImg[0].HI_PK}">
 				<div id="thumnailContainer">
 					<div id="thumbnail_train">
 					<c:forEach items="${itemImg }" var="img">

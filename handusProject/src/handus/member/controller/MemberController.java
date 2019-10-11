@@ -28,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -149,7 +150,7 @@ public class MemberController {
 			token.setDetails(new WebAuthenticationDetails(req));
 			Authentication authentication = manager.authenticate(token);
 			
-			List<SessionInformation> sessionInfo = sessionRegistry.getAllSessions(authentication.getPrincipal(), false);	
+			List<SessionInformation> sessionInfo = sessionRegistry.getAllSessions(authentication.getPrincipal(), false);
 			
 			for(SessionInformation ssInfo : sessionInfo) {
 				Object p = authentication.getPrincipal();

@@ -234,10 +234,11 @@
 				<!-- 리스트 그리기 -->
 				<c:forEach items="${studioList }" var="studio">
 					<div class="studioBox">
-						<img alt="" src="">
-						<span><a href="detail?num=${studio.s_pk}"><img class='studioImg'></a></span>
+						<span><a href="detail?num=${studio.S_PK}">
+							  <img class='studioImg' src="${pageContext.request.contextPath }/image/${studio.HI_PK}"></a>
+						</span>
 						<div class="studioTitle">
-							<span><a href='detail?num=${studio.s_pk}'>${studio.s_title }</a></span>
+							<span><a href='detail?num=${studio.S_PK}'>${studio.S_TITLE }</a></span>
 						</div>
 					</div>
 				</c:forEach>

@@ -53,8 +53,8 @@ public class StudioService {
 		return studioDao.selectStudioByNum(stuNum);
 	}	
 	// 리스트 
-	public List<Studio> getStudioList(int page, String type) {
-		List<Studio> studioList = studioDao.selectStudioList(page, type);		
+	public List<Map<String,Object>> getStudioList(int page, String type) {
+		List<Map<String,Object>> studioList = studioDao.selectStudioList(page, type);		
 		return studioList;
 	} 
   

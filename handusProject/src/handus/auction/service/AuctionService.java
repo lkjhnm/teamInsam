@@ -73,10 +73,10 @@ public class AuctionService {
 		return pageInfo;
 	}
 	
-	public Auction getAuctionDetail(int a_pk) {
-		Auction auction = auctionDao.selectAuction(a_pk);
-		auction.setA_remain(auction.getA_endTime().getTime() - new Date().getTime());
-		auction.setA_remainText(getRemainTime(auction.getA_remain()));
+	public Map<String,Object> getAuctionDetail(int a_pk) {
+		Map<String,Object> auction = auctionDao.selectAuction(a_pk);
+		auction.put("A_REMAIN",((Date)auction.get("A_ENDTIME")).getTime() - new Date().getTime());
+		auction.put("A_REMAIN_TEXT",getRemainTime((long)auction.get("A_REMAIN")));
 		
 		return auction;
 	}
