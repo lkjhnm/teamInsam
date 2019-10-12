@@ -459,7 +459,7 @@
 			alert("작가페이지 이동");
 		});
 		$("#messagePage").on("click", function () {
-			window.open('${pageContext.request.contextPath}/message/list','Handus Message','width=440, height=600');
+			window.open('${pageContext.request.contextPath}/message/message?authorNum='+${studio.m_pk_writer },'Handus Message','width=440, height=600');
 		});
 		
 		// 구독(하트) 버튼 누르기

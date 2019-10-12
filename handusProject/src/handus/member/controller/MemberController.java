@@ -222,7 +222,6 @@ public class MemberController {
 		try {
 			authToken = naverService.getAccessToken(session, state, code);
 			userProfile = naverService.getUserProfile(authToken);
-			System.out.println(userProfile);
 			// 결과값이 json형태임 
 			model.addAttribute("userProfile", userProfile);
 		} catch (Exception e) {

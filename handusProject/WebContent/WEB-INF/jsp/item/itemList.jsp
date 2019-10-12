@@ -231,10 +231,10 @@
 			
 			<!-- 페이징 -->
 			<div id="pageContainer">
-				<a class='page' id="start" href="${pageContext.request.contextPath }/studio/list?page=1&type=${type}">
+				<a class='page' id="start" href="${pageContext.request.contextPath }/item/list?page=1&type=${type}">
 					<i class="fas fa-caret-left"></i><i class="fas fa-caret-left"></i>
 				</a>&nbsp;&nbsp;
-				<a class='page' href="${pageContext.request.contextPath }/studio/list?page=${curPage <= 1 ? 1 : curPage -1 }&type=${type}">
+				<a class='page' href="${pageContext.request.contextPath }/item/list?page=${curPage <= 1 ? 1 : curPage -1 }&type=${type}">
 					<i class="fas fa-caret-left"></i>
 				</a>
 				<c:forEach begin="${startPage }" end="${endPage }" var="page">
@@ -243,15 +243,15 @@
 							<span class='page' style='color:#ff1d43; cursor:default;'>${page }</span>
 						</c:when>
 						<c:otherwise>
-							<a class='page' href="${pageContext.request.contextPath }/studio/list?page=${page}&type=${type}"> ${page }</a>					
+							<a class='page' href="${pageContext.request.contextPath }/item/list?page=${page}&type=${type}"> ${page }</a>					
 						</c:otherwise>
 					</c:choose>
 				</c:forEach>
 				&nbsp;&nbsp;
-				<a class='page' href="${pageContext.request.contextPath }/studio/list?page=${curPage >= total ? total : curPage + 1}&type=${type}">
+				<a class='page' href="${pageContext.request.contextPath }/item/list?page=${curPage >= total ? total : curPage + 1}&type=${type}">
 					<i class="fas fa-caret-right"></i>
 				</a>
-				<a class='page' id="end" href="${pageContext.request.contextPath }/studio/list?page=${total}&type=${type}">
+				<a class='page' id="end" href="${pageContext.request.contextPath }/item/list?page=${total}&type=${type}">
 					<i class="fas fa-caret-right"></i><i class="fas fa-caret-right"></i>
 				</a>
 			</div>

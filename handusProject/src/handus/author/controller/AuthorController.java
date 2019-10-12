@@ -129,11 +129,13 @@ public class AuthorController {
 	}
 	
 	@RequestMapping(value="/signUp", method=RequestMethod.GET)
+	@PreAuthorize("hasRole('ROLE_MEMBER')")
 	public String authorSignUp() {
 		return "author/signUp";
 	}
 	
 	@RequestMapping(value="/signUp",method=RequestMethod.POST)
+	@PreAuthorize("hasRole('ROLE_MEMBER')")
 	public String authorSignUpPost(@RequestParam Map<String,Object> formData) {
 		
 		authorService.registerAuthor(formData);

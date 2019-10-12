@@ -55,7 +55,7 @@ public class StudioController {
 		// 조회수 증복 증가 방지 (쿠키) 
 		if(studioService.updateReadCount(num)) {
 			model.addAttribute("studio", studioService.getStudioByNum(num));
-			int m_pk = 222; //(int)session.getAttribute("m_pk");
+			int m_pk = (int)session.getAttribute("m_pk");
 			model.addAttribute("m_pk", m_pk);
 			model.addAttribute("studioImg",studioService.getStudioImage(num));
 		}

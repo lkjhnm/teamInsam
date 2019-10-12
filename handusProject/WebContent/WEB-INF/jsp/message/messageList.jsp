@@ -9,6 +9,8 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/handus.css" />
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/sockjs.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/stomp.js"></script>
 <style type="text/css">
 	.container{
 		width: 400px;
@@ -67,25 +69,86 @@
 		float: right;
 	}
 	.alarm-msg{
-		color: #FF1D43;
 		font-weight: bold;
+		width: 10px;
+		height: 10px;
+		border-radius: 10px;
+		margin-left: 5px;
+	}
+	.alarm-red{
+		background-color: #FF1D43;
 	}
 </style>
 <script type="text/javascript">
+	var sock;
+	var stompClient;
+	function connect() {
+		if(sock==null){
+			sock = new SockJS("${pageContext.request.contextPath}/connect");
+			stompClient = Stomp.over(sock);
+			stompClient.connect({}, function () {
+				
+				var myId = ${myId };
+				stompClient.subscribe("/subscribe/chatList"+myId, function (result) {
+					// url로 신호가 들어오면 리스트 다시 그리기 
+					if(result){
+						drawList();
+					}
+					
+				});
+			});
+		}
+	};
+	
+	
 	$(function () {
-		$("#msg-icon").on("click", function () {
-			alert("새 메세지 보내기");
-			
-		});
-		
-		var chatNum = 1; // 목록 그리면서 받아와서 저장 
-		// 클릭 -> 채팅방 열기
-		$(".messages").on("click", function () {
-// 			alert("채팅방 열기!"); 
-			window.open('${pageContext.request.contextPath}/message/chat?chatNum='+chatNum , '_blank', 'width=440, height=600, resizable=no, location=no, toolbar=no, menubar=no');
-		});
+		connect();
+		drawList();
 		
 	});
+	
+	// 채팅방 목록 그리기 
+	function drawList() {
+		$("#msg-body div:gt(1)").remove();
+		
+		$.ajax({
+			url: "${pageContext.request.contextPath}/message/drawList",
+			dataType: "json",
+			success: function (list) {
+				// 리스트 그리기 
+				for(var i = 0; i < list.length; i++){
+					let msg = $("<div class='messages'></div>");
+					var sender = $("<div class='msg-sender'>"+list[i].your_name+"</div>");
+					
+					// 읽은 메세지인지 안읽은 메세지인지 확인 
+					if(list[i].ML_READ == 0){
+						var reciever = $("<div class='msg-recieve'>").append($("<div class='msg-contents'>"+list[i].MSG_CONTENT+"</div>"))
+						.append($("<div class='msg-date'>"+list[i].ML_UPDATE_DATE+"<span class='alarm-msg alarm-red'></span> </div>"));
+					}else{
+						var reciever = $("<div class='msg-recieve'>").append($("<div class='msg-contents'>"+list[i].MSG_CONTENT+"</div>"))
+						.append($("<div class='msg-date'>"+list[i].ML_UPDATE_DATE+"<span class='alarm-msg'></span> </div>"));
+					}
+					
+					// div 클릭시 해당 번호의 메세지창 열기 
+					(function (n) {
+						msg.on("click", function () {
+							window.open('${pageContext.request.contextPath}/message/chat?chatNum='+list[n].ML_NUM+'&yourId='+list[n].your_id, '_blank', 'width=440, height=600, resizable=no, location=no, toolbar=no, menubar=no');
+							$("span [class='alarm-msg']").removeClass("alarm-red");
+						});
+					})(i);
+					
+					msg.append(sender);
+					msg.append(reciever);
+					
+					$("#msg-body").append(msg);
+				}
+				
+			},
+			error: function () {
+				alert("목록 그리기 에러");
+			}
+		});
+	};
 </script>
 </head>
 <body>
@@ -95,32 +158,6 @@
 			<div id="msg-body">
 				<div class="title">M E S S A G E</div>
 				<div class="button"><span class="send-button"> 받은 메세지 </span></div>
-<!-- 			<table> -->
-<!-- 				<tr class="messages"> -->
-<!-- 					<td class="msg-sender"> $보낸사람 </td> -->
-<!-- 					<td class="msg-recieve"> -->
-<!-- 						<span class="msg-contents"> $최근 메세지 내용 </span> -->
-<!-- 						<span class="msg-date"> 10월 02일 <span class="alarm-msg"> (0)</span></span> -->
-<!-- 					</td> -->
-<!-- 				</tr> -->
-<!-- 			</table> -->
-				<!-- 반복문 / javascript 출력 -->
-				<div class="messages">
-					<input value="$방번호" type="hidden">
-					<div class="msg-sender"> $보낸사람 </div>
-					<div class="msg-recieve">
-						<div class="msg-contents"> $최근 메세지 내용 </div>
-						<div class="msg-date"> 10월 02일 <span class="alarm-msg"> (1) </span> </div>
-					</div>
-				</div>
-<!-- 				<div class="messages"> -->
-<!-- 					<div class="msg-sender"> $보낸사람 </div> -->
-<!-- 					<div class="msg-recieve"> -->
-<!-- 						<div class="msg-contents"> $최근 메세지 내용 </div> -->
-<!-- 						<div class="msg-date"> 10월 01일 <span> (0) </span> </div> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
-				
 				
 			</div>
 		</div>

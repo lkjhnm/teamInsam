@@ -45,6 +45,9 @@ public class NaverLoginService {
 	public OAuth2AccessToken getAccessToken(HttpSession session, String state, String code) throws Exception {
 		// 콜백으로 전달받은 난수가 생성한 난수와 일치하는지 확인 
 		String sessionState = (String)session.getAttribute(SESSION_STATE);
+		
+		System.out.println(sessionState+", "+state);
+		
 		if(StringUtils.pathEquals(sessionState, state)) {
 			// 난수가 일치할 경우 같다고 판단 후 토큰 만들어서 전달 
 			OAuth20Service oauthService = new ServiceBuilder().apiKey(CLIENT_ID).apiSecret(CLIENT_PW)
