@@ -46,14 +46,15 @@
 	where S.S_PK = #{S_PK} 
 	</select>
 	
-	<select id="selectStudioList" parameterType="int" resultMap="studioMap">
+	<select id="selectStudioList" parameterType="int" resultType="map">
 		select
 			RN,  
 			S_PK,
 			S_TITLE,
-			M_PK_WRITER
-		from (select S_PK, S_TITLE, M_PK_WRITER, rownum RN 
-				from STUDIO 
+			M_PK_WRITER,
+			HI_PK
+		from (select S_PK, S_TITLE, M_PK_WRITER, rownum RN , HI_PK
+				from STUDIO S join HANDUS_IMAGE hi on (s.s_pk = hi.hi_fk and hi.hi_main = 1 and hi.hi_type = 3 )
 				where 
 				<choose>
 					<when test="type == 'wood'">

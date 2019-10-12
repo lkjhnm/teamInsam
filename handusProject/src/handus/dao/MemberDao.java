@@ -24,6 +24,7 @@ public interface MemberDao {
 	public boolean updateMemberAuth(Auth auth);
 	public boolean updateMailUUID(MemberVerify mv);
 	
+	public Member selectMember(int m_pk);
 	public int updateMember(Member member);
 	public int deleteMember(int m_pk);
 }

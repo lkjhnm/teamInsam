@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="handus.dao.MessageDao">
+
+	<insert id="insertMsgList" parameterType="HashMap">
+	<!-- 시퀀스 가져와서, 해당 시퀀스로 pk, num을 세팅하는데 파라미터 타입이 map임 -->
+		<selectKey keyProperty="ml_num" resultType="String" order="BEFORE">
+			(select concat(to_char(sysdate, 'yyyymmdd-'), LIST_SEQ.NEXTVAL) from dual)
+		</selectKey>
+		insert into MESSAGE_LIST
+			( ML_PK, ML_NUM, ML_A_PK, ML_M_PK )
+		values ( ML_SEQ.NEXTVAL, 
+			#{ml_num}, 
+		  	#{ml_a_pk}, 
+		  	#{ml_m_pk} )
+	</insert>
+	<delete id="deleteMsgList" parameterType="int">
+		delete from MESSAGE_LIST 
+		where ML_PK = #{ml_pk}
+	</delete>
+	<select id="getMessageList" parameterType="int" resultType="map">
+		select ML_PK, 
+		    ML_NUM, 
+		    ML_A_PK,
+		    ML_M_PK,
+		    ML_UPDATE_DATE,
+		    ML_READ, 
+		    (select MD_CONTENT from MESSAGE_DETAIL 
+		    	where MD_WRITEDATE = (select max(MD_WRITEDATE) from MESSAGE_DETAIL)
+		    	and ML_NUM = MD_ML_NUM
+		     ) as MSG_CONTENT 
+		from MESSAGE_LIST
+		where ML_M_PK = #{m_pk}
+		or ML_A_PK = #{m_pk}
+		order by ML_UPDATE_DATE desc 
+	</select>
+	<update id="updateReadList" parameterType="String">
+		update MESSAGE_LIST 
+		set ML_READ = 1 
+		where ML_NUM = #{ml_num}
+	</update>
+	<select id="isMessageList" resultType="String">
+		select ML_NUM from MESSAGE_LIST
+		where ML_A_PK = #{param2} and ML_M_PK = #{param1}
+		or ML_A_PK = #{param1} and ML_M_PK = #{param2}
+	</select>
+	
+	
+	<insert id="insertMsgDetail" parameterType="map" >
+		<selectKey keyProperty="md_pk" resultType="int" order="BEFORE">
+			select MD_SEQ.NEXTVAL as md_pk from dual
+		</selectKey>
+		insert into MESSAGE_DETAIL 
+		( MD_PK, MD_WRITER_PK, MD_CONTENT, MD_ML_NUM )
+		values ( #{md_pk}, #{writer_pk}, #{content}, #{ml_num} )
+	</insert>
+	<delete id="deleteMsgDetails" parameterType="int">
+		delete from MESSAGE_DETAIL
+		where MD_ML_NUM = #{md_ml_num}  
+	</delete>
+	<select id="getMessages" parameterType="String" resultType="map">
+		select MD_PK, 
+			MD_CONTENT, 
+			MD_WRITEDATE, 
+			MD_WRITER_PK
+		from MESSAGE_DETAIL 
+		where MD_ML_NUM = #{md_ml_num}
+		order by MD_WRITEDATE asc 
+	</select>
+	<select id="getMsg" parameterType="int" resultType="map">
+		select MD_PK, 
+			MD_CONTENT, 
+			MD_WRITEDATE
+		from MESSAGE_DETAIL 
+		where MD_PK = #{md_pk}
+	</select>
+	
+</mapper>

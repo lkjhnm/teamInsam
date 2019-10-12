@@ -105,8 +105,8 @@
 	}
 	.right{
 		left: 1215px;
-	}	
-	#auction_container{
+	}
+	.train{
 		position:relative;
 	}
 	img:hover{
@@ -244,7 +244,6 @@
 			dataType: "json",
 			success: function(data){
 				func(data)
-				console.log(data)
 			}
 		})
 	}
@@ -258,16 +257,15 @@
 		var right = $(train).parent().prev().prev()
 		
 		if(count < 4){
-			left.css("opacity","0")
-			right.css("opacity","0")
+			left.css("display","none")
+			right.css("display","none")
 		}
 		
 		$(left).on("click",function(){
 			if(position -1 < 0){
 				return;
 			}
-			position = position <= 0 ? 0 : position - 1;
-			
+			position = position <= 0 ? 0 : position - 1;			
 			
 			var left = position == 0 ? 0 : (-300)*position;
 
@@ -281,7 +279,6 @@
 				return;
 			}
 			position = position >= count ? count : position + 1;
-			
 			
 			var left = position == count ? (-300)*count : (-300)*position;
 			
@@ -322,7 +319,7 @@
 				<span class='slide_button right'><i class="fas fa-caret-right"></i></span>
 				<div class="tab_menu" id="itemBtn">ITEM</div>
 				<div class="list">
-					<div id="item_container">
+					<div id="item_container" class='train'>
 					</div>
 				</div>
 
@@ -330,7 +327,7 @@
 				<span class='slide_button right'><i class="fas fa-caret-right"></i></span>
 				<div class="tab_menu" id="auctionBtn">AUCTION</div>
 				<div class="list">
-					<div id="auction_container">
+					<div id="auction_container" class='train'>
 					</div>
 				</div>
 
@@ -338,7 +335,7 @@
 				<span class='slide_button right'><i class="fas fa-caret-right"></i></span>
 				<div class="tab_menu" id="studioBtn">STUDIO</div>
 				<div class="list">
-					<div id="studio_container">
+					<div id="studio_container" class='train'>
 					</div>
 				</div>
 			</div>

@@ -55,8 +55,8 @@ public class ItemService {
 	
 	
 	// 리스트 
-		public List<Item> getStudioList(int page, String type) {
-			List<Item> itemList = itemDao.selectItemList(page, type);		
+		public List<Map<String,Object>> getStudioList(int page, String type) {
+			List<Map<String,Object>> itemList = itemDao.selectItemList(page, type);		
 			return itemList;
 		} 
 		
@@ -105,21 +105,21 @@ public class ItemService {
 	
 	
 	// 페이징 처리 메소드 
-	private int getStartRow(int pageNum) {
-		return (pageNum*NUM_OF_STUDIO_PER_PAGE)-(NUM_OF_STUDIO_PER_PAGE-1);
-	}
-	private int getEndRow(int pageNum) {
-		return pageNum*NUM_OF_STUDIO_PER_PAGE;
-	}
-	private int getFirstPage(int pageNum) {
-		return ((pageNum-1)/ NUM_OF_NAV_PAGE)*NUM_OF_NAV_PAGE +1 ;
-	}
-	private int getLastPage(int pageNum) {
-		return getFirstPage(pageNum) + (NUM_OF_NAV_PAGE-1);
-	}
-	private int getTotalPage() {
-		return (int)Math.ceil(itemDao.selectCount()/(double)NUM_OF_STUDIO_PER_PAGE);
-	}
+//	private int getStartRow(int pageNum) {
+//		return (pageNum*NUM_OF_STUDIO_PER_PAGE)-(NUM_OF_STUDIO_PER_PAGE-1);
+//	}
+//	private int getEndRow(int pageNum) {
+//		return pageNum*NUM_OF_STUDIO_PER_PAGE;
+//	}
+//	private int getFirstPage(int pageNum) {
+//		return ((pageNum-1)/ NUM_OF_NAV_PAGE)*NUM_OF_NAV_PAGE +1 ;
+//	}
+//	private int getLastPage(int pageNum) {
+//		return getFirstPage(pageNum) + (NUM_OF_NAV_PAGE-1);
+//	}
+//	private int getTotalPage() {
+//		return (int)Math.ceil(itemDao.selectCount()/(double)NUM_OF_STUDIO_PER_PAGE);
+//	}
 	
 	public List<Map<String,Object>> getItemImage(int i_pk){
 		return itemDao.selectItemImage(i_pk);

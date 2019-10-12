@@ -74,12 +74,15 @@
 		})
 		
 		//웹소켓 정의 (알람)
-		connect()
+		connect();
+		
 	})
 	
 	
 	function connect(){
 		var m_pk = "${m_pk}";
+		
+		Notification.requestPermission();
 		
 		sock = new SockJS("${pageContext.request.contextPath}/connect");
 		stompClient = Stomp.over(sock);
@@ -94,13 +97,34 @@
 				data: {"m_pk_user":m_pk},
 				dataType: "json",
 				type:"post",
-				success:function(data){					// 1: author   2:studio    3:auction
-					
+				success:function(data){					// 1: author   2:studio    3:auction	
+														// hi_pk, a_pk 
 					$.each(data,function(i,list){
 						console.log(list);
 						stompClient.subscribe("/subscribe/alarm/"+list.MS_TYPE+"/"+list.MS_FK, function(webSocketData){
-							var data = webSocketData.body;
-							alert(data);
+							var data = JSON.parse(webSocketData.body);
+							
+							var title = data.title;
+							var pk = data.pk;
+							var img = data.img;
+							var content = data.content;
+							var url = data.type == 1 ? "auction/detail?a_pk=" : 
+										   data.type == 2 ? "item/detail?num=" : "studio/detail?num="  ;
+							url += pk;
+							
+							var option = {
+								body: content
+							}
+							
+							var notification = new Notification(title, option);
+							notification.onclick = function(){
+								location.href='${pageContext.request.contextPath}/' + url ;
+								notification.close();
+							}
+							
+							setTimeout(function(){
+								notification.close();
+							},10000);
 						})
 					})
 				}

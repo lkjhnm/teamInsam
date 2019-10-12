@@ -37,7 +37,7 @@ public class ItemController {
 			@RequestParam(defaultValue = "1")int page ) {
 		
 		// 필요 정보 : 해당 리스트에 뿌려질 아이템 리스트 
-		List<Item> itemList = itemService.getStudioList(page, type);
+		List<Map<String,Object>> itemList = itemService.getStudioList(page, type);
 		Map<String, Object> pageInfo = itemService.getPageInfo(page, type);
 		
 		model.addAttribute("itemList", itemList);

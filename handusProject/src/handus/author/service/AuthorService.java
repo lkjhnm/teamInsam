@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
 
 import handus.dao.AuthorDao;
+import handus.dao.ImageDao;
 import handus.dao.MemberDao;
 import handus.image.service.S3Provider;
 import handus.model.Auction;
@@ -43,17 +44,15 @@ public class AuthorService {
 	
 	@Autowired
 	private MemberDao memberDao;
-	
-	public boolean alarmToUser(int m_pk_writer) {
-		
-		return false;
-	}
+
+	@Autowired
+	private ImageDao imageDao;
 	
 	@Transactional
 	public boolean registerAuction(Map<String,Object> auction, HandusImgList imgList){
 		
 		Calendar cal = Calendar.getInstance();
-		System.out.println(auction.get("a_startTime"));
+		
 		Date date;
 		try {
 			date = new SimpleDateFormat("MM/dd/yyyy").parse((String)auction.get("a_startTime"));
@@ -153,7 +152,7 @@ public class AuthorService {
 		boolean result = authorDao.insertAuthor(formData);
 		if(result) {
 			Auth auth = new Auth();
-			auth.setM_pk((int)formData.get("m_pk"));
+			auth.setM_pk(Integer.parseInt((String)formData.get("m_pk")));
 			auth.setMa_authority("ROLE_AUTHOR");
 			memberDao.updateMemberAuth(auth);
 			return true;
@@ -190,5 +189,9 @@ public class AuthorService {
 		byte[] bytes = FileUtils.readFileToByteArray(new File(savePath,fileName));
 		
 		return bytes;
+	}
+	
+	public int getImagePk(int pk, int type) {
+		return (int)imageDao.selectImageListByFK(pk, type).get(0).get("HI_PK");
 	}
 }

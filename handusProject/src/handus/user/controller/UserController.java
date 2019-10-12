@@ -3,6 +3,8 @@ package handus.user.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import handus.alarm.service.AlarmService;
 import handus.member.service.MemberService;
 import handus.user.service.UserService;
 
@@ -23,6 +26,8 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private AlarmService alarmService;
 	
 	@RequestMapping(value="/subscribe/{type}",method = RequestMethod.POST)
 	@ResponseBody
@@ -67,7 +72,9 @@ public class UserController {
 	public String myPage(int m_pk,Model model) {
 		
 		model.addAllAttributes(userService.getUserInfo(m_pk));
-		
+		model.addAttribute("winningBid",userService.getWinningBid(m_pk));
+		model.addAttribute("itemList", userService.getPayedItemList(m_pk));
+		model.addAttribute("studioList", userService.getPayedStudioList(m_pk));
 		return "user/myPage";
 	}
 	
@@ -83,5 +90,25 @@ public class UserController {
 		boolean result = userService.updateUserInfo(userInfo);
 		
 		return result;
+	}
+	
+	@RequestMapping(value="/alarmPage", method=RequestMethod.GET)
+	public String alarmPage() {
+		return "user/alarm";
+	}
+	
+	@RequestMapping(value="/alarmList", method=RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String,Object>> alarmList(Model model,HttpSession session, @RequestParam(defaultValue = "1") int readType) {
+		int m_pk = (int)session.getAttribute("m_pk");
+		
+		return alarmService.getAlarmMessage(m_pk, readType);
+	}
+	
+	@RequestMapping(value="alarmRead/{ua_pk}",method=RequestMethod.PUT)
+	@ResponseBody
+	public boolean alarmRead(@PathVariable("ua_pk") int ua_pk){
+		
+		return alarmService.readAlarm(ua_pk);
 	}
 }

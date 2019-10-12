@@ -14,4 +14,7 @@ public interface UserDao {
 	public List<Map<String,Object>> selectSubsListAll(int m_pk_user);
 	public Map<String,Object> selectUserByPk(int m_pk);
 	public boolean updateUserInfo(Map<String,Object> userInfo);
+	public List<Map<String,Object>> selectWinningBid(int m_pk);
+	public List<Map<String,Object>> selectPayedItem(int m_pk);
+	public List<Map<String,Object>> selectPayedStudio(int m_pk);
 }

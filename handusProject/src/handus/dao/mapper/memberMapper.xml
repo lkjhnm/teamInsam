@@ -70,7 +70,7 @@
 	</select>
 	
 	<select id="selectAllMember" resultType="member">
-		select * from MEMBER
+		select * from member
 	</select>
 	
 	<!-- 인증관련 -->
@@ -122,6 +122,23 @@
 					LEFT OUTER JOIN MEMBER_AUTHORITY ma ON (m.m_pk = ma.m_pk)	
 		where m_apiid = #{param1} and M_APITYPE = #{param2}
 	</select>
+	
+	<select id="selectMember" parameterType="int" resultMap="memberMap">
+		select * from member where m_pk = #{m_pk}
+	</select>
+	
+<!-- 	<select id="getTotalCount" resultType="int"> -->
+<!-- 		select count(bno) -->
+<!-- 		from member -->
+<!-- 		where bno > 0 -->
+<!-- 	</select> -->
+	
+<!-- 	<select id="listPage" resultType="member"> -->
+<!-- 		select * from member -->
+<!-- 		where bno > 0 -->
+<!-- 		order by bno desc, regdate desc -->
+<!-- 		limit #{pageStart},#{perPageNum} -->
+<!-- 	</select> -->
 	
 	<resultMap type="member" id="memberMap">
 		<result property="m_pk" column="m_pk"/>

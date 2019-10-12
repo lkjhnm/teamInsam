@@ -274,4 +274,15 @@ public class MemberService {
 		return new UsernamePasswordAuthenticationToken("Naver_"+apiId, "Naver_"+apiId ,
 				member.getAuthList().stream().map( auth -> new SimpleGrantedAuthority(auth.getMa_authority())).collect(Collectors.toList()));
 	}
+	
+	public Member getMemberDetail(int m_pk) {
+		return memberDao.selectMember(m_pk);
+	}
+	
+	public boolean removeMember(int m_pk) {
+		if(memberDao.deleteMember(m_pk) > 0) {
+			return true;
+		}
+		return false;
+	}
 }
