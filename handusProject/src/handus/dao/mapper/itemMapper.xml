@@ -43,7 +43,7 @@
 		  JOIN MEMBER M 
 		  ON I.M_PK_WRITER = M.M_PK  
 		  JOIN CATEGORYNAME C 
-		  ON C.C_PK = I.I_CATEGORY 
+		  ON C.C_PK = I.I_CATEGORY
 		where I.I_PK = #{i_pk}
 	</select>
 	
@@ -82,6 +82,7 @@
 				rownum <= #{page}*6 )
 		where RN > (#{page} -1 )*6 
 	]]>
+		order by I_PK desc 
 	</select>
 	
 	<select id="selectAllItems" resultMap="itemMap">

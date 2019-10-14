@@ -89,15 +89,16 @@
 			stompClient.connect({}, function () {
 				
 				var myId = ${myId };
-				stompClient.subscribe("/subscribe/chatList"+myId, function (result) {
-					// url로 신호가 들어오면 리스트 다시 그리기 
-					if(result){
-						drawList();
+				stompClient.subscribe("/subscribe/chatList/"+myId, function (message) {
+					var msg = message.body;
+					if(msg != 'drawList'){
+						read(msg);
 					}
-					
+					drawList();
 				});
 			});
 		}
+		alert("소켓 연결");
 	};
 	
 	
@@ -117,23 +118,24 @@
 			success: function (list) {
 				// 리스트 그리기 
 				for(var i = 0; i < list.length; i++){
-					let msg = $("<div class='messages'></div>");
+					let msg = $("<div class='messages' data-num='"+list[i].ML_NUM+"'></div>");
 					var sender = $("<div class='msg-sender'>"+list[i].your_name+"</div>");
 					
 					// 읽은 메세지인지 안읽은 메세지인지 확인 
-					if(list[i].ML_READ == 0){
+					if(list[i].ML_READ == 0 && list[i].ML_WRITER != ${myId} ){
 						var reciever = $("<div class='msg-recieve'>").append($("<div class='msg-contents'>"+list[i].MSG_CONTENT+"</div>"))
-						.append($("<div class='msg-date'>"+list[i].ML_UPDATE_DATE+"<span class='alarm-msg alarm-red'></span> </div>"));
+						.append($("<div class='msg-date'>"+list[i].ML_UPDATE_DATE+"<span class='alarm-msg alarm-red' data-type="+list[i].ML_NUM+"></span> </div>"));
 					}else{
 						var reciever = $("<div class='msg-recieve'>").append($("<div class='msg-contents'>"+list[i].MSG_CONTENT+"</div>"))
-						.append($("<div class='msg-date'>"+list[i].ML_UPDATE_DATE+"<span class='alarm-msg'></span> </div>"));
+						.append($("<div class='msg-date'>"+list[i].ML_UPDATE_DATE+"<span class='alarm-msg' data-type="+list[i].ML_NUM+"></span> </div>"));
 					}
 					
 					// div 클릭시 해당 번호의 메세지창 열기 
 					(function (n) {
 						msg.on("click", function () {
+							$(this).find(".alarm-red").removeClass("alarm-red");
+							var ml_num = $(this).attr("data-num");
 							window.open('${pageContext.request.contextPath}/message/chat?chatNum='+list[n].ML_NUM+'&yourId='+list[n].your_id, '_blank', 'width=440, height=600, resizable=no, location=no, toolbar=no, menubar=no');
-							$("span [class='alarm-msg']").removeClass("alarm-red");
 						});
 					})(i);
 					
@@ -146,6 +148,22 @@
 			},
 			error: function () {
 				alert("목록 그리기 에러");
+			}
+		});
+	};
+	
+	function read(num) {
+		$.ajax({
+			url: "${pageContext.request.contextPath}/message/read",
+			data: {
+				"chatNum": num
+			},
+			dataType: "json",
+			success: function (result) {
+				if(result) alert("read+1"+num);
+			},
+			error: function () {
+				alert("read 업데이트 에러");
 			}
 		});
 	};

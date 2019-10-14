@@ -64,7 +64,7 @@
 	
 	<select id="selectByNum" parameterType="int" resultType="member">
 		select 
-			m.M_PK, m.M_ID, m.M_NAME, m.M_EMAIL, m.M_PHONENUM, m.M_ADDRESS
+			m.M_PK, m.M_ID, m.M_NAME, m.M_EMAIL, m.M_PHONENUM, m.M_ADDRESS, m.M_ZIPCODE, m.M_ADDRESS_DETAIL 
 			from MEMBER m
 		where m.M_PK = #{m_pk} 
 	</select>

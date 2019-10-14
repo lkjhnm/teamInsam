@@ -50,7 +50,7 @@ public class ItemController {
 		
 		if(itemService.updateReadCount(num)) {
 			model.addAttribute("item", itemService.getItemByNum(num));
-			int m_pk = 144; // (int)session.getAttribute("m_pk");
+			int m_pk = (int)session.getAttribute("m_pk");
 			model.addAttribute("m_pk", m_pk);
 			model.addAttribute("itemImg",itemService.getItemImage(num));
 		}

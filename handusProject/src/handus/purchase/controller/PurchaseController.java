@@ -54,21 +54,27 @@ public class PurchaseController {
 	public String orderPage(HttpSession session, Model model, 
 			@RequestParam(required = false) Map<String, Object> products) {
 		
-		int memberNum = 144;  // (int)session.getAttribute("m_pk");
+		System.out.println("주문 컨트롤러--");
+		int memberNum = (int)session.getAttribute("m_pk");
 		
-		// ▼▼ 장바구니에서 요청파라미터로 받아옴 
+		// 요청에서 파라미터로 받아옴 
 		// Map<String, Object> products = pNum, pType, pCount, pPrice 
-		System.out.println(products);
-		boolean isIt = false;
+		System.out.println("요청파라미터: "+products);
+		boolean isIt = true;
+		
+		int pNum = Integer.parseInt((String)products.get("pNum"));
+		int pType = Integer.parseInt((String)products.get("pType"));
+		int pCount = Integer.parseInt((String)products.get("pCount"));
+		int pPrice = Integer.parseInt((String)products.get("pPrice"));
 		
 		// List로 받아오는 products는 그대로 저장 
 		List<Map<String, Object>> pList = new ArrayList<Map<String,Object>>();
 		Map<String, Object> p = new HashMap<String, Object>();
-		p.put("pNum", 1);
-		p.put("pType", 1);
-		p.put("pCount", 2);
-		p.put("pPrice", 11000);
-		pList.add(p);	// pList.add(products);
+		p.put("pNum", pNum);
+		p.put("pType", pType);
+		p.put("pCount", pCount);
+		p.put("pPrice", pPrice);
+		pList.add(p);
 		session.setAttribute("pList", pList );
 		
 		
@@ -76,48 +82,38 @@ public class PurchaseController {
 		Map<String, Object> product = new HashMap<String, Object>();
 		int totalPay = 0;
 		
-		// 임시 데이터 삽입 //
-		product.put("p_name", "제품이름1");
-		product.put("p_image", "");
-		product.put("p_count", 2);
-		product.put("p_price", 22000);
-		totalPay += 22000; 
-		product.put("p_link", "/item/detail?num="+1);
-		// 임시 데이터 삽입 // 
 		
 		if(isIt) {	// 임시 플래그 isIt 
-			int pNum = (Integer)products.get("pNum");
-			int pType = (Integer)products.get("pType");
-			int pCount = (Integer)products.get("pCount");
 			
-			// 필요 정보 : 이름, 사진, 수량, 금액, 링크 
-			// 배열로 들어오면 배열 크기만큼 반복하면서 스위치문 돌기 
 			switch (pType) {
+			// 아이템
 			case 1:
-				// 아이템
 				Item item = itemService.getItemByNum(pNum);
+				Map<String,Object> img = itemService.getItemImage(pNum).get(0);
 				product.put("p_name", item.getI_title());
-				product.put("p_image", "");
+				product.put("p_image", img.get("HI_PK"));
 				product.put("p_count", pCount);
 				product.put("p_price", (item.getI_price())*pCount);
 				totalPay += (item.getI_price())*pCount;
 				product.put("p_link", "/item/detail?num="+pNum);
 				break;
+			// 옥션
 			case 2:
-				// 옥션
 				Map<String,Object> auction = auctionService.getAuctionDetail(pNum);
 				product.put("p_name", auction.get("A_TITLE"));
-				product.put("p_image", "");
+				product.put("p_image", auction.get("HI_PK"));
 				product.put("p_count", pCount);
 				product.put("p_price", ((int)auction.get("A_ENDPRICE"))*pCount);
 				totalPay +=  ((int)auction.get("A_ENDPRICE"))*pCount;
 				product.put("p_link", "/auction/detail?num="+pNum);
 				break;
+			// 스튜디오
 			case 3:
-				// 스튜디오
 				Studio studio = studioService.getStudioByNum(pNum);
+				Map<String,Object> imgS = studioService.getStudioImage(pNum).get(0);
+				
 				product.put("p_name", studio.getS_title());
-				product.put("p_image", "");
+				product.put("p_image", imgS.get("HI_PK"));
 				product.put("p_count", pCount);
 				product.put("p_price", (studio.getS_price())*pCount);
 				totalPay +=  (studio.getS_price())*pCount;
@@ -126,7 +122,7 @@ public class PurchaseController {
 			}
 		}
 		productList.add(product);
-		System.out.println(product);
+		System.out.println("삽입 데이터: "+product);
 		
 		
 		// 총갯수, 총금액을 모델에 담아서 넘기기 (ajax로 따로 불러오기 지양) 
@@ -137,14 +133,15 @@ public class PurchaseController {
 		
 		return "purchase/order";
 	}
-	@RequestMapping(value = "/order1", method = RequestMethod.POST)
-	public String ordersPage(HttpSession session, Model model,
-			@RequestBody List<Map<String, Object>> products) {
-		// @requestBody로 배열 얻어오기
-		System.out.println(products.get(1).get("name2"));
-		model.addAttribute("member", memberService.getMemberByNum(144));
-		return "purchase/order";
-	}
+	
+//	@RequestMapping(value = "/order1", method = RequestMethod.POST)
+//	public String ordersPage(HttpSession session, Model model,
+//			@RequestBody List<Map<String, Object>> products) {
+//		// @requestBody로 배열 얻어오기
+//		System.out.println(products.get(1).get("name2"));
+//		model.addAttribute("member", memberService.getMemberByNum(144));
+//		return "purchase/order";
+//	}
 	
 	// 카카오페이 API ------------------------------------------
 	@RequestMapping(value = "kakaopay", method = RequestMethod.POST)
@@ -154,7 +151,7 @@ public class PurchaseController {
 		Map<String, String> vars = new HashMap<String, String>();
 		vars.put("m_pk", m_pk);
 		vars.put("p_name", p_name);
-		vars.put("p_count", "2");
+		vars.put("p_count", p_count);
 		vars.put("p_totalPrice", p_totalPrice);
 		vars.put("order_num", purchaseService.getOrderNum());
 		
@@ -165,25 +162,28 @@ public class PurchaseController {
 	@ResponseBody
 	public String approval(Model model, String pg_token, String partner_order_id, 
 			HttpSession session) {
-		String mNum = "144"; //(String)session.getAttribute("m_pk");
+		int m_pk = (int)session.getAttribute("m_pk");
 		
 		// 결제승인 api 요청 
 		Map<String, String> vars = new HashMap<String, String>();
 		vars.put("pg_token", pg_token);
 		vars.put("tid", kakaoService.getTid());
 		vars.put("partner_order_id", partner_order_id);
-		vars.put("partner_user_id", mNum);
+		vars.put("partner_user_id", Integer.toString(m_pk));
 
+		System.out.println("컨트롤러: "+vars);
 		Map<String, Object> totalInfo = kakaoService.getKakaoPayOn(vars);
 		List<Map<String, Object>> pList = (List<Map<String, Object>>)session.getAttribute("pList");
 		
 		// 리스트 길이만큼 반복하면서 주문 테이블 삽입 
 		// 경매, 공방 = 1번 		아이템 = 여러번 
 		for(int i = 0; i < pList.size(); i ++) {
-			purchaseService.writeOrders(totalInfo, pList.get(i), Integer.parseInt(mNum));
+			purchaseService.writeOrders(totalInfo, pList.get(i), m_pk);
 		}
 		
 		String orderNum = (String)totalInfo.get("partner_order_id");
+		
+		System.out.println("결제성공--주문성공페이지로 이동");
 		
 		return "<script> window.close(); opener.location.href='orderSuccess?orderNum="+orderNum+"';</script>";
 	}
@@ -215,14 +215,14 @@ public class PurchaseController {
 	@RequestMapping("isPurchaseS")
 	@ResponseBody
 	public boolean isPurchaseS(int s_pk, HttpSession session) {
-		int m_pk = 144; 	// (int)session.getAttribute("m_pk");
+		int m_pk = (int)session.getAttribute("m_pk");
 		return purchaseService.getStudioPurchase(s_pk, m_pk);
 	}
 	
 	@RequestMapping("isPurchaseI")
 	@ResponseBody
 	public boolean isPurchaseI(int i_pk, HttpSession session) {
-		int m_pk = 144; 	// (int)session.getAttribute("m_pk");
+		int m_pk = (int)session.getAttribute("m_pk");
 		return purchaseService.getItemPurchase(i_pk, m_pk);
 	}
 

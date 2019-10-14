@@ -124,7 +124,8 @@
 				data: {
 					"m_pk": '${myId}',
 					"msg": msg,
-					"chat_num": '${chatNum}'
+					"chat_num": '${chatNum}',
+					"yourId": yourId
 				},
 				dataType: "json",
 				success: function (data) {
@@ -136,11 +137,10 @@
 					$("#body").append(myMsg);
 					scrollAuto();
 					
-					// sendMsg 
-					sendMsg(msg, yourId);
+					$("#message-text").val("");
 				},
 				error: function () {
-					alert("메세지 저장 에러");
+					alert("메세지 보내기 에러");
 				}
 			});
 			
@@ -160,18 +160,21 @@
 			
 			stompClient.connect({}, function () {
 				var myId = ${myId};
-				stompClient.subscribe("/subscribe/send"+myId, function (message) {
-					// 작성된 url로 메세지가 들어오면 함수 실행 
-					alert("들어온메세지: "+message);
-					addYourMsg(message);
+				stompClient.subscribe("/subscribe/send/"+myId, function (message) {
+					
+					// message.body 
+					// toJsonObject parsing
+					var msg = JSON.parse(message.body);
+					
+					addYourMsg(msg);
 					scrollAuto();
 					
 					// read > 1 
-					
-					
+					read();
 				});
 			});
 		}
+		alert("소켓 연결");
 	};
 	// 들어온 메세지 append 
 	function addYourMsg(message) {
@@ -183,14 +186,14 @@
 	};
 	
 	// 메세지 전송 
-	function sendMsg(msg, yourId) {
-		alert("SEND>> Msg: "+msg+"to send: "+yourId);
-		stompClient.send("/handus/send"+yourId, {}, msg);
-		$("#message-text").val("");
-	};
+// 	function sendMsg(msg, yourId) {
+// 		alert("메세지 보냄");
+// 		stompClient.send("/handus/send/"+yourId, {}, msg);
+// 		$("#message-text").val("");
+// 	};
 	
 	function scrollAuto() {
-		$("#body").scrollTop( 1300 );
+		$("#body").scrollTop( 9000 );
 	};
 	
 	function read() {
@@ -201,7 +204,7 @@
 			},
 			dataType: "json",
 			success: function (result) {
-				if(result) alert("read 업데이트됨");
+				if(result) alert("read+1");
 			},
 			error: function () {
 				alert("read 업데이트 에러");

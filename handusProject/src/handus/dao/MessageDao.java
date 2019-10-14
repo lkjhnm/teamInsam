@@ -10,7 +10,7 @@ public interface MessageDao {
 	public int insertMsgList(Map<String, Object> param);
 	public int deleteMsgList(int ml_pk);
 	public List<Map<String, Object>> getMessageList(int m_pk);
-	public int updateReadList(String ml_num);
+	public int updateReadList(String ml_num, int m_pk);
 	public String isMessageList(int m_pk, int authorNum);
 	
 	

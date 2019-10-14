@@ -13,6 +13,12 @@
 			S_CONTENT = #{s_content}, S_COMMENT = #{s_comment} 
 		where S_PK = #{s_pk} 
 	</update>
+	<select id="isReservation" resultType="int">
+		select count(*) 
+		from STUDIO
+		where <![CDATA[ S_CLASSSTART <= #{param1} and #{param1} <= S_CLASSEND ]]>
+		and S_PK = #{param2}
+	</select>
 	<delete id="deleteStudio" parameterType="int">
 		delete from STUDIO where S_PK = #{s_pk} 
 	</delete>
@@ -80,6 +86,7 @@
 				rownum <= #{page}*6 )
 		where RN > (#{page} -1 )*6 
 	]]>
+		order by S_PK desc
 	</select>
 	
 	<select id="selectAllStudio" resultMap="studioMap">

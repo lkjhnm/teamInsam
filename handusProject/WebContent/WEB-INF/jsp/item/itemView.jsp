@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Handus Item:Detail</title>
+<title>Handus</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/handus.css" />
 <link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothsc|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&display=swap" rel="stylesheet">
@@ -339,29 +339,17 @@
 		
 		// 작가 페이지, 메세지 문의 이동 
 		$("#autherPage").on("click", function () {
-			alert("작가페이지 이동");
+			location.href = "${pageContext.request.contextPath}/author/publicPage?m_pk="+${item.m_pk_writer};
 		});
 		$("#messagePage").on("click", function () {
-			alert("메세지 창");
+			window.open('${pageContext.request.contextPath}/message/message?authorNum='+${item.m_pk_writer },'Handus Message','width=440, height=600');
 		});
 		
 		
-		// 장바구니 클릭 > 장바구니 에 담기
-		$("#cartButton").on("click", function () {
-			alert("장바구니에 담기");
-			// 장바구니에 추가하는 요청 
-			if(confirm("계속 둘러보시겠습니까?")==true){
-				return;
-			}else{
-				alert("장바구니로 이동");
-				// location.href="";	// 장바구니 페이지 
-			}
-		});
 		// 구매 클릭 > 바로 결제 페이지 
 		$("#buyButton").on("click", function () {
-			if(confirm("바로 구매하시겠습니까?")==true){
-				alert("결제창으로 이동");
-				// location.href="";	// 결제창 페이지 
+			if(confirm("구매하시겠습니까?")==true){
+				location.href="${pageContext.request.contextPath}/purchase/order?pNum="+${item.i_pk}+"&pType=1&pCount=1&pPrice="+${item.i_price}; 
 			}else{
 				return;
 			}
@@ -378,22 +366,22 @@
 				},
 				dataType: "json",
 				success: function (result) {
-					alert(result);
 					if(result){
 						isReview = true;
+						if(isReview){
+							$("#reviewInput").css("display", "block");
+							isReview = false;
+						}else{
+							$("#reviewInput").css("display", "none");
+						}
+					}else{
+						alert("상품 구매 후, 후기를 작성해주세요.");
 					}
 				},
 				error: function () {
 					alert("구매확인에러");	
 				}
 			});
-			if(isReview){
-				$("#reviewInput").css("display", "block");
-				isReview = false;
-			}else{
-				$("#reviewInput").css("display", "none");
-				isReview = true;
-			}
 		});
 		$(".reviewArea").on("click", function () {
 			$(this).removeAttr("placeholder"); 
@@ -427,6 +415,7 @@
 			isLock = false;
 			$(".starGrade span i").removeClass("fas").removeClass("far").addClass("far").removeAttr("grade");
 		});
+		
 		// 리뷰 등록
 		$("#registerReview").on("click", function () {
 			// 해당 별의 점수 가져오기 
@@ -740,9 +729,6 @@
 					
 					<div class='infoPosition' id="buy_sub_container">
 						<div id='buttonContainer'>
-							<div id='cartButton'>
-								<span><a> My Cart </a></span>
-							</div>
 							<div id='buyButton'>
 								<span><a> Buy </a></span>
 							</div>

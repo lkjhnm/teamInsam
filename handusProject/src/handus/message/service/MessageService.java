@@ -80,8 +80,8 @@ public class MessageService {
 		return list;
 	}
 	
-	public boolean updateReadList(String chatNum) {
-		if(messageDao.updateReadList(chatNum)>0) {
+	public boolean updateReadList(String chatNum, int m_pk) {
+		if(messageDao.updateReadList(chatNum, m_pk)>0) {
 			return true;
 		}
 		return false;

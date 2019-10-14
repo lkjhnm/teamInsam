@@ -5,6 +5,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,5 +68,12 @@ public class StudioController {
 	public String getWeather(String cityName) {
 		System.out.println("컨트롤러>날씨조회");
 		return studioService.getWeather(cityName);
+	}
+	
+	@RequestMapping("/isReservation")
+	@ResponseBody
+	public boolean isReservation(Date date, int sNum) {
+//		System.out.println(date);
+		return studioService.isReservation(date, sNum);
 	}
 }

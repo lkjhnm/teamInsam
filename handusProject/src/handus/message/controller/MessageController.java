@@ -18,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.JsonObject;
+
 import handus.member.service.MemberService;
 import handus.message.service.MessageService;
 
@@ -28,6 +30,8 @@ public class MessageController {
 	private MessageService messageService;
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+	private SimpMessagingTemplate template;
 	
 	@RequestMapping("/message")
 	public String message(int authorNum, HttpSession session) {
@@ -72,7 +76,7 @@ public class MessageController {
 		// 필요한것 : 본인 pk, 상대 pk, 해당 방번호의 메세지 리스트 
 		int m_pk = (int)session.getAttribute("m_pk");
 		
-		messageService.updateReadList(chatNum);
+		messageService.updateReadList(chatNum, m_pk);
 		
 		model.addAttribute("myId", m_pk);
 		model.addAttribute("yourID", yourId);
@@ -90,13 +94,14 @@ public class MessageController {
 	
 	@RequestMapping("/read")
 	@ResponseBody
-	public boolean updateRead(String chatNum) {
-		return messageService.updateReadList(chatNum);
+	public boolean updateRead(String chatNum, HttpSession session) {
+		int m_pk = (int)session.getAttribute("m_pk");
+		return messageService.updateReadList(chatNum, m_pk);
 	}
 	
 	@RequestMapping("/sendMsg")
 	@ResponseBody
-	public Map<String, Object> sendMsg(String m_pk, String msg, String chat_num) {
+	public Map<String, Object> sendMsg(String m_pk, String msg, String chat_num, int yourId) {
 		
 		// DB에 저장 
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -112,32 +117,46 @@ public class MessageController {
 			param.put("time", sendTime);
 		}
 		
+		// subscribe으로 신호, 메세지 보내기 
+		JsonObject sendMsg = new JsonObject();
+		sendMsg.addProperty("msg", msg);
+		SimpleDateFormat format = new SimpleDateFormat("MM월 dd일  a HH:mm");
+		String sendTime = format.format(new Date());
+		sendMsg.addProperty("time", sendTime);
+		
+		// 채팅방
+		template.convertAndSend("/subscribe/send/"+yourId, sendMsg.toString());
+		// 채팅 목록 
+		template.convertAndSend("/subscribe/chatList/"+m_pk, chat_num);
+		template.convertAndSend("/subscribe/chatList/"+yourId, "drawList");
+		
 		return param;
 	}
 	
-	@Autowired
-	private SimpMessagingTemplate template;
 	
-	@MessageMapping("/send{yourId}")
-	@SendTo("/subscribe/send{yourId}")
-	public Map<String, Object> sendMsg(String msg, 
-			@DestinationVariable(value = "yourId")String yourId) {
-		System.out.println("메세지 컨트롤러1: "+msg+", 수신인: "+yourId);
-		
-		// 시간, 메세지 담은 Map 생성 
-		Map<String, Object> message = new HashMap<String, Object>();
-		message.put("msg", msg);
-		// 시간 생성 
-		SimpleDateFormat format = new SimpleDateFormat("MM월 dd일  a HH:mm");
-		String sendTime = format.format(new Date());
-		message.put("time", sendTime);
-		
-		// 채팅방 리스트 재정렬 신호 
-		template.convertAndSend("/subscribe/chatList{yourId}", true);
-		
-		System.out.println("메세지 컨트롤러2: "+message);
-		
-		return message;
-	}
+	
+//	@MessageMapping("/send/{yourId}")
+//	@SendTo("/subscribe/send/{yourId}")
+//	public Map<String, Object> sendMsg(String msg, 
+//			@DestinationVariable(value = "yourId")String yourId) {
+//		System.out.println("메세지 컨트롤러1: "+msg+", 수신인: "+yourId);
+//		
+//		// 시간, 메세지 담은 Map 생성 
+//		Map<String, Object> message = new HashMap<String, Object>();
+//		message.put("msg", msg);
+//		// 시간 생성 
+//		SimpleDateFormat format = new SimpleDateFormat("MM월 dd일  a HH:mm");
+//		String sendTime = format.format(new Date());
+//		message.put("time", sendTime);
+//		
+//		// 채팅방 리스트 재정렬 신호 
+//		template.convertAndSend("/subscribe/chatList/{yourId}", true);
+//		
+//		System.out.println("메세지 컨트롤러2: "+message);
+//		
+//		return message;
+//	}
+	
+	
 	
 }

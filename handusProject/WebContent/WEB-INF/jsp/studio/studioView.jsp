@@ -176,13 +176,25 @@
 	#modalContainer{
 		display: none;
 		width: 400px;
-		height: 700px;
 		border: 1px solid black;
 		position: fixed;
 		background-color: #ffff;
 		padding: 20px;
 	}
-	.calendarBox, .weatherBox{
+	.weatherBox{
+		border: 1px solid black;
+		margin: 0 auto;
+		height: 50px;
+		text-align: center;
+		margin-bottom: 20px;
+	}
+	.text-line{
+		margin-top: 17px;
+	}
+	.red-line{
+		color: #FF1D43; 	
+	}
+	.calendarBox{
 		width: 390px;
 		height: 300px;
 		border: 1px solid black;
@@ -413,6 +425,8 @@
 	
 	var isLock = false;				
 	var isReview = false;			// 리뷰 남기기 창 (초기값: false)
+	var isReservation = false;		// 예약 가능(초기값: false);
+	
 	var modBtn = 0; 				// 수정 버튼 기능 0=수정창보이기, 1=수정로직실행
 	var mapX ;						// 127.02448266126561
 	var mapY ;						// 37.50312464278207
@@ -456,7 +470,7 @@
 		
 		// 작가 페이지, 메세지 문의 이동 
 		$("#autherPage").on("click", function () {
-			alert("작가페이지 이동");
+			location.href = "${pageContext.request.contextPath}/author/publicPage?m_pk="+${studio.m_pk_writer };
 		});
 		$("#messagePage").on("click", function () {
 			window.open('${pageContext.request.contextPath}/message/message?authorNum='+${studio.m_pk_writer },'Handus Message','width=440, height=600');
@@ -517,6 +531,17 @@
 			$("#modalContainer").hide("slow");
 		});
 		
+		// 예약 버튼 > 결제하기 
+		$("#reserv-btn").on("click", function () {
+			if(isReservation){
+				if(confirm("예약하시겠습니까?")==true){
+					location.href="${pageContext.request.contextPath}/purchase/order?pNum="+${studio.s_pk}+"&pType=3&pCount=1&pPrice="+${studio.s_price}; 
+				}else{
+					return;
+				}
+			}
+		});
+		
 		// 리뷰 남기기 버튼 
 		$(".reviewWrite").on("click", function () {
 			// ajax로 확인요청 후 맞으면 isReview(구매했으면) = true 로 변경 
@@ -528,22 +553,23 @@
 				},
 				dataType: "json",
 				success: function (result) {
-					alert(result);
 					if(result){
 						isReview = true;
+						if(isReview){
+							$("#reviewInput").css("display", "block");
+							isReview = false;
+						}else{
+							$("#reviewInput").css("display", "none");
+						}
+					}else{
+						alert("상품 구매 후, 후기를 작성해주세요.");
 					}
 				},
 				error: function () {
 					alert("구매확인에러");	
 				}
 			});
-			if(isReview){
-				$("#reviewInput").css("display", "block");
-				isReview = false;
-			}else{
-				$("#reviewInput").css("display", "none");
-				isReview = true;
-			}
+			
 		});
 		$(".reviewArea").on("click", function () {
 			$(this).removeAttr("placeholder"); 
@@ -678,7 +704,7 @@
 	function drawReviewCount() {
 		$.ajax({
 			url: "${pageContext.request.contextPath}/review/countReviewS",
-			data: {"sNum":${studio.s_pk}},
+			data: {"sNum":'${studio.s_pk}'},
 			type: "post",
 			dataType: "json",
 			success: function (count) {
@@ -689,6 +715,7 @@
 			}
 		});
 	};
+	
 	// 리뷰 그리기 
 	function drawReview() {
 		$("#reviewBox div:gt(5)").remove();
@@ -776,6 +803,7 @@
 			}
 		});
 	};
+	
 	function getFormatDate(date){ 
 		var year = date.getFullYear();			// 년도 
 		var month = (1 + date.getMonth());		// 월
@@ -821,8 +849,9 @@
 		$("#writeContent").val(" ");
 		$("#reviewInput").css("display", "none");
 	};
+	
+	// 달력 그리기 
 	function drawCalendar(today) {
-// 		$("#calendarBox1 div:gt(0)").remove();
 		$("#calBox1").remove();
 		var year = today.getFullYear();
 		var days;
@@ -856,11 +885,45 @@
 						dayRow.on("mouseover", function () {
 							$("#day"+d).addClass("onDate");
 						});
+						
+						// 날짜 클릭 > 예약 가능 날짜인지 비교 
 						dayRow.on("click", function () {
 							$("#day"+d).toggleClass("clickDate");
 							today.setDate(d);
 							var date = today.getDate();
 							var hours = today.getHours();
+							
+							$.ajax({
+								url: "${pageContext.request.contextPath}/studio/isReservation",
+								data: {
+									"date":today,
+									"sNum":studioNum
+									},
+								dataType: "json",
+								success: function (result) {
+									if(result){
+										// 예약 가능 
+										isReservation = true;
+										$("#weatherBox1 div").remove();
+										var info = $("<div class='text-line'>"+(today.getMonth()+1)+"월"+(today.getDate())+"일 예약 <span class='red-line'>가능</span>합니다.</div>");
+										$("#weatherBox1").append(info);
+									}else{
+										// 예약 불가능 
+										$("#weatherBox1 div").remove();
+										var info = $("<div class='text-line'>"+(today.getMonth()+1)+"월"+(today.getDate())+"일 예약 <span class='red-line'>불가능</span>합니다.</div>");
+										$("#weatherBox1").append(info);
+										alert("다른 날짜를 선택해주세요");
+									}
+								},
+								error: function () {
+									alert("날짜 비교 에러");
+								}
+							});
+							
+							// 다른 날짜 선택 풀리도록 (removeClass)
+							
+							
+							
 // 							6:00 , 18:00 하루에 두번 발표함 
 // 							if(hours < 6){
 // 								hours = 1800;
@@ -1000,7 +1063,7 @@
 <!-- 					<div id="button-boundary"></div> -->
 					
 					<div class='infoPosition'>
-						<div class='personnel'><span> ${studio.s_current }명 /  ${studio.s_maximum }명 </span></div>
+						<div class='personnel'><span> ${studio.start } ~  ${studio.end } </span></div>
 					</div>
 					
 					<div id="button-boundary"></div>
@@ -1034,15 +1097,17 @@
 					</div>
 				</div>
 			</div>
+			
 			<!-- 예약 페이지 모달창 -->
 			<div id="modalContainer">
 				<div id="modalBox">
 					<div class="calendarBox" id='calendarBox1'></div>
 					<div class="weatherBox" id='weatherBox1'></div>
-					<div class="reservation"><span> reservation </span></div>
+					<div class="reservation" id="reserv-btn"><span> reservation </span></div>
 					<div class="close"><span> close </span></div>
 				</div>
 			</div>
+			
 			<!-- 설명, 규격 -->
 			<div id="detailContainer">
 				<div id="detailBox">

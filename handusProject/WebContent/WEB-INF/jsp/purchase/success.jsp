@@ -86,10 +86,10 @@
 <script type="text/javascript">
 	$(function () {
 		$("#myCart").on("click", function () {
-			alert("마이페이지 이동!");
+			location.href = "${pageContext.request.contextPath}/user/myPage?m_pk="+${m_pk};
 		});
 		$("#goShowping").on("click", function () {
-			alert("쇼핑하러 가기!");
+			location.href = "${pageContext.request.contextPath}/item/list";
 		});
 	});
 </script>

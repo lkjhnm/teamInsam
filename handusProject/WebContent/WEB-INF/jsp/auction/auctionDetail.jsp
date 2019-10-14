@@ -585,6 +585,10 @@
 		$("#writerBtn").on("click",function(){
 			location.href="${pageContext.request.contextPath}/author/publicPage?m_pk="+${auction.M_PK_WRITER};
 		})
+		
+		$("#msg-btn").on("click", function () {
+			window.open('${pageContext.request.contextPath}/message/message?authorNum='+${auction.M_PK_WRITER},'Handus Message','width=440, height=600');
+		});
 	})
 // 	윈도우 온로드 종료  --------------------------------------------------------------
 		
@@ -739,7 +743,7 @@
 						<div class='infoPosition infoBold'><span> ${auction.A_TITLE } </span></div>
 						<div class='infoPosition'><span> ${auction.AT_NAME } </span></div>				
 						<div class='infoPosition'>
-							<div class='infoButton' id="writerBtn"><span> 작가 페이지 </span></div> <div class='infoButton'><span>메시지 문의</span></div>
+							<div class='infoButton' id="writerBtn"><span> 작가 페이지 </span></div> <div class='infoButton' id='msg-btn'><span>메시지 문의</span></div>
 						</div>
 						<div id="button-boundary"></div>
 						

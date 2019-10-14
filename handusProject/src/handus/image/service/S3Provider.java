@@ -10,9 +10,9 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 public class S3Provider {
 	
 	public static final AWSCredentials credentials;
-	private static final String KEY_ID="";
+	private static final String KEY_ID="AKIAIVJ3VQ2MRM2W3OZQ";
 	
-	private static final String SECRET_ACCESS_KEY = "";
+	private static final String SECRET_ACCESS_KEY = "nHhTgtvg+D7Vu9w0YXkCApOUUnXLSO49x2jEe5HX";
 	
 	static {
 		credentials = new BasicAWSCredentials(KEY_ID, SECRET_ACCESS_KEY);

@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +52,18 @@ public class StudioService {
 		return false;
 	}
 	public Studio getStudioByNum(int stuNum) {
-		return studioDao.selectStudioByNum(stuNum);
+		Studio studio = studioDao.selectStudioByNum(stuNum);
+		// 시간 설정 
+		studio.setStart(getTime(studio.getS_classstart()));
+		studio.setEnd(getTime(studio.getS_classend()));
+		return studio;
 	}	
+	private String getTime(Date date) {
+		SimpleDateFormat format = new SimpleDateFormat("MM월 dd일");
+		String sendTime = format.format(date);
+		return sendTime;
+	}
+	
 	// 리스트 
 	public List<Map<String,Object>> getStudioList(int page, String type) {
 		List<Map<String,Object>> studioList = studioDao.selectStudioList(page, type);		
@@ -181,5 +193,12 @@ public class StudioService {
 	private String getCityID(String cityName) {
 		
 		return null;
+	}
+	
+	public boolean isReservation(Date date, int s_pk) {
+		if( studioDao.isReservation(date, s_pk) >0 ) {
+			return true;
+		}
+		return false;
 	}
 }

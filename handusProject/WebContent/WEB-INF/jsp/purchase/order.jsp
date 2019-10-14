@@ -196,7 +196,7 @@
 	
 </style>
 <script>
-var memberNum = 144 // 회원번호 : 세션에서 얻어옴 
+var memberNum = ${m_pk};
 var totalPrice; 
 var totalCount; 
 
@@ -372,7 +372,7 @@ function counts() {
 					<c:forEach items="${productList }" var="product">
 						<tr class="borderTd">
 							<td>${product.p_name }
-								<span class='imageBox'><img src=""></span>
+								<span class='imageBox'><img width="120px" height="120px" src="${pageContext.request.contextPath }/image/${product.p_image}"></span>
 							</td>
 							<td colspan="3"></td>
 							<td>${product.p_count } 개</td>

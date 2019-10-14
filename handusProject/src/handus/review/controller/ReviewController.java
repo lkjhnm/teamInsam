@@ -2,6 +2,8 @@ package handus.review.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,11 +30,13 @@ public class ReviewController {
 	}
 	@ResponseBody
 	@RequestMapping("/writeReviewS")
-	public boolean writeReview(int mNum, int grade, String content, int sNum) {
+	public boolean writeReview(int mNum, int grade, String content, int sNum, HttpSession session) {
 		ReviewStudio review = new ReviewStudio();
 		review.setRs_content(content);
 		review.setRs_m_pk(mNum);
-		review.setRs_m_name("임시이름11"); 	// 회원번호로 회원이름 가져오기 
+		int m_pk = (int)session.getAttribute("m_pk");
+		String name = memberService.getMemberByNum(m_pk).getM_name();
+		review.setRs_m_name(name); 	// 회원번호로 회원이름 가져오기 
 		review.setRs_grade(grade);
 		review.setRs_s_pk(sNum);
 		if(reviewService.writeReviewStudio(review)) {
@@ -63,7 +67,11 @@ public class ReviewController {
 		System.out.println(sNum);
 		return reviewService.selectCountRs(sNum);
 	}
+	
+	
 	// -------------------------------------------------------------------
+
+	
 	@ResponseBody
 	@RequestMapping("/drawReviewI")
 	public List<ReviewItem> drawReviewI(int iNum){
@@ -71,11 +79,13 @@ public class ReviewController {
 	}
 	@ResponseBody
 	@RequestMapping("/writeReviewI")
-	public boolean writeReviewI(int mNum, int grade, String content, int iNum) {
+	public boolean writeReviewI(int mNum, int grade, String content, int iNum, HttpSession session) {
 		ReviewItem review = new ReviewItem();
 		review.setRi_content(content);
 		review.setRi_m_pk(mNum);
-		review.setRi_m_name("임시이름11"); 	// 회원번호로 회원이름 가져오기 
+		int m_pk = (int)session.getAttribute("m_pk");
+		String name = memberService.getMemberByNum(m_pk).getM_name();
+		review.setRi_m_name(name); 	 
 		review.setRi_grade(grade);
 		review.setRi_i_pk(iNum);
 		if(reviewService.writeReviewItem(review)) {

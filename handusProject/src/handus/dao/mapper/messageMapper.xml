@@ -27,6 +27,7 @@
 		    ML_M_PK,
 		    ML_UPDATE_DATE,
 		    ML_READ, 
+		    ML_WRITER, 
 		    (select MD_CONTENT from MESSAGE_DETAIL 
 		    	where MD_WRITEDATE = (select max(MD_WRITEDATE) from MESSAGE_DETAIL)
 		    	and ML_NUM = MD_ML_NUM
@@ -36,10 +37,10 @@
 		or ML_A_PK = #{m_pk}
 		order by ML_UPDATE_DATE desc 
 	</select>
-	<update id="updateReadList" parameterType="String">
+	<update id="updateReadList">
 		update MESSAGE_LIST 
 		set ML_READ = 1 
-		where ML_NUM = #{ml_num}
+		where ML_NUM = #{param1} and ML_WRITER != #{param2} 
 	</update>
 	<select id="isMessageList" resultType="String">
 		select ML_NUM from MESSAGE_LIST

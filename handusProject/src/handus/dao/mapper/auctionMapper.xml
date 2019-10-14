@@ -84,7 +84,8 @@
 			   a_country, a_size, a_color,a_details,
 			   au.at_name,
 			   (select count(*) from member_subscribe where ms_type = 3 and ms_fk = #{a_pk}) as a_subscribe
-		from AUCTION a JOIN CATEGORYNAME c ON (a.c_pk = c.c_pk) join AUTHOR au on (a.m_pk_writer = au.m_pk ) ,
+		from AUCTION a JOIN CATEGORYNAME c ON (a.c_pk = c.c_pk) join AUTHOR au on (a.m_pk_writer = au.m_pk ) 
+			 join HANDUS_IMAGE hi on (hi.hi_fk = a.a_pk and hi.hi_main = 1 and hi.hi_type = 2),
 			   <!-- 최근 입찰 가격 가져오는 서브쿼리 -->
 				( select ag_bidding as a_currentprice, ag_regdate
           		   from (select /*+ INDEX (ag AG_BIDDING_INDEX)*/

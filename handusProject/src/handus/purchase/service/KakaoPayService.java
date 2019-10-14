@@ -120,6 +120,8 @@ public class KakaoPayService {
 			e.printStackTrace();
 		}
 		
+		System.out.println("카카오서비스: "+node.toString());
+		
 		// 필요 내용만 Map 으로 반환
 		Map<String, Object> info = new HashMap<String, Object>();
 		info.put("aid", node.get("aid").asText());	// 결제 요청 고유 번호 
