@@ -20,4 +20,5 @@ public interface AuctionDao {
 	public Date selectAuctionRegDate(int ag_pk);
 	public List<HandusImage> selectImgListByA_pk(int a_pk);
 	public int selectAuctionCount(@Param("type") String type);
+	public int updateAuction(Auction auction);
 }

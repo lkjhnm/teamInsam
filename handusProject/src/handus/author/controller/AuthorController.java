@@ -150,8 +150,9 @@ public class AuthorController {
 	
 	@RequestMapping(value="/signUp",method=RequestMethod.POST)
 	@PreAuthorize("hasRole('ROLE_MEMBER')")
+
 	public String authorSignUpPost(HttpSession session, @RequestParam Map<String,Object> formData,Model model) {
-		
+    
 		authorService.registerAuthor(formData);
 		int m_pk = (int)session.getAttribute("m_pk");
 		model.addAttribute("m_pk", m_pk);

@@ -81,6 +81,10 @@
   		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
   		<property name="mapperInterface" value="handus.dao.UserDao"></property>
   	</bean>
+  	<bean id="managerDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+  		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+  		<property name="mapperInterface" value="handus.dao.ManagerDao"></property>
+  	</bean>
   	<bean id="itemDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
   		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
   		<property name="mapperInterface" value="handus.dao.ItemDao"></property>
@@ -96,6 +100,10 @@
   	<bean id="alarmDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
   		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
   		<property name="mapperInterface" value="handus.dao.AlarmDao"></property>
+  	</bean>
+  		<bean id="messageDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+  		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+  		<property name="mapperInterface" value="handus.dao.MessageDao"></property>
   	</bean>
   	
 </beans>

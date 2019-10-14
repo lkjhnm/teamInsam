@@ -11,7 +11,7 @@
 	href="${pageContext.request.contextPath}/css/handus.css" />
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/css/handusFAQ.css" />
-<link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet" S/>
+<link href="https://fonts.googleapis.com/css?family=Hepta+Slab|Nanum+Gothic|Nanum+Myeongjo|Noto+Serif+KR&display=swap" rel="stylesheet"/>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://kit.fontawesome.com/c62d0d5d4f.js"></script>
 <style type="text/css">
@@ -106,8 +106,8 @@ fieldset {
 							//제목
 							var tr = $("<tr>");
 							tr.append($("<td class='category' style='font-size: 12px; font-weight: bold;' colsapn='2'>").text(faqArr[i].faq_category));
-								var mytitle = $("<a href=\"#\">").text(faqArr[i].faq_title);
-							var titletd = $("<td class='title' colsapn='2'>").append(mytitle);
+								var mytitle = $("<a href=\"#\" onclick='return false;'>").text(faqArr[i].faq_title);
+							var titletd = $("<td class='title' colsapn='2' onclick='return false;'>").append(mytitle);
 							tr.append(titletd);
 							var tr1 = $("<tr>");
 							var mycontent = $("<p class='tit'>").text(faqArr[i].faq_content);
@@ -322,7 +322,6 @@ fieldset {
 <body>
 	<div class='container'>
 		<!-- 필수!! side,header는 필요에따라 추가 하면됩니다. -->
-		<jsp:include page="/WEB-INF/jsp/module/sideMenu.jsp" />
 		<jsp:include page="/WEB-INF/jsp/module/header.jsp" />
 		<div class="contents_handus">
 			<div class="faq_wrap">
@@ -356,11 +355,11 @@ fieldset {
 								</tr>
 							</table>
 						</div>
-					</div>
-						<p class="common1s-text">찾으시는 질문이 없다면?</p>
-					<div class="area1sButton">
-						<a href="#" class="btnGreen">1:1문의하기</a>
-					</div>
+<!-- 					</div> -->
+<!-- 						<p class="common1s-text">찾으시는 질문이 없다면?</p> -->
+<!-- 					<div class="area1sButton"> -->
+<!-- 						<a href="#" class="btnGreen">1:1문의하기</a> -->
+<!-- 					</div> -->
 				</div>
 				<!-- end "faq-content-wrap" -->
 			</div>
@@ -368,6 +367,6 @@ fieldset {
 		</div>
 		<!-- end "contents_handus -->
 	</div>
-
+</div>
 </body>
 </html>
