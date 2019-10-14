@@ -80,18 +80,18 @@
 	
 	
 	function connect(){
-		var m_pk = "${m_pk}";
+		var m_pk = "${sessionScope.m_pk}";
 		
 		Notification.requestPermission();
 		
 		sock = new SockJS("${pageContext.request.contextPath}/connect");
 		stompClient = Stomp.over(sock);
 		stompClient.connect({},function(){
-		
+			
 			if(!m_pk || m_pk==""){
 				return;
 			}
-		
+
 			$.ajax({
 				url:"${pageContext.request.contextPath}/user/subscribeListAll",
 				data: {"m_pk_user":m_pk},

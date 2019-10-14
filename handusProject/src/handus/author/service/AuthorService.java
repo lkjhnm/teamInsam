@@ -152,7 +152,7 @@ public class AuthorService {
 		boolean result = authorDao.insertAuthor(formData);
 		if(result) {
 			Auth auth = new Auth();
-			auth.setM_pk((int)formData.get("m_pk"));
+			auth.setM_pk(Integer.parseInt((String)formData.get("m_pk")));
 			auth.setMa_authority("ROLE_AUTHOR");
 			memberDao.updateMemberAuth(auth);
 			return true;

@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -141,16 +143,21 @@ public class AuthorController {
 	}
 	
 	@RequestMapping(value="/signUp", method=RequestMethod.GET)
+	@PreAuthorize("hasRole('ROLE_MEMBER')")
 	public String authorSignUp() {
 		return "author/signUp";
 	}
 	
 	@RequestMapping(value="/signUp",method=RequestMethod.POST)
-	public String authorSignUpPost(@RequestParam Map<String,Object> formData) {
+	@PreAuthorize("hasRole('ROLE_MEMBER')")
+	public String authorSignUpPost(HttpSession session, @RequestParam Map<String,Object> formData,Model model) {
 		
 		authorService.registerAuthor(formData);
+		int m_pk = (int)session.getAttribute("m_pk");
+		model.addAttribute("m_pk", m_pk);
+		model.addAttribute("complete",true);
 		
-		return "redirect:/author/privatePage?m_pk="+formData.get("m_pk"); 
+		return "redirect:/user/myPage"; 
 	}
 	
 	@RequestMapping(value="/publicPage", method=RequestMethod.GET)

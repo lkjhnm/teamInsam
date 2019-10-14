@@ -90,6 +90,8 @@
 		select *
 			from TOTAL_ORDER tod join ITEM i on (tod.to_type = 1 and tod.to_p_pk = i.i_pk)
 					join HANDUS_IMAGE hi on (hi.hi_type = 1 and hi.hi_main = 1 and hi.hi_fk = i.i_pk)
+						join AUTHOR au on (i.m_pk_writer = au.m_pk)
+							join categoryname c on (i.i_category = c.c_pk)
 				where tod.to_m_pk = #{m_pk}
 	</select>
 	
@@ -97,6 +99,8 @@
 		select *
 			from TOTAL_ORDER tod join STUDIO s on (tod.to_type = 3 and tod.to_p_pk = s.s_pk)
 					join HANDUS_IMAGE hi on (hi.hi_type = 3 and hi.hi_main = 1 and hi.hi_fk = s.s_pk)
+						join AUTHOR au on (s.m_pk_writer = au.m_pk)
+							join categoryname c on (s.s_category = c.c_pk)
 				where tod.to_m_pk = #{m_pk}
 	</select>
 </mapper>

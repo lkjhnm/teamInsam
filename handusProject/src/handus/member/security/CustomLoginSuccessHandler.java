@@ -46,6 +46,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 			
 			if(savedRequest != null) {
 				String targetUrl = savedRequest.getRedirectUrl();
+				System.out.println(targetUrl);
 				redirectStrategy.sendRedirect(request, response, targetUrl);
 			}else {
 				redirectStrategy.sendRedirect(request, response, "/auction/list");				
