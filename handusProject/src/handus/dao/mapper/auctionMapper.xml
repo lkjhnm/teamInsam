@@ -15,7 +15,7 @@
                    								where rn = 1 )  as a_currentprice ,
             ( select  hi_pk
                     from HANDUS_IMAGE hi
-                        where hi.hi_fk = aa.a_pk and hi.hi_main = 1
+                        where hi.hi_fk = aa.a_pk and hi.hi_main = 1 and hi.hi_type = 2
               )  as ai_pk
                         
 			from

@@ -201,9 +201,52 @@
 		cursor:pointer;
 		color:#ff1d43;	
 	}
+	#resultModal{
+ 		display:none;
+		width: 650px;
+		height: 300px;
+		background-color: inherit;
+		position:fixed;
+		top:38%;
+		left:50%;
+		transform: translate(-50%,-50%);
+		border: 3px solid #191919;
+	}
+	#modalTitle{
+		margin-top:20px;
+		font-size: 30px;
+		font-weight: 600;
+		text-align: center;
+		
+	}
+	.modalBody{
+		width: 400px;
+		margin: 60px auto;
+		font-size: 20px;
+		text-align: center;
+	}
+	#confirm{
+		width: 100px;
+		height: 30px;
+		background-color: #191919;
+		border: 1px solid #191919;
+		color:#fff;
+		cursor: pointer;
+		margin-top: 50px;
+	}
 </style>
 <script>
 	$(function(){
+		
+		var complete = "${param.complete}";
+		
+		if(complete){
+			$("#resultModal").css("display","block");
+		}
+		
+		$("#confirm").on("click",function(){
+			location.href='${pageContext.request.contextPath}/logout';
+		})
 		
 		$("#tab_title").next().css("color","#ff1d43");
 		$("#tab_title").next().siblings().not("#tab_title").css("opacity","0.5")
@@ -411,26 +454,29 @@
 					<div class="tab_menu" data-tab='studio'>STUDIO</div>
 				</div>
 				<div class='list' data-list="item">
-					<div>
-						<img>			
+					<c:forEach items="${itemList }" var="item">
 						<div>
-							<div class='info-container'>
-								<span class="info-title">TITLE </span>
-								<span class="info-value"> 제목제목잼</span>
-							</div>
-							<div class='info-container'>
-								<span class="info-title">PRICE </span>
-								<span class="info-value"> 제목제목잼</span>
-							</div>
-							<div class='info-container'>
-								<span class="info-title">QUANTITY </span>
-								<span class="info-value"> 제목제목잼</span>
+							<img src="${pageContext.request.contextPath }/image/${item.HI_PK}">
+							<div>
+								<div class='info-container'>
+									<span class='info-title'>TITLE</span>
+									<span class='info-value'>${item.I_TITLE }</span>
+								</div>
+								<div class='info-container'>
+									<span class='info-title'>AUTHOR</span>
+									<span class='info-value'>${item.AT_NAME }</span>
+								</div>
+								<div class='info-container'>
+									<span class='info-title'>CATEGORY</span>
+									<span class='info-value'>${item.C_CATEGORY }</span>
+								</div>
+								<div class='info-container'>
+									<span class="info-title">PRICE </span>
+									<span class="info-value"> ${item.I_PRICE }</span>
+								</div>
 							</div>
 						</div>
-						<div class='button_container'>
-							<div data-type='item'> 상세보기 </div>	 <!-- onclick='moveToPage(this,pk)' -->
-						</div>
-					</div>
+					</c:forEach>
 				</div>
 				<div class='list' data-list="auction">
 					<c:forEach items="${winningBid }" var="auction">
@@ -471,7 +517,39 @@
 					</c:forEach>					
 				</div>
 				<div class='list' data-list="studio">
+					<c:forEach items="${studioList }" var="studio">
+						<div>
+							<img src="${pageContext.request.contextPath }/image/${studio.HI_PK}">
+							<div>
+								<div class='info-container'>
+									<span class='info-title'>TITLE</span>
+									<span class='info-value'>${studio.S_TITLE }</span>
+								</div>
+								<div class='info-container'>
+									<span class='info-title'>AUTHOR</span>
+									<span class='info-value'>${studio.AT_NAME }</span>
+								</div>
+								<div class='info-container'>
+									<span class='info-title'>CATEGORY</span>
+									<span class='info-value'>${studio.C_CATEGORY }</span>
+								</div>
+								<div class='info-container'>
+									<span class="info-title">PRICE </span>
+									<span class="info-value"> ${studio.S_PRICE }</span>
+								</div>
+							</div>
+						</div>
+					</c:forEach>
 				</div>
+			</div>
+		</div>
+	</div>
+	<div id="resultModal">
+		<div id="modalTitle"> HANDUS </div>
+		<div class='modalBody'>
+			작가 등록에 성공했습니다.
+			<div>
+				<button id="confirm">확 인</button>
 			</div>
 		</div>
 	</div>

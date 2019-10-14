@@ -228,14 +228,6 @@
 		<div id="auctionListContainer">
 			<div class='sortBox'>
 				<p id="pageTitle"> Auction </p>
-				<div id="sort">
-					<select>
-						<option>Sort&hellip;</option>
-						<option>최신순</option>
-						<option>인기순</option>
-						<option>별점순</option>
-					</select>
-				</div>
 			</div>
 			<div class="auctionList">
 				<c:forEach items="${auctionList }" var="item">
